@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -34,9 +35,13 @@ def _same_name(a: str, b: str) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Unsupervised Seed-and-Extend cross-language function alignment")
     ap.add_argument("--scans", required=True)
+    ap.add_argument("--extra-scans", action="append", default=[], help="Additional scan directories (e.g. controls)")
     ap.add_argument("--ports", default="chocolate-doom,gore,dartdoom,doom-scheme,mochadoom,room4doom")
+    ap.add_argument("--all", action="store_true", help="Run on all scan subdirectories except linuxdoom")
     ap.add_argument("--seed-frac", type=float, default=0.15, help="Top fraction of FGW reciprocal best hits as Tier-1 seeds")
     ap.add_argument("--hops", type=int, default=3, help="Number of 1-hop extension rounds")
+    ap.add_argument("--max-funcs", type=int, default=15000, help="Skip ports above this size to avoid O(n^2) FGW OOM")
+    ap.add_argument("--out-csv", help="Optional CSV output path")
     args = ap.parse_args()
 
     from structural_fingerprint import blind as BL
@@ -71,14 +76,32 @@ def main() -> int:
         ref_nbrs[u].add(v)
         ref_nbrs[v].add(u)
 
-    ref_names_set = {_norm_name(str(ref_ft.name[r])) for r in rv.rows}
+    targets: list[tuple[str, Path]] = []
+    if args.all:
+        for d in sorted(root.iterdir()):
+            if d.is_dir() and d.name != "linuxdoom":
+                targets.append((d.name, d))
+    else:
+        for p in args.ports.split(","):
+            targets.append((p, root / p))
+    for extra in args.extra_scans:
+        ep = Path(extra)
+        for d in sorted(ep.iterdir()):
+            if d.is_dir():
+                targets.append((d.name, d))
 
-    for port in args.ports.split(","):
-        p_db = resolve_scans([root / port])[0]
-        p_scan = load_scan(p_db, ref.signal_columns)
+    rows_out: list[dict[str, object]] = []
+    for port, p_dir in targets:
+        dbs = resolve_scans([p_dir])
+        if not dbs:
+            continue
+        p_scan = load_scan(dbs[0], ref.signal_columns)
         p_ft = build(p_scan, ref, min_loc=3, keyword_mode="composition").functions
         assert p_ft is not None
         pv = BL.blind_view(p_ft)
+        if pv.n < 10 or pv.n > args.max_funcs:
+            print(f"{port:24s} | skipped (n={pv.n})")
+            continue
         xp = BL.descriptors(pv, len(ref.archetype_names), bp.use_graph, bp.use_measures, None, bp.geometry_only)
         hp = BL.hop_matrix(pv, bp.hop_cap)
 
@@ -86,12 +109,11 @@ def main() -> int:
         m = m / (m.max() or 1.0)
         t = BL.fused_gw(m, hp, hr, bp.alpha, bp.epsilon, bp.outer)
 
-        # Tier-1: Reciprocal best hits in FGW coupling T
         best_r = np.argmax(t, axis=1)
         best_p = np.argmax(t, axis=0)
         rbh = [(i, int(best_r[i]), float(t[i, best_r[i]])) for i in range(pv.n) if best_p[best_r[i]] == i]
         rbh.sort(key=lambda x: x[2], reverse=True)
-        k_seed = max(10, int(len(rbh) * args.seed_frac))
+        k_seed = max(1, int(len(rbh) * args.seed_frac)) if rbh else 0
         seeds = rbh[:k_seed]
 
         anchor_p_to_r: dict[int, int] = {i: j for i, j, _ in seeds}
@@ -116,7 +138,6 @@ def main() -> int:
             p_nbrs[u].add(v)
             p_nbrs[v].add(u)
 
-        # Tier-2+: Iterative 1-hop propagation
         for _ in range(args.hops):
             proposals: list[tuple[float, int, int]] = []
             for pu in range(pv.n):
@@ -148,31 +169,37 @@ def main() -> int:
             if added == 0:
                 break
 
-        def score_pairs(pairs: list[tuple[int, int]]) -> tuple[int, str, str]:
+        def score_pairs(pairs: list[tuple[int, int]]) -> tuple[int, float, int, float]:
             if not pairs:
-                return 0, "n/a", "n/a"
+                return 0, 0.0, 0, 0.0
             sub_ok = 0
             name_ok = 0
-            comparable = 0
             for pu, ru in pairs:
                 pr, rr = pv.rows[pu], rv.rows[ru]
                 if tax.classify(str(p_ft.path[pr]), port) == tax.classify(str(ref_ft.path[rr]), "linuxdoom"):
                     sub_ok += 1
-                pn = str(p_ft.name[pr])
-                rn = str(ref_ft.name[rr])
-                if _norm_name(pn) in ref_names_set:
-                    comparable += 1
-                if _same_name(pn, rn):
+                if _same_name(str(p_ft.name[pr]), str(ref_ft.name[rr])):
                     name_ok += 1
-            name_str = f"{name_ok}/{len(pairs)} ({name_ok / len(pairs):.1%})"
-            return len(pairs), f"{sub_ok / len(pairs):.1%}", name_str
+            return len(pairs), sub_ok / len(pairs), name_ok, name_ok / len(pairs)
 
         t1_pairs = [(i, j) for i, j, _ in seeds]
         all_pairs = list(anchor_p_to_r.items())
-        n1, sub1, nm1 = score_pairs(t1_pairs)
-        na, suba, nma = score_pairs(all_pairs)
-        print(f"{port:15s} | Tier-1 ({n1:3d}): sub={sub1:>5} name={nm1:16s} | Seed+Extend ({na:3d}): sub={suba:>5} name={nma:16s}")
+        n1, sub1, nok1, nm1 = score_pairs(t1_pairs)
+        na, suba, noka, nma = score_pairs(all_pairs)
+        print(f"{port:24s} | n={pv.n:5d} | T1 ({n1:3d}): sub={sub1:5.1%} name={nok1:3d}/{n1:<3d} ({nm1:5.1%}) | S+E ({na:3d}): sub={suba:5.1%} name={noka:3d}/{na:<3d} ({nma:5.1%})")
+        rows_out.append({
+            "port": port, "n_funcs": pv.n,
+            "t1_n": n1, "t1_sub": round(sub1, 4), "t1_name_hits": nok1, "t1_name_prec": round(nm1, 4),
+            "se_n": na, "se_sub": round(suba, 4), "se_name_hits": noka, "se_name_prec": round(nma, 4),
+        })
 
+    if args.out_csv and rows_out:
+        out_p = Path(args.out_csv)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        with out_p.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=list(rows_out[0].keys()))
+            w.writeheader()
+            w.writerows(rows_out)
     return 0
 
 
