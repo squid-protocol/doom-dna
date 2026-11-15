@@ -118,7 +118,7 @@ def main() -> int:
         }
 
     ld = load_port("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0])
-    ld_comm, ld_groups = discover_communities(ld["n"], ld["edges"], ld["locs"], k_keep=15)
+    ld_comm, ld_groups = discover_communities(ld["n"], ld["edges"], ld["locs"], k_keep=16)
 
     # Label each discovered community by its top-2 hub functions
     deg_ld = np.zeros(ld["n"], dtype=np.int64)
@@ -129,12 +129,10 @@ def main() -> int:
     track_labels = []
     for cid, g in enumerate(ld_groups):
         if cid == len(ld_groups) - 1 and len(g) > 100:
-            track_labels.append("Leaf / Unwired Core")
+            track_labels.append("C16: Leaf / Misc Core")
         else:
             hubs = [ld["names"][i] for i in sorted(g, key=lambda i: (-deg_ld[i], -ld["locs"][i]))[:2]]
             track_labels.append(f"C{cid+1:02d}: " + " / ".join(hubs))
-    track_labels.append("Novel / Horizontal")
-    novel_track = len(track_labels) - 1
 
     print("Discovered 16 call-graph tracks:")
     for idx, lbl in enumerate(track_labels):
@@ -234,20 +232,49 @@ def main() -> int:
                         if la >= 5 and lb >= 5 and abs(la - lb) / max(la, lb) <= 0.30:
                             donor_match[qi] = (dname, D["names"][ri])
 
+        # Assign every function to one of the 16 call-graph communities:
+        # 1) Direct linuxdoom Seed-and-Extend match -> its linuxdoom community
+        # 2) Unmatched -> propagate community from call-graph neighbors (3 rounds)
+        # 3) Still disconnected -> nearest linuxdoom descriptor community
+        func_comm = {}
+        for qi, ri in matched_ld.items():
+            func_comm[qi] = int(ld_comm[ri])
+
+        for _ in range(4):
+            updates = {}
+            for qi in range(P["n"]):
+                if qi in func_comm:
+                    continue
+                nbr_comms = [func_comm[u] for u in P["nbrs"][qi] if u in func_comm]
+                if nbr_comms:
+                    counts = defaultdict(int)
+                    for c in nbr_comms:
+                        counts[c] += 1
+                    updates[qi] = max(counts.items(), key=lambda x: x[1])[0]
+            if not updates:
+                break
+            func_comm.update(updates)
+
+        still_unassigned = [qi for qi in range(P["n"]) if qi not in func_comm]
+        if still_unassigned:
+            _, nearest_ld = ld["tree"].query(P["xd"][still_unassigned], k=1)
+            for qi, ldi in zip(still_unassigned, nearest_ld.tolist(), strict=True):
+                func_comm[qi] = int(ld_comm[ldi])
+
         # Build 16 tracks: each track has list of [func_name, loc, donor_or_null, ref_name_or_null]
         tracks = [[] for _ in range(len(track_labels))]
         for qi in range(P["n"]):
             fn = P["names"][qi]
             loc = int(P["locs"][qi])
+            cid = func_comm[qi]
             if qi in matched_ld:
                 ri = matched_ld[qi]
-                cid = int(ld_comm[ri])
                 tracks[cid].append([fn, loc, "linuxdoom", ld["names"][ri]])
             elif qi in donor_match:
                 dname, d_fn = donor_match[qi]
-                tracks[novel_track].append([fn, loc, dname, d_fn])
+                tracks[cid].append([fn, loc, dname, d_fn])
             else:
-                tracks[novel_track].append([fn, loc, None, None])
+                tracks[cid].append([fn, loc, None, None])
 
         out_ports[tname] = {
             "meta": f"{'/'.join(P['langs'])} • {P['n']:,} funcs • {int(np.sum(P['locs'])):,} LOC",

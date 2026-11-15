@@ -90,7 +90,7 @@
   <header>
     <h1>DOOM DNA — 16 Call-Graph Community Tracks <span class="badge">LIVE DATA</span></h1>
     <p class="sub">
-      Tracks 1–15 are discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules) via greedy modularity; Track 16 holds unmatched &amp; horizontally borrowed functions. A <strong>thin black line</strong> is the baseline; each colored gene band is a real function matched by Seed-and-Extend or structural twins.
+      All <strong>16 tracks</strong> are communities discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules). Horizontal additions (like <code>textscreen</code>) and port-unique functions are placed into the call-graph system they connect to: <strong>Grey</strong> = unique to this port; <strong>colored bands</strong> = matched by Seed-and-Extend or structural twins to an ancestor/donor.
     </p>
   </header>
 
@@ -140,7 +140,7 @@ function renderControls() {
     pillsEl.appendChild(b);
   });
 
-  legendEl.innerHTML = `<div class="leg-item"><span class="swatch base"></span><span>Unmatched / Novel</span></div>`;
+  legendEl.innerHTML = `<div class="leg-item"><span class="swatch" style="background:#d6d3d1"></span><span>Unique to this port</span></div>`;
   ANCESTORS.forEach(a => {
     const item = document.createElement('div');
     item.className = 'leg-item' + (hiddenAnc.has(a.id) ? ' dim' : '');
@@ -190,17 +190,16 @@ function renderCard(portName) {
     const W = 400;
     const lineW = (trackPct / 100) * W;
 
-    let segs = `<line x1="0" y1="10" x2="${lineW.toFixed(1)}" y2="10" stroke="#1c1917" stroke-width="1.5" stroke-linecap="round"/>`;
+    let segs = `<line x1="0" y1="10" x2="${lineW.toFixed(1)}" y2="10" stroke="#1c1917" stroke-width="1.2" stroke-linecap="round"/>`;
     if (fns.length > 0 && loc > 0) {
       let x = 0;
-      // Sort functions deterministically by name so bands are spaced cleanly across the track
+      // Sort functions deterministically by name so bands sit in consistent order across the track
       const ordered = [...fns].sort((a, b) => a[0].localeCompare(b[0]));
       ordered.forEach(([fnName, fnLoc, donor, refName]) => {
         const w = (fnLoc / loc) * lineW;
-        if (donor && !hiddenAnc.has(donor) && ANC_MAP[donor]) {
-          const gw = Math.max(1.2, w * 0.82);
-          segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${donor}" data-ref="${refName || ''}" x="${x.toFixed(1)}" y="4.5" width="${gw.toFixed(1)}" height="11" rx="1" fill="${ANC_MAP[donor].color}" opacity="0.9"/>`;
-        }
+        const isDonor = donor && !hiddenAnc.has(donor) && ANC_MAP[donor];
+        const fill = isDonor ? ANC_MAP[donor].color : '#d6d3d1';
+        segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${isDonor ? donor : ''}" data-ref="${refName || ''}" x="${x.toFixed(2)}" y="4.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
         x += w;
       });
     }
@@ -220,7 +219,11 @@ function renderCard(portName) {
         const fl = target.getAttribute('data-loc');
         const dn = target.getAttribute('data-donor');
         const rf = target.getAttribute('data-ref');
-        tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ANC_MAP[dn].color};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
+        if (dn && ANC_MAP[dn]) {
+          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ANC_MAP[dn].color};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
+        } else {
+          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br><span style="color:#d6d3d1">Unique to ${portName}</span>`;
+        }
       } else {
         tipEl.innerHTML = `<strong>${portName} — ${sub}</strong><br>${fns.length} functions, ${loc.toLocaleString()} LOC`;
       }
