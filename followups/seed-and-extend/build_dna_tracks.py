@@ -93,6 +93,10 @@ def main() -> int:
 
     ref = load_reference("portable")
     bp = BL.BlindParams()
+    keep_feat_cols = [
+        i for i, n in enumerate(ref.feature_names)
+        if n not in ("log_complexity", "func_internal_density")
+    ]
 
     def load_port(name: str, db_path: Path, max_n: int = 10000):
         sc = load_scan(db_path, ref.signal_columns)
@@ -105,7 +109,7 @@ def main() -> int:
         comp_all = F.raw_features(
             ref, sc.loc, sc.complexity, sc.args, sc.keyword_density, sc.signals,
             keyword_mode="composition",
-        )
+        )[:, keep_feat_cols]
         comp = comp_all[bv.rows]
         cnorm = comp / np.maximum(np.linalg.norm(comp, axis=1, keepdims=True), 1e-9)
         nbrs = defaultdict(set)
@@ -264,19 +268,28 @@ def main() -> int:
             seeds.sort(key=lambda x: -x[2])
             k_seed = max(3, int(round(0.15 * len(seeds))))
             top_seeds = seeds[:k_seed]
-            del cost, T
+            del cost
             def valid_ld_pair(qi: int, rc: int) -> bool:
                 la, lb = int(P["locs"][qi]), int(ld["locs"][rc])
                 return (
-                    np.linalg.norm(P["xd"][qi] - ld["xd"][rc]) <= 0.65
+                    np.linalg.norm(P["xd"][qi] - ld["xd"][rc]) <= 0.45
                     and min(la, lb) >= 5
-                    and min(la, lb) / max(la, lb) >= 0.40
+                    and min(la, lb) / max(la, lb) >= 0.45
                 )
 
             delta = np.median(P["comp"][[s[0] for s in top_seeds]] - ld["comp"][[s[1] for s in top_seeds]], axis=0)
-            matched_ld = {qi: ri for qi, ri, _ in seeds if valid_ld_pair(qi, ri)}
-            used_r = set(matched_ld.values())
             r_snorm = (ld["comp"] + delta) / np.maximum(np.linalg.norm(ld["comp"] + delta, axis=1, keepdims=True), 1e-9)
+
+            def valid_cal_pair(qi: int, rc: int) -> bool:
+                la, lb = int(P["locs"][qi]), int(ld["locs"][rc])
+                return (
+                    float(np.dot(P["cnorm"][qi], r_snorm[rc])) >= 0.70
+                    and min(la, lb) >= 5
+                    and min(la, lb) / max(la, lb) >= 0.20
+                )
+
+            matched_ld = {qi: ri for qi, ri, _ in top_seeds}
+            used_r = set(matched_ld.values())
             for _ in range(3):
                 cand = []
                 for qi in range(P["n"]):
@@ -296,10 +309,29 @@ def main() -> int:
                 for _, qi, rc in cand:
                     if qi in matched_ld or rc in used_r:
                         continue
-                    if valid_ld_pair(qi, rc):
-                        matched_ld[qi] = rc
-                        used_r.add(rc)
-            matched_ld = {qi: rc for qi, rc in matched_ld.items() if valid_ld_pair(qi, rc)}
+                    matched_ld[qi] = rc
+                    used_r.add(rc)
+
+            # Check whether Seed-and-Extend found a coherent call-graph backbone
+            # (separates true DOOM ports/translations from unrelated controls without raw xd bias).
+            sup = [
+                sum(1 for u in P["nbrs"][qi] if u in matched_ld and matched_ld[u] in ld["nbrs"][rc])
+                for qi, rc in matched_ld.items()
+            ]
+            tr = [float(T[qi, rc] / (T[qi].max() + 1e-12)) for qi, rc in matched_ld.items()]
+            strong_fgw = sum(1 for x in tr if x >= 0.5) / max(1, len(tr))
+            mean_sup = float(np.mean(sup)) if sup else 0.0
+            del T
+
+            if strong_fgw >= 0.20 and mean_sup >= 2.10:
+                # Include all reciprocal FGW seeds that pass the calibrated gate too
+                for qi, ri, _ in seeds:
+                    if qi not in matched_ld and ri not in used_r and valid_cal_pair(qi, ri):
+                        matched_ld[qi] = ri
+                        used_r.add(ri)
+                matched_ld = {qi: rc for qi, rc in matched_ld.items() if valid_cal_pair(qi, rc)}
+            else:
+                matched_ld = {qi: rc for qi, rc in matched_ld.items() if valid_ld_pair(qi, rc)}
 
         # Assign secondary donors for unmatched functions
         donor_match = {}

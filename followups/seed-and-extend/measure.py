@@ -55,6 +55,10 @@ def main() -> int:
     tax = Taxonomy.load(Path(__file__).resolve().parents[2] / "manifest" / "subsystems.json")
     ref = load_reference("portable")
     bp = BL.BlindParams()
+    keep_feat_cols = [
+        i for i, n in enumerate(ref.feature_names)
+        if n not in ("log_complexity", "func_internal_density")
+    ]
 
     ref_db = resolve_scans([root / "linuxdoom"])[0]
     ref_scan = load_scan(ref_db, ref.signal_columns)
@@ -67,7 +71,7 @@ def main() -> int:
     ref_comp_all = F.raw_features(
         ref, ref_scan.loc, ref_scan.complexity, ref_scan.args, ref_scan.keyword_density, ref_scan.signals,
         keyword_mode="composition",
-    )
+    )[:, keep_feat_cols]
     ref_comp = ref_comp_all[rv.rows]
     r_norm = ref_comp / np.maximum(np.linalg.norm(ref_comp, axis=1, keepdims=True), 1e-9)
 
@@ -122,7 +126,7 @@ def main() -> int:
         p_comp_all = F.raw_features(
             ref, p_scan.loc, p_scan.complexity, p_scan.args, p_scan.keyword_density, p_scan.signals,
             keyword_mode="composition",
-        )
+        )[:, keep_feat_cols]
         p_comp = p_comp_all[pv.rows]
         if seeds:
             pi_s = np.array([i for i, _, _ in seeds], dtype=np.int64)
