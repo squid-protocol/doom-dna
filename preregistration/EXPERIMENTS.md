@@ -34,3 +34,16 @@ These experiments close the open questions documented in `RESULTS.md` and `artic
   * **H5.3 (`doomarkable`):** GPL-2.0 port — recovers **`>= 50%` against `linuxdoom`** and reveals its exact upstream parent (`doomgeneric`, `chocolate-doom`, or `prboom-plus`).
   * **H5.4 (`DOOM-style-Game`):** From-scratch Python raycaster — scores **`<= 2%` name precision** against `linuxdoom` (`0–1` accidental hits).
   * **H5.5 (`doome`):** MIT-licensed (non-GPL) Rust project — predicted to be a from-scratch / inspired engine (**`<= 2%` name precision** against `linuxdoom`).
+
+## `DOOM-E6`: Partial-Engine Hybrids, Genre Shifts & Studio Rewrites (Preregistered Prior to Cloning/Scanning)
+* **Question:** When a different game or engine takes *parts* of DOOM (`id Tech 1`) and expands or rewrites them—across genres (`SRB2`), console/RPG expansions (`Doom64EX`, Heretic/Hexen), or studio-internal engine rewrites (`dhewm3`, pure id Tech 4 without DOOM Classic)—can Seed-and-Extend localize the surviving DOOM core vs. newly written subsystems, and separate id Tech 1 hybrids from id Tech 4?
+* **Held-Out Targets:**
+  1. `dhewm/dhewm3` (GPL-3.0, C++ — Doom 3 / id Tech 4 engine without DOOM Classic)
+  2. `STJr/SRB2` (GPL-2.0, C — Sonic Robo Blast 2, 3D platformer built on Doom Legacy)
+  3. `svkaiser/Doom64EX` (GPL-2.0, C — DOOM 64 engine built on DOOM / id Tech 1)
+  4. Heretic / Hexen (`chocolate-doom/src/heretic` & `src/hexen` or `hheretic`, GPL-2.0, C)
+* **Predictions:**
+  * **H6.1 (`dhewm3`):** Pure id Tech 4 rewrite without DOOM Classic scores **`<= 2%` 1-to-1 name precision** against `linuxdoom` (contrasting with `doom3-bfg` at `38.1%`).
+  * **H6.2 (`SRB2`):** Despite being a 3D Sonic platformer, Seed-and-Extend against `linuxdoom` recovers **`>= 25%` 1-to-1 name precision**, concentrated in core `z_zone` / `w_wad` / `r_bsp` / `p_map` routines.
+  * **H6.3 (`Doom64EX`):** Recovers **`>= 40%` 1-to-1 name precision** against `linuxdoom`, with core engine retention and N64 rendering/scripting divergence.
+  * **H6.4 (Heretic / Hexen):** Recovers **`>= 50%` 1-to-1 name precision** against `linuxdoom`, with higher retention in `z_zone` / `w_wad` / `r_bsp` than in `p_enemy` / `g_game`.
