@@ -3,19 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DOOM DNA — 16-Subsystem Ancestry Track Visualizer (Mockup)</title>
+<title>DOOM DNA — 16 Call-Graph Community Tracks (Live Data)</title>
 <style>
   :root {
-    --bg: #fafaf9;
-    --card: #ffffff;
-    --ink: #1c1917;
-    --muted: #78716c;
-    --border: #e7e5e4;
-    --c-linux: #e11d48;
-    --c-choc: #2563eb;
-    --c-prboom: #d97706;
-    --c-dg: #7c3aed;
-    --c-woof: #0d9488;
+    --bg: #fafaf9; --card: #ffffff; --ink: #1c1917; --muted: #78716c; --border: #e7e5e4;
   }
   * { box-sizing: border-box; }
   body {
@@ -23,19 +14,19 @@
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     background: var(--bg); color: var(--ink);
   }
-  .wrap { max-width: 1180px; margin: 0 auto; }
-  header { margin-bottom: 18px; }
+  .wrap { max-width: 1220px; margin: 0 auto; }
+  header { margin-bottom: 16px; }
   h1 { font-size: 22px; margin: 0 0 6px; letter-spacing: -0.02em; }
   .sub { color: var(--muted); font-size: 13.5px; margin: 0; line-height: 1.45; }
   .badge {
     display: inline-block; font-size: 11px; font-weight: 600;
-    padding: 2px 7px; border-radius: 999px; background: #fef3c7; color: #92400e;
+    padding: 2px 7px; border-radius: 999px; background: #dcfce7; color: #166534;
     vertical-align: middle; margin-left: 8px;
   }
   .controls {
     display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
     background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 16px;
+    padding: 12px 16px; margin-bottom: 14px;
   }
   .port-pills { display: flex; flex-wrap: wrap; gap: 6px; }
   .pill {
@@ -46,11 +37,11 @@
   .pill:hover { border-color: #a8a29e; }
   .pill.active { background: #1c1917; color: #fff; border-color: #1c1917; }
   .spacer { flex: 1; }
-  .toggle-group { display: flex; gap: 6px; align-items: center; font-size: 12.5px; color: var(--muted); }
+  .toggle-group { display: flex; gap: 12px; align-items: center; font-size: 12.5px; color: var(--muted); }
   .legend {
     display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
     background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 16px; margin-bottom: 16px; font-size: 12.5px;
+    padding: 10px 16px; margin-bottom: 14px; font-size: 12.5px;
   }
   .leg-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
   .leg-item.dim { opacity: 0.35; }
@@ -58,15 +49,12 @@
   .swatch.base { height: 2px; background: #1c1917; }
   .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
   .grid.two { grid-template-columns: 1fr 1fr; }
-  @media (max-width: 900px) { .grid.two { grid-template-columns: 1fr; } }
+  @media (max-width: 960px) { .grid.two { grid-template-columns: 1fr; } }
   .card {
     background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 16px 18px; position: relative;
+    padding: 16px 18px;
   }
-  .card-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 10px; gap: 8px;
-  }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 8px; }
   .card-title { font-size: 16px; font-weight: 700; }
   .card-meta { font-size: 12px; color: var(--muted); }
   .summary-bar {
@@ -76,12 +64,12 @@
   }
   .summary-bar strong { color: var(--ink); }
   .track-row {
-    display: grid; grid-template-columns: 96px 1fr 56px; align-items: center;
+    display: grid; grid-template-columns: 205px 1fr 62px; align-items: center;
     gap: 10px; height: 24px;
   }
   .track-label {
-    font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    color: #44403c; text-align: right; white-space: nowrap;
+    font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: #44403c; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .track-loc {
     font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -91,20 +79,18 @@
   .tooltip {
     position: fixed; pointer-events: none; z-index: 50;
     background: #1c1917; color: #fafaf9; padding: 8px 10px; border-radius: 7px;
-    font-size: 12px; line-height: 1.4; max-width: 280px;
+    font-size: 12px; line-height: 1.4; max-width: 340px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.18); display: none;
   }
-  .note {
-    margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.5;
-  }
+  .err { padding: 16px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>DOOM DNA — 16-Subsystem Ancestry Tracks <span class="badge">INTERACTIVE MOCKUP</span></h1>
+    <h1>DOOM DNA — 16 Call-Graph Community Tracks <span class="badge">LIVE DATA</span></h1>
     <p class="sub">
-      Each port is drawn as <strong>16 horizontal lines</strong> (the 16 DOOM subsystems). A <strong>thin black line</strong> represents the port's own novel/unmatched LOC in that subsystem; <strong>colored highlights</strong> mark functions matched by Seed-and-Extend / twins to each ancestor or horizontal donor.
+      Tracks 1–15 are discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules) via greedy modularity; Track 16 holds unmatched &amp; horizontally borrowed functions. A <strong>thin black line</strong> is the baseline; each colored gene band is a real function matched by Seed-and-Extend or structural twins.
     </p>
   </header>
 
@@ -113,136 +99,29 @@
     <div class="spacer"></div>
     <div class="toggle-group">
       <label><input type="checkbox" id="compareToggle" /> Compare vs. <code>linuxdoom</code></label>
-      <label style="margin-left:10px;"><input type="checkbox" id="scaleToggle" checked /> Scale width by LOC</label>
+      <label><input type="checkbox" id="scaleToggle" checked /> Scale track by log(LOC)</label>
     </div>
   </div>
 
   <div class="legend" id="legend"></div>
-
-  <div class="grid" id="cardsGrid"></div>
-
-  <p class="note">
-    <strong>Mockup note:</strong> Subsystem names match <code>manifest/subsystems.json</code>. Segment proportions are illustrative approximations grounded in our observed Seed-and-Extend &amp; <code>horizontal_transfers.py</code> results (<code>linuxdoom</code>, <code>chocolate-doom</code>, <code>gore</code>, <code>eternity</code>, <code>dsda-doom</code>, <code>doom-ios</code>, <code>cydoomgeneric</code>, and <code>iron-doom</code> / <code>rust-doom</code>). Next step: wire <code>data.json</code> directly to <code>results_all.csv</code> + per-function match tables.
-  </p>
+  <div class="grid" id="cardsGrid"><div class="card">Loading <code>dna_tracks_data.json</code>...</div></div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-const SUBSYSTEMS = [
-  'renderer', 'playsim', 'game', 'main', 'menu/misc', 'hud', 'automap',
-  'intermission', 'finale', 'sound', 'video', 'wad', 'zone', 'system', 'net', 'other'
-];
-
 const ANCESTORS = [
-  { id: 'linuxdoom',      label: 'linuxdoom (1993 C core)',       color: '#e11d48' },
+  { id: 'linuxdoom',      label: 'linuxdoom (1993 C core)',               color: '#e11d48' },
   { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/hexen/man)', color: '#2563eb' },
-  { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)',color: '#d97706' },
-  { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)',       color: '#7c3aed' },
-  { id: 'woof',           label: 'woof (MBF/WinMBF)',             color: '#0d9488' }
+  { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)',        color: '#d97706' },
+  { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)',               color: '#7c3aed' },
+  { id: 'woof',           label: 'woof (MBF/WinMBF)',                     color: '#0d9488' }
 ];
+const ANC_MAP = Object.fromEntries(ANCESTORS.map(a => [a.id, a]));
 
-// Each subsystem entry: [totalLOC, { ancestorId: fraction_of_loc, ... }]
-// Remaining fraction (1 - sum) is rendered as the thin black baseline ("novel / port-specific").
-const PORTS = {
-  'linuxdoom': {
-    meta: 'C • 777 funcs • Reference ancestor',
-    note: '100% Red baseline — every subsystem defines the canonical 1993 DOOM DNA.',
-    subs: {
-      renderer: [6200, { linuxdoom: 1.0 }], playsim: [8400, { linuxdoom: 1.0 }],
-      game: [2900, { linuxdoom: 1.0 }], main: [1800, { linuxdoom: 1.0 }],
-      'menu/misc': [2600, { linuxdoom: 1.0 }], hud: [2100, { linuxdoom: 1.0 }],
-      automap: [1400, { linuxdoom: 1.0 }], intermission: [1600, { linuxdoom: 1.0 }],
-      finale: [700, { linuxdoom: 1.0 }], sound: [1700, { linuxdoom: 1.0 }],
-      video: [1100, { linuxdoom: 1.0 }], wad: [950, { linuxdoom: 1.0 }],
-      zone: [650, { linuxdoom: 1.0 }], system: [1200, { linuxdoom: 1.0 }],
-      net: [1100, { linuxdoom: 1.0 }], other: [300, { linuxdoom: 1.0 }]
-    }
-  },
-  'gore': {
-    meta: 'Go • 996 funcs • Flat-dir translation (75.9% SE recovery)',
-    note: 'Even translated to Go with flat directory names, Red linuxdoom DNA lights up almost every core subsystem.',
-    subs: {
-      renderer: [5900, { linuxdoom: 0.84 }], playsim: [8100, { linuxdoom: 0.86 }],
-      game: [2700, { linuxdoom: 0.80 }], main: [1750, { linuxdoom: 0.78 }],
-      'menu/misc': [2500, { linuxdoom: 0.72 }], hud: [2000, { linuxdoom: 0.79 }],
-      automap: [1350, { linuxdoom: 0.85 }], intermission: [1550, { linuxdoom: 0.82 }],
-      finale: [680, { linuxdoom: 0.80 }], sound: [1500, { linuxdoom: 0.65 }],
-      video: [980, { linuxdoom: 0.55 }], wad: [920, { linuxdoom: 0.81 }],
-      zone: [420, { linuxdoom: 0.40 }], system: [1100, { linuxdoom: 0.35 }],
-      net: [750, { linuxdoom: 0.50 }], other: [900, { linuxdoom: 0.15 }]
-    }
-  },
-  'eternity': {
-    meta: 'C++ • 6,642 funcs • SMMU/MBF branch + horizontal textscreen',
-    note: 'Red linuxdoom core + heavy Blue chocolate-doom highlight in other/system (210/276 T1 hits in textscreen!).',
-    subs: {
-      renderer: [9800, { linuxdoom: 0.48 }], playsim: [14200, { linuxdoom: 0.45 }],
-      game: [5100, { linuxdoom: 0.42 }], main: [3200, { linuxdoom: 0.35 }],
-      'menu/misc': [4800, { linuxdoom: 0.32, 'chocolate-doom': 0.14 }], hud: [3100, { linuxdoom: 0.40 }],
-      automap: [2100, { linuxdoom: 0.52 }], intermission: [1800, { linuxdoom: 0.65 }],
-      finale: [950, { linuxdoom: 0.60 }], sound: [2800, { linuxdoom: 0.30 }],
-      video: [2400, { linuxdoom: 0.25 }], wad: [2100, { linuxdoom: 0.38 }],
-      zone: [1100, { linuxdoom: 0.45 }], system: [3400, { linuxdoom: 0.18, 'chocolate-doom': 0.28 }],
-      net: [1900, { linuxdoom: 0.22 }], other: [8500, { 'chocolate-doom': 0.34 }]
-    }
-  },
-  'dsda-doom': {
-    meta: 'C • 4,940 funcs • PrBoom+ fork + Chocolate Hexen + Woof MBF21',
-    note: 'Multi-donor mosaic: Red linuxdoom + Amber prboom-plus + Blue chocolate-doom (src/hexen) + Teal woof (MBF21).',
-    subs: {
-      renderer: [8200, { linuxdoom: 0.62, 'prboom-plus': 0.24 }], playsim: [11500, { linuxdoom: 0.60, 'prboom-plus': 0.18, woof: 0.10 }],
-      game: [4100, { linuxdoom: 0.58, 'prboom-plus': 0.22 }], main: [2400, { linuxdoom: 0.52, 'prboom-plus': 0.20 }],
-      'menu/misc': [3500, { linuxdoom: 0.50, 'prboom-plus': 0.25 }], hud: [2900, { linuxdoom: 0.55, 'prboom-plus': 0.25 }],
-      automap: [2200, { linuxdoom: 0.60, 'prboom-plus': 0.25 }], intermission: [1700, { linuxdoom: 0.78 }],
-      finale: [800, { linuxdoom: 0.75 }], sound: [2100, { linuxdoom: 0.48, 'prboom-plus': 0.22 }],
-      video: [1900, { linuxdoom: 0.42, 'prboom-plus': 0.30 }], wad: [1600, { linuxdoom: 0.55, 'prboom-plus': 0.25 }],
-      zone: [900, { linuxdoom: 0.65 }], system: [2200, { linuxdoom: 0.35, 'prboom-plus': 0.30 }],
-      net: [1300, { linuxdoom: 0.45, 'prboom-plus': 0.30 }], other: [4800, { 'chocolate-doom': 0.32, 'prboom-plus': 0.20 }]
-    }
-  },
-  'doom-ios': {
-    meta: 'Obj-C / C • 1,768 funcs • Declared linuxdoom, embeds PrBoom!',
-    note: 'Amber prboom-plus highlight (272 twins in code/prboom) reveals the hidden PrBoom ancestry.',
-    subs: {
-      renderer: [5600, { linuxdoom: 0.55, 'prboom-plus': 0.32 }], playsim: [7900, { linuxdoom: 0.58, 'prboom-plus': 0.28 }],
-      game: [2800, { linuxdoom: 0.52, 'prboom-plus': 0.30 }], main: [1900, { linuxdoom: 0.45, 'prboom-plus': 0.30 }],
-      'menu/misc': [2500, { linuxdoom: 0.48, 'prboom-plus': 0.34 }], hud: [2000, { linuxdoom: 0.52, 'prboom-plus': 0.30 }],
-      automap: [1450, { linuxdoom: 0.60, 'prboom-plus': 0.28 }], intermission: [1500, { linuxdoom: 0.75, 'prboom-plus': 0.15 }],
-      finale: [700, { linuxdoom: 0.72, 'prboom-plus': 0.15 }], sound: [1600, { linuxdoom: 0.40, 'prboom-plus': 0.25 }],
-      video: [1400, { linuxdoom: 0.35, 'prboom-plus': 0.25 }], wad: [1100, { linuxdoom: 0.50, 'prboom-plus': 0.35 }],
-      zone: [700, { linuxdoom: 0.65 }], system: [1800, { linuxdoom: 0.20, 'prboom-plus': 0.20 }],
-      net: [900, { linuxdoom: 0.40, 'prboom-plus': 0.25 }], other: [2200, { 'prboom-plus': 0.18 }]
-    }
-  },
-  'cydoomgeneric': {
-    meta: 'C + Python • 1,109 funcs • Held-out E5 (100% T1 to doomgeneric)',
-    note: 'Red linuxdoom engine + Violet doomgeneric shim in video/system/other.',
-    subs: {
-      renderer: [5800, { linuxdoom: 0.85, doomgeneric: 0.10 }], playsim: [8200, { linuxdoom: 0.88, doomgeneric: 0.08 }],
-      game: [2800, { linuxdoom: 0.84, doomgeneric: 0.10 }], main: [1700, { linuxdoom: 0.78, doomgeneric: 0.15 }],
-      'menu/misc': [2500, { linuxdoom: 0.80, doomgeneric: 0.12 }], hud: [2000, { linuxdoom: 0.85, doomgeneric: 0.08 }],
-      automap: [1350, { linuxdoom: 0.90 }], intermission: [1550, { linuxdoom: 0.90 }],
-      finale: [680, { linuxdoom: 0.88 }], sound: [1400, { linuxdoom: 0.72, doomgeneric: 0.12 }],
-      video: [1100, { linuxdoom: 0.45, doomgeneric: 0.42 }], wad: [920, { linuxdoom: 0.88 }],
-      zone: [640, { linuxdoom: 0.90 }], system: [1150, { linuxdoom: 0.30, doomgeneric: 0.55 }],
-      net: [950, { linuxdoom: 0.82 }], other: [900, { doomgeneric: 0.45 }]
-    }
-  },
-  'iron-doom': {
-    meta: 'Rust (Bevy ECS) • 319 funcs • Held-out E5 (0.0% DNA)',
-    note: 'All thin black lines — rewriting Chocolate Doom into Bevy ECS erased the imperative call-graph DNA.',
-    subs: {
-      renderer: [1100, {}], playsim: [1600, {}], game: [900, {}], main: [450, {}],
-      'menu/misc': [600, {}], hud: [400, {}], automap: [250, {}], intermission: [180, {}],
-      finale: [120, {}], sound: [350, {}], video: [400, {}], wad: [850, {}],
-      zone: [150, {}], system: [500, {}], net: [120, {}], other: [1400, {}]
-    }
-  }
-};
-
+let DATA = null;
 let activePort = 'eternity';
-let hiddenAnc = new Set();
+const hiddenAnc = new Set();
 
 const pillsEl = document.getElementById('portPills');
 const legendEl = document.getElementById('legend');
@@ -253,7 +132,7 @@ const tipEl = document.getElementById('tooltip');
 
 function renderControls() {
   pillsEl.innerHTML = '';
-  Object.keys(PORTS).forEach(name => {
+  Object.keys(DATA.ports).forEach(name => {
     const b = document.createElement('button');
     b.className = 'pill' + (name === activePort ? ' active' : '');
     b.textContent = name;
@@ -261,7 +140,7 @@ function renderControls() {
     pillsEl.appendChild(b);
   });
 
-  legendEl.innerHTML = `<div class="leg-item"><span class="swatch base"></span><span>Novel / Port-specific (baseline)</span></div>`;
+  legendEl.innerHTML = `<div class="leg-item"><span class="swatch base"></span><span>Unmatched / Novel</span></div>`;
   ANCESTORS.forEach(a => {
     const item = document.createElement('div');
     item.className = 'leg-item' + (hiddenAnc.has(a.id) ? ' dim' : '');
@@ -275,22 +154,20 @@ function renderControls() {
 }
 
 function renderCard(portName) {
-  const port = PORTS[portName];
-  const maxLoc = Math.max(...SUBSYSTEMS.map(s => port.subs[s][0]), 1);
-  const totalLoc = SUBSYSTEMS.reduce((acc, s) => acc + port.subs[s][0], 0);
+  const port = DATA.ports[portName];
+  const trackLocs = port.tracks.map(fns => fns.reduce((s, f) => s + f[1], 0));
+  const maxLog = Math.max(...trackLocs.map(l => Math.log1p(l)), 1);
+  const totalLoc = trackLocs.reduce((a, b) => a + b, 0);
 
   const ancTotals = {};
-  SUBSYSTEMS.forEach(s => {
-    const [loc, shares] = port.subs[s];
-    Object.entries(shares).forEach(([aid, frac]) => {
-      if (!hiddenAnc.has(aid)) ancTotals[aid] = (ancTotals[aid] || 0) + loc * frac;
-    });
-  });
+  port.tracks.forEach(fns => fns.forEach(([, loc, donor]) => {
+    if (donor && !hiddenAnc.has(donor)) ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+  }));
 
   const card = document.createElement('div');
   card.className = 'card';
   const chips = ANCESTORS.filter(a => (ancTotals[a.id] || 0) > 0)
-    .map(a => `<span><strong style="color:${a.color}">${(100 * ancTotals[a.id] / totalLoc).toFixed(1)}%</strong> ${a.id}</span>`)
+    .map(a => `<span><strong style="color:${a.color}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</strong> ${a.id}</span>`)
     .join(' &middot; ') || '<strong>0.0%</strong> matched ancestor DNA';
 
   card.innerHTML = `
@@ -304,75 +181,54 @@ function renderCard(portName) {
     </div>
   `;
 
-  SUBSYSTEMS.forEach(sub => {
-    const [loc, shares] = port.subs[sub];
+  DATA.subsystems.forEach((sub, idx) => {
+    const fns = port.tracks[idx];
+    const loc = trackLocs[idx];
     const row = document.createElement('div');
     row.className = 'track-row';
-    const trackPct = scaleEl.checked ? Math.max(8, (loc / maxLoc) * 100) : 100;
-
-    // Build SVG with thin black baseline + discrete spaced gene/function bands (chromosome ideogram style)
+    const trackPct = scaleEl.checked ? (loc === 0 ? 4 : Math.max(10, (Math.log1p(loc) / maxLog) * 100)) : 100;
     const W = 400;
     const lineW = (trackPct / 100) * W;
+
     let segs = `<line x1="0" y1="10" x2="${lineW.toFixed(1)}" y2="10" stroke="#1c1917" stroke-width="1.5" stroke-linecap="round"/>`;
-
-    // Deterministically lay out ~N discrete function/gene slots across the track
-    const nGenes = Math.max(12, Math.min(48, Math.round(loc / 180)));
-    const slotW = lineW / nGenes;
-    let seed = (portName.length * 131 + sub.length * 37 + loc) % 997;
-    const rand = () => { seed = (seed * 48271) % 2147483647; return seed / 2147483647; };
-
-    // Assign each gene slot to an ancestor (proportional to share) or novel (null)
-    const slots = new Array(nGenes).fill(null);
-    const activeAncs = ANCESTORS.filter(a => !hiddenAnc.has(a.id) && (shares[a.id] || 0) > 0);
-    let cursor = 0;
-    const indices = Array.from({ length: nGenes }, (_, i) => i);
-    // Deterministic Fisher-Yates shuffle so matched genes are spaced realistically along the track
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(rand() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
+    if (fns.length > 0 && loc > 0) {
+      let x = 0;
+      // Sort functions deterministically by name so bands are spaced cleanly across the track
+      const ordered = [...fns].sort((a, b) => a[0].localeCompare(b[0]));
+      ordered.forEach(([fnName, fnLoc, donor, refName]) => {
+        const w = (fnLoc / loc) * lineW;
+        if (donor && !hiddenAnc.has(donor) && ANC_MAP[donor]) {
+          const gw = Math.max(1.2, w * 0.82);
+          segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${donor}" data-ref="${refName || ''}" x="${x.toFixed(1)}" y="4.5" width="${gw.toFixed(1)}" height="11" rx="1" fill="${ANC_MAP[donor].color}" opacity="0.9"/>`;
+        }
+        x += w;
+      });
     }
-    activeAncs.forEach(a => {
-      const count = Math.round((shares[a.id] || 0) * nGenes);
-      for (let k = 0; k < count && cursor < nGenes; k++) {
-        slots[indices[cursor++]] = a;
-      }
-    });
-
-    const details = [];
-    activeAncs.forEach(a => {
-      const frac = shares[a.id] || 0;
-      details.push(`${a.id}: ${(frac * 100).toFixed(0)}% (~${Math.round(loc * frac)} LOC)`);
-    });
-
-    for (let i = 0; i < nGenes; i++) {
-      const anc = slots[i];
-      if (!anc) continue;
-      const gx = i * slotW;
-      const gw = Math.max(1.8, slotW * 0.72);
-      segs += `<rect x="${gx.toFixed(1)}" y="4.5" width="${gw.toFixed(1)}" height="11" rx="1.2" fill="${anc.color}" opacity="0.9"/>`;
-    }
-    const novelPct = Math.max(0, 1 - Object.entries(shares).reduce((s, [k, v]) => s + (hiddenAnc.has(k) ? 0 : v), 0));
-    details.push(`novel/unmatched: ${(novelPct * 100).toFixed(0)}%`);
 
     row.innerHTML = `
-      <div class="track-label">${sub}</div>
+      <div class="track-label" title="${sub}">${sub}</div>
       <svg class="track-svg" viewBox="0 0 ${W} 20" preserveAspectRatio="none">${segs}</svg>
       <div class="track-loc">${loc}L</div>
     `;
     row.onmousemove = (e) => {
+      const target = e.target;
       tipEl.style.display = 'block';
       tipEl.style.left = (e.clientX + 14) + 'px';
       tipEl.style.top = (e.clientY + 14) + 'px';
-      tipEl.innerHTML = `<strong>${portName} — ${sub}</strong> (${loc} LOC)<br>${details.join('<br>')}`;
+      if (target && target.classList && target.classList.contains('gene')) {
+        const fn = target.getAttribute('data-fn');
+        const fl = target.getAttribute('data-loc');
+        const dn = target.getAttribute('data-donor');
+        const rf = target.getAttribute('data-ref');
+        tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ANC_MAP[dn].color};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
+      } else {
+        tipEl.innerHTML = `<strong>${portName} — ${sub}</strong><br>${fns.length} functions, ${loc.toLocaleString()} LOC`;
+      }
     };
     row.onmouseleave = () => { tipEl.style.display = 'none'; };
     card.appendChild(row);
   });
 
-  const cap = document.createElement('p');
-  cap.className = 'note';
-  cap.textContent = port.note;
-  card.appendChild(cap);
   return card;
 }
 
@@ -386,8 +242,13 @@ function renderCards() {
 
 compareEl.onchange = renderCards;
 scaleEl.onchange = renderCards;
-renderControls();
-renderCards();
+
+fetch('dna_tracks_data.json')
+  .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+  .then(json => { DATA = json; renderControls(); renderCards(); })
+  .catch(err => {
+    gridEl.innerHTML = `<div class="err">Could not load <code>dna_tracks_data.json</code> (${err.message}). Serve <code>article/</code> over HTTP (e.g. <code>python3 -m http.server</code>).</div>`;
+  });
 </script>
 </body>
 </html>
