@@ -98,6 +98,13 @@
     <div class="port-pills" id="portPills"></div>
     <div class="spacer"></div>
     <div class="toggle-group">
+      <label>Palette:
+        <select id="paletteSelect" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;">
+          <option value="contrast">High-Contrast (Red / Blue / Green / Purple / Cyan)</option>
+          <option value="okabe">Okabe-Ito Colorblind-Safe</option>
+          <option value="vivid">Vivid Print (Crimson / Cobalt / Gold / Magenta / Teal)</option>
+        </select>
+      </label>
       <label><input type="checkbox" id="compareToggle" /> Compare vs. <code>linuxdoom</code></label>
       <label><input type="checkbox" id="scaleToggle" checked /> Scale track by log(LOC)</label>
     </div>
@@ -110,14 +117,32 @@
 <div class="tooltip" id="tooltip"></div>
 
 <script>
+const PALETTES = {
+  contrast: {
+    'linuxdoom': '#dc2626', 'chocolate-doom': '#2563eb', 'prboom-plus': '#16a34a',
+    'doomgeneric': '#9333ea', 'woof': '#0891b2', unique: '#e5e5e5'
+  },
+  okabe: {
+    'linuxdoom': '#d55e00', 'chocolate-doom': '#0072b2', 'prboom-plus': '#009e73',
+    'doomgeneric': '#cc79a7', 'woof': '#56b4e9', unique: '#e5e5e5'
+  },
+  vivid: {
+    'linuxdoom': '#be123c', 'chocolate-doom': '#1d4ed8', 'prboom-plus': '#eab308',
+    'doomgeneric': '#a21caf', 'woof': '#0d9488', unique: '#e2e8f0'
+  }
+};
+
 const ANCESTORS = [
-  { id: 'linuxdoom',      label: 'linuxdoom (1993 C core)',               color: '#e11d48' },
-  { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/hexen/man)', color: '#2563eb' },
-  { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)',        color: '#d97706' },
-  { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)',               color: '#7c3aed' },
-  { id: 'woof',           label: 'woof (MBF/WinMBF)',                     color: '#0d9488' }
+  { id: 'linuxdoom',      label: 'linuxdoom (1993 C core)' },
+  { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/hexen/man)' },
+  { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)' },
+  { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)' },
+  { id: 'woof',           label: 'woof (MBF/WinMBF)' }
 ];
 const ANC_MAP = Object.fromEntries(ANCESTORS.map(a => [a.id, a]));
+let activePalette = 'contrast';
+const ancColor = (id) => PALETTES[activePalette][id];
+const uniqueColor = () => PALETTES[activePalette].unique;
 
 let DATA = null;
 let activePort = 'eternity';
@@ -128,6 +153,7 @@ const legendEl = document.getElementById('legend');
 const gridEl = document.getElementById('cardsGrid');
 const compareEl = document.getElementById('compareToggle');
 const scaleEl = document.getElementById('scaleToggle');
+const paletteEl = document.getElementById('paletteSelect');
 const tipEl = document.getElementById('tooltip');
 
 function renderControls() {
@@ -140,11 +166,11 @@ function renderControls() {
     pillsEl.appendChild(b);
   });
 
-  legendEl.innerHTML = `<div class="leg-item"><span class="swatch" style="background:#d6d3d1"></span><span>Unique to this port</span></div>`;
+  legendEl.innerHTML = `<div class="leg-item"><span class="swatch" style="background:${uniqueColor()}"></span><span>Unique to this port</span></div>`;
   ANCESTORS.forEach(a => {
     const item = document.createElement('div');
     item.className = 'leg-item' + (hiddenAnc.has(a.id) ? ' dim' : '');
-    item.innerHTML = `<span class="swatch" style="background:${a.color}"></span><span>${a.label}</span>`;
+    item.innerHTML = `<span class="swatch" style="background:${ancColor(a.id)}"></span><span>${a.label}</span>`;
     item.onclick = () => {
       if (hiddenAnc.has(a.id)) hiddenAnc.delete(a.id); else hiddenAnc.add(a.id);
       renderControls(); renderCards();
@@ -167,7 +193,7 @@ function renderCard(portName) {
   const card = document.createElement('div');
   card.className = 'card';
   const chips = ANCESTORS.filter(a => (ancTotals[a.id] || 0) > 0)
-    .map(a => `<span><strong style="color:${a.color}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</strong> ${a.id}</span>`)
+    .map(a => `<span><strong style="color:${ancColor(a.id)}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</strong> ${a.id}</span>`)
     .join(' &middot; ') || '<strong>0.0%</strong> matched ancestor DNA';
 
   card.innerHTML = `
@@ -198,7 +224,7 @@ function renderCard(portName) {
       ordered.forEach(([fnName, fnLoc, donor, refName]) => {
         const w = (fnLoc / loc) * lineW;
         const isDonor = donor && !hiddenAnc.has(donor) && ANC_MAP[donor];
-        const fill = isDonor ? ANC_MAP[donor].color : '#d6d3d1';
+        const fill = isDonor ? ancColor(donor) : uniqueColor();
         segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${isDonor ? donor : ''}" data-ref="${refName || ''}" x="${x.toFixed(2)}" y="4.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
         x += w;
       });
@@ -220,7 +246,7 @@ function renderCard(portName) {
         const dn = target.getAttribute('data-donor');
         const rf = target.getAttribute('data-ref');
         if (dn && ANC_MAP[dn]) {
-          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ANC_MAP[dn].color};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
+          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ancColor(dn)};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
         } else {
           tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br><span style="color:#d6d3d1">Unique to ${portName}</span>`;
         }
@@ -245,6 +271,7 @@ function renderCards() {
 
 compareEl.onchange = renderCards;
 scaleEl.onchange = renderCards;
+paletteEl.onchange = () => { activePalette = paletteEl.value; renderControls(); renderCards(); };
 
 fetch('dna_tracks_data.json')
   .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
