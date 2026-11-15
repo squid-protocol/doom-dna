@@ -265,9 +265,17 @@ def main() -> int:
             k_seed = max(3, int(round(0.15 * len(seeds))))
             top_seeds = seeds[:k_seed]
             del cost, T
+            def valid_ld_pair(qi: int, rc: int) -> bool:
+                la, lb = int(P["locs"][qi]), int(ld["locs"][rc])
+                return (
+                    np.linalg.norm(P["xd"][qi] - ld["xd"][rc]) <= 0.65
+                    and min(la, lb) >= 5
+                    and min(la, lb) / max(la, lb) >= 0.40
+                )
+
             delta = np.median(P["comp"][[s[0] for s in top_seeds]] - ld["comp"][[s[1] for s in top_seeds]], axis=0)
-            matched_ld = {qi: ri for qi, ri, _ in top_seeds}
-            used_r = {ri for _, ri, _ in top_seeds}
+            matched_ld = {qi: ri for qi, ri, _ in seeds if valid_ld_pair(qi, ri)}
+            used_r = set(matched_ld.values())
             r_snorm = (ld["comp"] + delta) / np.maximum(np.linalg.norm(ld["comp"] + delta, axis=1, keepdims=True), 1e-9)
             for _ in range(3):
                 cand = []
@@ -288,15 +296,10 @@ def main() -> int:
                 for _, qi, rc in cand:
                     if qi in matched_ld or rc in used_r:
                         continue
-                    matched_ld[qi] = rc
-                    used_r.add(rc)
-            matched_ld = {
-                qi: rc
-                for qi, rc in matched_ld.items()
-                if np.linalg.norm(P["xd"][qi] - ld["xd"][rc]) <= 0.45
-                and min(P["locs"][qi], ld["locs"][rc]) >= 5
-                and min(P["locs"][qi], ld["locs"][rc]) / max(P["locs"][qi], ld["locs"][rc]) >= 0.45
-            }
+                    if valid_ld_pair(qi, rc):
+                        matched_ld[qi] = rc
+                        used_r.add(rc)
+            matched_ld = {qi: rc for qi, rc in matched_ld.items() if valid_ld_pair(qi, rc)}
 
         # Assign secondary donors for unmatched functions
         donor_match = {}
