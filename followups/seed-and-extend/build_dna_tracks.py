@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import gc
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -92,10 +93,12 @@ def main() -> int:
     ref = load_reference("portable")
     bp = BL.BlindParams()
 
-    def load_port(name: str, db_path: Path):
+    def load_port(name: str, db_path: Path, max_n: int = 10000):
         sc = load_scan(db_path, ref.signal_columns)
         ft = build(sc, ref, min_loc=3, keyword_mode="composition").functions
         bv = BL.blind_view(ft)
+        if max_n and len(bv.rows) > max_n:
+            return {"name": name, "n": len(bv.rows), "skipped": True}
         xd = BL.descriptors(bv, len(ref.archetype_names), bp.use_graph, bp.use_measures, None, bp.geometry_only)
         hm = BL.hop_matrix(bv, bp.hop_cap)
         comp_all = F.raw_features(
@@ -155,23 +158,35 @@ def main() -> int:
             "locs": D["locs"][nov], "names": [D["names"][i] for i in nov],
         }
 
-    targets = [
-        ("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0]),
-        ("gore", resolve_scans([scans_main / "gore"])[0]),
-        ("puredoom", resolve_scans([scans_main / "puredoom"])[0]),
-        ("chocolate-doom", resolve_scans([scans_main / "chocolate-doom"])[0]),
-        ("eternity", resolve_scans([scans_main / "eternity"])[0]),
-        ("odamex", resolve_scans([scans_main / "odamex"])[0]),
-        ("dsda-doom", resolve_scans([scans_main / "dsda-doom"])[0]),
-        ("doom-ios", resolve_scans([scans_main / "doom-ios"])[0]),
-        ("cydoomgeneric", scans_e5 / "cydoomgeneric_galaxy_master_master.db"),
-        ("iron-doom", scans_e5 / "iron-doom_galaxy_master_master.db"),
-        ("rust-doom", resolve_scans([scans_main / "rust-doom"])[0]),
-    ]
+    scans_ctrl = Path("/srv/storage_16tb/projects/gitgalaxy/doom-study/controls/scans")
+    targets = [("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0])]
+    for p in sorted(scans_main.iterdir()):
+        if not p.is_dir() or p.name == "linuxdoom":
+            continue
+        try:
+            db = resolve_scans([p])[0]
+            targets.append((p.name, db))
+        except Exception:
+            pass
+    for p in sorted(scans_ctrl.iterdir()):
+        if p.is_dir():
+            try:
+                targets.append((p.name, resolve_scans([p])[0]))
+            except Exception:
+                pass
+    for name in ["cydoomgeneric", "iron-doom", "doomarkable", "DOOM-style-Game", "doome"]:
+        db = scans_e5 / f"{name}_galaxy_master_master.db"
+        if db.is_file():
+            targets.append((name, db))
 
     out_ports = {}
     for tname, tdb in targets:
-        P = load_port(tname, tdb)
+        P = load_port(tname, tdb, max_n=10000)
+        if P.get("skipped") or P["n"] > 10000:
+            print(f"Skipping {tname} (n={P['n']} > 10000)", flush=True)
+            del P
+            gc.collect()
+            continue
         # Map P -> linuxdoom via Seed-and-Extend
         if tname == "linuxdoom":
             matched_ld = {i: i for i in range(P["n"])}
@@ -186,6 +201,7 @@ def main() -> int:
             seeds.sort(key=lambda x: -x[2])
             k_seed = max(3, int(round(0.15 * len(seeds))))
             top_seeds = seeds[:k_seed]
+            del cost, T
             delta = np.median(P["comp"][[s[0] for s in top_seeds]] - ld["comp"][[s[1] for s in top_seeds]], axis=0)
             matched_ld = {qi: ri for qi, ri, _ in top_seeds}
             used_r = {ri for _, ri, _ in top_seeds}
@@ -280,7 +296,9 @@ def main() -> int:
             "meta": f"{'/'.join(P['langs'])} • {P['n']:,} funcs • {int(np.sum(P['locs'])):,} LOC",
             "tracks": tracks,
         }
-        print(f"Exported {tname:16s}: linuxdoom={len(matched_ld):4d}, donor={len(donor_match):3d}, novel={P['n']-len(matched_ld)-len(donor_match):4d}")
+        print(f"Exported {tname:16s}: linuxdoom={len(matched_ld):4d}, donor={len(donor_match):3d}, novel={P['n']-len(matched_ld)-len(donor_match):4d}", flush=True)
+        del P
+        gc.collect()
 
     payload = {"subsystems": track_labels, "ports": out_ports}
     out_json.write_text(json.dumps(payload), encoding="utf-8")
