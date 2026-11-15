@@ -88,6 +88,7 @@ def main() -> int:
 
     scans_main = Path("/srv/storage_16tb/projects/gitgalaxy/doom-study/rescan-6c7c6c1bc/scans/6c7c6c1bc")
     scans_e5 = Path("/tmp/doom-e5/scans")
+    scans_e6 = Path("/tmp/doom-e6/scans")
     out_json = Path(__file__).resolve().parents[2] / "article" / "dna_tracks_data.json"
 
     ref = load_reference("portable")
@@ -176,6 +177,10 @@ def main() -> int:
                 pass
     for name in ["cydoomgeneric", "iron-doom", "doomarkable", "DOOM-style-Game", "doome"]:
         db = scans_e5 / f"{name}_galaxy_master_master.db"
+        if db.is_file():
+            targets.append((name, db))
+    for name in ["heretic", "hexen", "doom64ex", "srb2"]:
+        db = scans_e6 / name / f"{name}_galaxy_master.db"
         if db.is_file():
             targets.append((name, db))
 
