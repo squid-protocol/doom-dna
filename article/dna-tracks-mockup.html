@@ -120,24 +120,25 @@
 const PALETTES = {
   contrast: {
     'linuxdoom': '#dc2626', 'chocolate-doom': '#2563eb', 'prboom-plus': '#16a34a',
-    'doomgeneric': '#9333ea', 'woof': '#0891b2', unique: '#e5e5e5'
+    'doomgeneric': '#9333ea', 'woof': '#0891b2', 'heretic': '#f59e0b', unique: '#e5e5e5'
   },
   okabe: {
     'linuxdoom': '#d55e00', 'chocolate-doom': '#0072b2', 'prboom-plus': '#009e73',
-    'doomgeneric': '#cc79a7', 'woof': '#56b4e9', unique: '#e5e5e5'
+    'doomgeneric': '#cc79a7', 'woof': '#56b4e9', 'heretic': '#e69f00', unique: '#e5e5e5'
   },
   vivid: {
     'linuxdoom': '#be123c', 'chocolate-doom': '#1d4ed8', 'prboom-plus': '#eab308',
-    'doomgeneric': '#a21caf', 'woof': '#0d9488', unique: '#e2e8f0'
+    'doomgeneric': '#a21caf', 'woof': '#0d9488', 'heretic': '#ea580c', unique: '#e2e8f0'
   }
 };
 
 const ANCESTORS = [
   { id: 'linuxdoom',      label: 'linuxdoom (1993 C core)' },
-  { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/hexen/man)' },
+  { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/man)' },
   { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)' },
   { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)' },
-  { id: 'woof',           label: 'woof (MBF/WinMBF)' }
+  { id: 'woof',           label: 'woof (MBF/WinMBF)' },
+  { id: 'heretic',        label: 'heretic (1994 id Tech 1 RPG)' }
 ];
 const ANC_MAP = Object.fromEntries(ANCESTORS.map(a => [a.id, a]));
 let activePalette = 'contrast';

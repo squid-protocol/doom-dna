@@ -115,9 +115,31 @@ def main() -> int:
         names = [str(ft.name[r]) for r in bv.rows]
         locs = np.array([int(ft.loc[r]) for r in bv.rows], dtype=np.int64)
         langs = sorted(set(str(ft.language[r]) for r in bv.rows))
+        edges = bv.edges
+        if name == "chocolate-doom":
+            excluded = ("src/heretic/", "src/hexen/", "src/strife/", "src/setup/")
+            keep = [i for i, r in enumerate(bv.rows) if not str(ft.path[r]).startswith(excluded)]
+            old_to_new = {old: new for new, old in enumerate(keep)}
+            xd = xd[keep]
+            hm = hm[np.ix_(keep, keep)]
+            comp = comp[keep]
+            cnorm = cnorm[keep]
+            names = [names[i] for i in keep]
+            locs = locs[keep]
+            edges = np.array(
+                [[old_to_new[u], old_to_new[v]] for u, v in edges.tolist() if u in old_to_new and v in old_to_new],
+                dtype=edges.dtype,
+            ) if len(edges) else edges
+            nbrs = defaultdict(set)
+            for u, v in edges.tolist():
+                if u != v:
+                    nbrs[u].add(v); nbrs[v].add(u)
+            n_out = len(keep)
+        else:
+            n_out = len(bv.rows)
         return {
-            "name": name, "n": len(bv.rows), "xd": xd, "hm": hm, "comp": comp,
-            "cnorm": cnorm, "nbrs": nbrs, "edges": bv.edges, "names": names,
+            "name": name, "n": n_out, "xd": xd, "hm": hm, "comp": comp,
+            "cnorm": cnorm, "nbrs": nbrs, "edges": edges, "names": names,
             "locs": locs, "langs": langs, "tree": cKDTree(xd),
         }
 
@@ -149,6 +171,9 @@ def main() -> int:
         ("doomgeneric", resolve_scans([scans_main / "doomgeneric"])[0]),
         ("woof", resolve_scans([scans_main / "woof"])[0]),
     ]
+    heretic_db = scans_e6 / "heretic" / "heretic_galaxy_master.db"
+    if heretic_db.is_file():
+        donors_spec.append(("heretic", heretic_db))
     donors = {}
     for dname, ddb in donors_spec:
         D = load_port(dname, ddb)
@@ -159,7 +184,36 @@ def main() -> int:
             "locs": D["locs"][nov], "names": [D["names"][i] for i in nov],
         }
 
+    DOOM_PORT_DONORS = ("chocolate-doom", "prboom-plus", "doomgeneric", "woof")
+    PORT_YEAR = {
+        "linuxdoom": 1993,
+        "heretic": 1994,
+        "hexen": 1995,
+        "srb2": 1998,
+        "zdoom": 1998,
+        "prboom": 1999,
+        "eternity": 2001,
+        "chocolate-doom": 2005,
+        "gzdoom": 2005,
+        "prboom-plus": 2006,
+        "odamex": 2006,
+        "doom64ex": 2008,
+        "crispy-doom": 2014,
+        "doomgeneric": 2016,
+        "woof": 2019,
+        "dsda-doom": 2020,
+    }
+
+    def eligible_donors(tname, ctrl_names):
+        if tname in ctrl_names or tname in {"linuxdoom", "heretic", "doom64ex", "srb2"}:
+            return set()
+        tyear = PORT_YEAR.get(tname, 2022)
+        if tname == "hexen":
+            return {"heretic"} if PORT_YEAR["heretic"] < tyear else set()
+        return {d for d in DOOM_PORT_DONORS if d != tname and PORT_YEAR[d] < tyear}
+
     scans_ctrl = Path("/srv/storage_16tb/projects/gitgalaxy/doom-study/controls/scans")
+    ctrl_names = set()
     targets = [("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0])]
     for p in sorted(scans_main.iterdir()):
         if not p.is_dir() or p.name == "linuxdoom":
@@ -173,13 +227,17 @@ def main() -> int:
         if p.is_dir():
             try:
                 targets.append((p.name, resolve_scans([p])[0]))
+                ctrl_names.add(p.name)
             except Exception:
                 pass
     for name in ["cydoomgeneric", "iron-doom", "doomarkable", "DOOM-style-Game", "doome"]:
         db = scans_e5 / f"{name}_galaxy_master_master.db"
         if db.is_file():
             targets.append((name, db))
+    seen_targets = {t[0] for t in targets}
     for name in ["heretic", "hexen", "doom64ex", "srb2"]:
+        if name in seen_targets:
+            continue
         db = scans_e6 / name / f"{name}_galaxy_master.db"
         if db.is_file():
             targets.append((name, db))
@@ -232,15 +290,23 @@ def main() -> int:
                         continue
                     matched_ld[qi] = rc
                     used_r.add(rc)
+            matched_ld = {
+                qi: rc
+                for qi, rc in matched_ld.items()
+                if np.linalg.norm(P["xd"][qi] - ld["xd"][rc]) <= 0.45
+                and min(P["locs"][qi], ld["locs"][rc]) >= 5
+                and min(P["locs"][qi], ld["locs"][rc]) / max(P["locs"][qi], ld["locs"][rc]) >= 0.45
+            }
 
         # Assign secondary donors for unmatched functions
         donor_match = {}
+        allowed_donors = eligible_donors(tname, ctrl_names)
         unmatched = [qi for qi in range(P["n"]) if qi not in matched_ld]
-        if unmatched:
+        if unmatched and allowed_donors:
             P_unm_xd = P["xd"][unmatched]
             P_unm_tree = cKDTree(P_unm_xd)
             for dname, D in donors.items():
-                if dname == tname:
+                if dname not in allowed_donors:
                     continue
                 da, ia = D["tree"].query(P_unm_xd, k=1, distance_upper_bound=0.25)
                 db, ib = P_unm_tree.query(D["xd"], k=1, distance_upper_bound=0.25)
