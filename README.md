@@ -4,12 +4,47 @@ A standalone, reproducible study of **44 DOOM ports** across ~20 programming lan
 
 > **Separation of concerns:** [gitgalaxy](https://github.com/squid-protocol/gitgalaxy) (`tests/doom_rosetta/`) owns the engine CI regression gate. This repository owns the **scientific study**: manifests, keyword-interpretation standards, preregistered follow-up experiments, measurement scripts, results, and the interactive article.
 
+## The Method, Shown: Match, Extend, Fingerprint
+
+![How the method finds a port: linuxdoom (C) against its Go port gore](docs/media/seed-extend.gif)
+
+How a port is found without reading a single name: linuxdoom (C, 777 functions) against gore, its Go port (996
+functions), run through [structural-fingerprint-scanner](https://github.com/squid-protocol/structural-fingerprint-scanner)
+(`sfs lattice-compare`). [MP4](docs/media/seed-extend.mp4)
+
+1. **Read.** Each function becomes a shape: its size, arguments and 32 keyword-family counts, at a place in its call
+   graph. Names are hidden.
+2. **Match.** Optimal transport (FGW) pairs functions whose shape *and* call-graph position agree. The strongest 15%
+   of the pairs that pick each other become anchors (66).
+3. **Extend.** The C → Go offset is measured on the anchors. Then, for 3 hops, a caller or callee of a matched function
+   pairs with its partner's closest unclaimed neighbour (598 matched).
+4. **Fingerprint check.** Matching finds partners even in unrelated code, so each pair's keyword fingerprint and shape
+   must beat decoys (shuffled look-alike functions) to count as sufficient evidence:
+
+   | | pairs with sufficient evidence |
+   |---|---:|
+   | gore (Go port) | 121 of 598 |
+   | rust-doom (Rust rewrite) | 0 of 123 |
+   | random one-to-one pairing (same function) | 0 of 777 |
+
+5. **Answer key.** Names, never used, grade it: 108 of the 121 are the same function. The film ends on all 777
+   linuxdoom functions coloured by verdict.
+
+**These numbers are the `sfs` library's, not this study's tables.** The film runs `sfs` at engine `9f213ab83` with its
+decoy-calibrated evidence check. This study's own sweep (`followups/seed-and-extend/measure.py`) differs in three ways:
+- it uses engine `6c7c6c1bc` scans;
+- it drops complexity features;
+- it applies its own quality gate.
+
+Its gore result is therefore 430 of 561, not 364 of 598. Method details, caveats and how the film is rendered:
+[sfs `docs/media/README.md`](https://github.com/squid-protocol/structural-fingerprint-scanner/blob/main/docs/media/README.md).
+
 ## Repository Layout
 
 | Directory | Purpose |
 |---|---|
 | `manifest/` | Pinned 44-port corpus (`manifest.csv`, `scope.csv`), `declared_lineage.csv`, `subsystems.json`, `timeline_events.csv` |
-| `docs/` | Canonical measurement contracts, starting with [docs/KEYWORD_MODES.md](docs/KEYWORD_MODES.md) |
+| `docs/` | Canonical measurement contracts, starting with [docs/KEYWORD_MODES.md](docs/KEYWORD_MODES.md); the method film in `docs/media/` |
 | `preregistration/` | Registered hypotheses for open questions (`DOOM-E1`..`DOOM-E4`) |
 | `measure/` | Study-side measurement, lineage, fidelity, and report-generation scripts |
 | `results/` | Generated evidence artifacts (`blind_placement.*`) and [RESULTS.md](RESULTS.md) |
