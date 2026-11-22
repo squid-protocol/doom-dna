@@ -50,4 +50,4 @@ These experiments close the open questions documented in `RESULTS.md` and `artic
 
 ## `DOOM-E7`: Three Trees and a Withheld Validation (DRAFT)
 * **Question:** Do function names and the name-blind scanner recover the 44 ports' ancestry independently of the declared lineage, which is better, and how do the declared, names and structure trees differ? Then: do 11 withheld programs (5 E5 held-outs, 6 added controls) place on the frozen map as expected?
-* **Full protocol, definitions, hypotheses `H7.1`-`H7.7`:** [E7_THREE_TREES.md](E7_THREE_TREES.md). Draft until two design reviews are reconciled and the file is committed before any run.
+* **Full protocol, definitions, hypotheses `H7.1`-`H7.7`:** [E7_THREE_TREES.md](E7_THREE_TREES.md). Draft. Two design reviews are reconciled in [E7_AMENDMENT_1.md](E7_AMENDMENT_1.md); registers when accepted and committed before any run.
