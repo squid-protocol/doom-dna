@@ -1,6 +1,6 @@
 # `DOOM-E8`: Half-life snapshots: how name sharing and structure sharing change over a port's history, and whether a divergence date can be recovered
 
-**Status: DRAFT, not registered. [Amendment 1](E8_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E8 scan. Thresholds marked `[LOCK]` are proposals. Builds on `DOOM-E7` (draft PR #2: [protocol](https://github.com/squid-protocol/doom-dna/pull/2)); it reuses E7's engine pin, name key, stoplist, twin parameters and shared-score formula unchanged.
+**Status: REGISTERED 2026-11-22 by the commit adding [Amendment 2](E8_AMENDMENT_2.md) (before any scan). [Amendment 1](E8_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E8 scan. Thresholds marked `[LOCK]` are proposals. Builds on `DOOM-E7` (draft PR #2: [protocol](https://github.com/squid-protocol/doom-dna/pull/2)); it reuses E7's engine pin, name key, stoplist, twin parameters and shared-score formula unchanged.
 
 ## 1. Why, and the owner's hypotheses
 
