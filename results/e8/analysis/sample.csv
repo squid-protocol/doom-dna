@@ -1,0 +1,12 @@
+port,stratum,n_distinct,n_underpowered,n_usable,scored,status
+chocolate-doom,history-preserving,7,0,7,True,scored
+doomretro,import,6,0,6,True,scored
+edge-classic,import,6,0,6,True,scored
+eternity,history-preserving,7,0,7,True,scored
+fastdoom,import,4,0,4,True,scored
+gzdoom,history-preserving,7,0,7,True,scored
+inter-doom,import,7,0,7,True,scored
+odamex,history-preserving,6,0,6,True,scored
+prboom-plus,history-preserving,6,0,6,True,scored
+srb2,import,7,0,7,True,scored
+woof,history-preserving,6,0,6,True,scored

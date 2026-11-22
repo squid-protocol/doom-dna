@@ -1,0 +1,4 @@
+endpoint,raw_p,holm_p,result
+"P1 structure trend (one-sided Wilcoxon on tau, H1 median tau < 0)",0.04052734375,0.12158203125,not met
+P2 tau_struct < tau_names (paired Wilcoxon),0.83984375,1.0,not met
+P3 names flat (95% bootstrap interval of median Delta_names inside +-0.10; bootstrap tail p),0.6536731634182908,1.0,not met

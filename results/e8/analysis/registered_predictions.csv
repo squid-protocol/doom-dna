@@ -1,0 +1,10 @@
+prediction,result,status
+Precondition: at least 8 lineages with at least 4 usable snapshots,11 lineages,met
+P1 structure trend: median tau < 0 (Holm),"raw p 0.0405, Holm p 0.1216",not met
+P2 tau_struct < tau_names (Holm),"raw p 0.8398, Holm p 1.0000",not met
+P3 names flat: 95% interval of median Delta_names inside +-0.10 (Holm),"interval [0.077, 0.139], Holm p 1.0000",not met
+Effect size: median structure tau <= -0.6,median tau -0.714,fragile
+Effect size: structure Delta >= +0.10 in >= 70% of scored lineages,0.455 of lineages,not met
+"Controls control-rewrite: structure below floor at every usable snapshot (helion, rust-doom)",max shared_struct 0.004,met
+H8.3(a) model adds information over both baselines (exploratory),struct: 0.562 vs 0.320/0.496; names: 0.233 vs 0.320/0.387,not met
+"H8.3(b) fork date recovery (exploratory, no pass/fail rule)",see section 8 (errors in years),not scored (no criterion)
