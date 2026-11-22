@@ -1,6 +1,6 @@
 # `DOOM-E8b`: Progenitor-anchored survival: does an appropriate comparator explain the ports that did not behave as expected in E8?
 
-**Status: DRAFT, not registered. [Amendment 1](E8B_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and the progenitor search and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E8b computation or new clone. Thresholds marked `[LOCK]` are proposals. Follow-up to `DOOM-E8` (draft PR #3, results in `results/e8/E8_RESULTS.md` there); reuses E8's scans, scripts, engine (`704cb35f0`), sfs (`bcd3cb7`) and E7's name key, stoplist and twin rules unchanged.
+**Status: DRAFT, not registered. [Amendment 1](E8B_AMENDMENT_1.md) and [Amendment 2](E8B_AMENDMENT_2.md) (2026-11-22) reconcile two independent design reviews and the progenitor search and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E8b computation or new clone. Thresholds marked `[LOCK]` are proposals. Follow-up to `DOOM-E8` (draft PR #3, results in `results/e8/E8_RESULTS.md` there); reuses E8's scans, scripts, engine (`704cb35f0`), sfs (`bcd3cb7`) and E7's name key, stoplist and twin rules unchanged.
 
 ## 1. Why, and what kind of experiment this is
 
