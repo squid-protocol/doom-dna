@@ -1,6 +1,6 @@
 # `DOOM-E7`: Three Trees (declared, names, structure) and a Withheld Validation
 
-**Status: DRAFT, not yet registered. [Amendment 1](E7_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and supersedes the sections it names; read it with this file.** It registers when (1) two independent design reviews are reconciled in a dated amendment and (2) this file is committed before any scan or scoring run. Thresholds marked `[LOCK]` are my proposals and are open to the reviews. After registration, nothing in §3 to §6 changes without a dated amendment.
+**Status: REGISTERED 2026-11-22 14:47 EST (this commit), before any E7 scan. [Amendment 1](E7_AMENDMENT_1.md) reconciles two independent design reviews and supersedes the sections it names; read it with this file. Pins: [manifest/RUN_PINS.json](../manifest/RUN_PINS.json). New programs: [manifest/e7_new.csv](../manifest/e7_new.csv).** It registered when two independent design reviews were reconciled in a dated amendment and this file was committed before any scan or scoring run. Thresholds marked `[LOCK]` are my proposals and are open to the reviews. After registration, nothing in §3 to §6 changes without a dated amendment.
 
 **This experiment fixes the numbers the rewritten article quotes.** It supersedes the lineage, twin-survival and descent numbers from engine `6c7c6c1bc` and from the older engine `9f213ab83` examples in the scanner repo. Earlier results stay as history.
 

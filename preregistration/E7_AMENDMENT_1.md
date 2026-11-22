@@ -2,7 +2,7 @@
 
 Reviews: one Claude subagent and one Gemini (`gemini-4-neon-high`), run in parallel on the same brief (the draft file plus the scanner method doc, manifest and earlier preregistrations), neither seeing the other's output. Their raw reports are kept with the PR discussion. Where they agree it is marked **both**. Where code was checked directly by me it is marked **verified**.
 
-This amendment **supersedes** the sections it names in [E7_THREE_TREES.md](E7_THREE_TREES.md). Anything not named there stays as written. Status is still DRAFT: E7 registers when this amendment is accepted and committed before any scan.
+This amendment **supersedes** the sections it names in [E7_THREE_TREES.md](E7_THREE_TREES.md). Anything not named there stays as written. **Registered 2026-11-22 14:47 EST** by the commit that adds `manifest/RUN_PINS.json` and `manifest/e7_new.csv`, before any E7 scan.
 
 ## A. Corrections to facts in the draft
 
@@ -89,3 +89,11 @@ This amendment **supersedes** the sections it names in [E7_THREE_TREES.md](E7_TH
 ## J. Effects on earlier claims (to be corrected in the article regardless of E7's outcome)
 
 The "74% have a declared relative as nearest neighbour" (scanner example README), and the 93% precision / 65% recall of twins (name-gated arbiter), are not to be quoted as results. E7 replaces them.
+
+## K. Registration record (2026-11-22 14:47 EST)
+
+- **Engine** `704cb35f0` (GitGalaxy `origin/main`, 2026-11-22 14:38 EST), checked out detached at `gitgalaxy-worktrees/e7-engine`. **sfs** `main` at `bcd3cb7` (v0.1.0; supersedes the draft's `b1a9e92`, an ancestor).
+- **Reference refresh not needed.** `tools/refresh_reference.py` re-run against the engine changed only provenance fields; `spec_hash` is unchanged (structure `f5d525ed16bc91db`, portable `82dfe97689dec61b`), so sfs `main` is used unmodified.
+- **66 programs pinned** in `RUN_PINS.json`: 44 manifest ports, `lua`/`quake`/`quake2`, the 11 withheld, and 8 new (4 positives, 4 unrelated negatives; selection rule in `manifest/e7_new_selection.md`, fixed before cloning). The 11 withheld and the controls are pinned to default-branch HEAD at registration. Earlier E5-era SHAs for them were not recorded and are not used. The carddemo control is scoped to `COCRDLIC.cbl` and `COUSR00C.cbl`.
+- **Still to be committed before the first scan** (per Amendment 1 D and C): `manifest/declared_lineage_basis.csv`, `manifest/e7_groups.csv`, `manifest/name_stoplist.txt`. If the population corpus isn't reachable for the stoplist, the fallback in D3 applies and is recorded when the file is committed. Any later change to a registered rule needs a dated amendment.
+- **Known gap:** the scan scope used for the E5-era controls other than carddemo was not recorded; E7 scans each at its pinned SHA in full, apart from `scope.csv` rules.

@@ -1,0 +1,7 @@
+# Selection of the new `DOOM-E7` programs (fixed 2026-11-22, before any clone or scan)
+
+Chosen from GitHub metadata only (search results, repository fields, README text read through the API). Nothing was cloned or scanned.
+
+**Positives (Phase B2, unseen):** `gh search repos` for "doom source port" and "doom engine port", languages C and C++, sorted by stars; excluded repos already in the manifest, E5 or E6, archived repos, forks, repos without an OSI licence, and launchers, front-ends, hardware wrappers or mods. The four highest-starred remaining repos whose own description declares a Doom source port: `robongrui/derp` (75 stars), `camgunz/d2k` (20), `patricia-gallardo/cpp-doom` (15), `Henrique194/broom` (11). The expected family anchor for each is what its own README states (column `expected_basis`); a placement counts as correct when the nearest program is the anchor or a declared relative of it.
+
+**Unrelated negatives (join the Phase A map):** C/C++ general infrastructure, permissive licence, not a game or engine. Ordered list fixed in advance: `nginx/nginx`, `sqlite/sqlite`, `google/leveldb`, `curl/curl`, `libuv/libuv`. `sqlite/sqlite` was dropped before pinning because its repository is 594 MB (size cap 200 MB, set while writing this list), leaving `nginx`, `leveldb`, `curl`, `libuv`. Each has at least 200 functions by size, to be confirmed by the scan; a negative with fewer than 150 eligible functions is reported but not used as a false-attachment test (Amendment 1 §E).

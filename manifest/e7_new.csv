@@ -1,0 +1,9 @@
+name,upstream,sha,role,expected_family_anchor,expected_basis
+derp,https://github.com/robongrui/derp,610b050a5174659eb7c6bf4b78b35014078dbfee,phase-B2-positive,linuxdoom,"README: ""a port of id Software's 1997 DOOM source release"""
+d2k,https://github.com/camgunz/d2k,94b6907a2c531ea06689ed277c6f5c167a4cb880,phase-B2-positive,prboom-plus,"README: ""a fork of PrBoom+"""
+cpp-doom,https://github.com/patricia-gallardo/cpp-doom,323dd5be12644e765f6ad6603476fac0575e9c9e,phase-B2-positive,crispy-doom,"description: ""a C++ fork of Crispy Doom 5.7.2"""
+broom,https://github.com/Henrique194/broom,95460585501c9249dd1c168890f9a3a326573156,phase-B2-positive,linuxdoom,"README: refactors ""the original Doom codebase""; compatible with Chocolate Doom"
+nginx,https://github.com/nginx/nginx,2e8440bcdc438f0f1cd03da778a3843ddb3c86d9,map-negative-unrelated,,
+leveldb,https://github.com/google/leveldb,29465588d3dfdc80fba5e198037582b8fdb5dd60,map-negative-unrelated,,
+curl,https://github.com/curl/curl,01798a002debb5018d693f7fe6237968218eb808,map-negative-unrelated,,
+libuv,https://github.com/libuv/libuv,f08538cca14f73e30c89625e473fea3f5f55e300,map-negative-unrelated,,
