@@ -37,7 +37,7 @@ For the four git-shared forks (descriptive only), measured from the parent's cod
 |---|---:|---|---|
 | `crispy-doom` from `chocolate-doom` | 12.7 | 0.81 to 0.52 | 0.93 to 0.87 |
 | `dsda-doom` from `prboom-plus` | 5.9 | 0.84 to 0.35 | 0.93 to 0.65 |
-| `nugget-doom` from `woof` | 4.6 | 0.77 to 0.30 | 0.91 to 0.65 |
+| `nugget-doom` from `woof` | 5.1 | 0.77 to 0.30 | 0.91 to 0.65 |
 
 This is the original hypothesis (names change less than structure over time) holding when the comparator is the right one. `kocoa-doom` (Java to Kotlin) shows structure collapsing to 0.00 at the head while names stay at 0.56.
 
