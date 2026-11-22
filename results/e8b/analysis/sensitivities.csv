@@ -1,0 +1,8 @@
+n_qualifying,n_pass,wilcoxon_p,min_p,status,variant,flips
+6,5,0.03125,0.015625,SUPPORTED,de-duplicated (dup_share <= 0.25),False
+6,5,0.03125,0.015625,SUPPORTED,pooled threshold (R pooled vs linuxdoom per-snapshot unless a pooled LD column exists),False
+5,4,0.0625,0.03125,wrong comparator not supported,"pure-C (lang_c >= 0.90, all ports)",True
+6,5,0.046875,0.015625,SUPPORTED,second usable snapshot,False
+6,5,0.046875,0.015625,SUPPORTED,median of first three usable,False
+6,5,0.015625,0.015625,SUPPORTED,common-denominator A (point rule only),False
+6,5,0.03125,0.015625,SUPPORTED,function-level dedup columns,False

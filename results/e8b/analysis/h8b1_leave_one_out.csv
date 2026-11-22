@@ -1,0 +1,7 @@
+dropped,n_qualifying,n_pass,wilcoxon_p,status
+prboom-plus,5,4,0.0625,wrong comparator not supported
+woof,5,4,0.0625,wrong comparator not supported
+eternity,5,4,0.0625,wrong comparator not supported
+edge-classic,5,4,0.0625,wrong comparator not supported
+inter-doom,5,4,0.0625,wrong comparator not supported
+doomretro,5,5,0.03125,SUPPORTED
