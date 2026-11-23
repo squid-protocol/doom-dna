@@ -108,11 +108,11 @@ def one_pair(args):
     rows, decoys, real, s = pair_draws(query, target, seeds)
     thr_p = pooled_cutoff(real, decoys, 1.0)
     thr_c = pooled_cutoff(real, decoys, float(len(decoys)))
-    thr_50 = pooled_cutoff(real, decoys[:50], 1.0)
-    rp, rc, r50 = TW.accept(s, thr_p), TW.accept(s, thr_c), TW.accept(s, thr_50)
+    thr_12 = pooled_cutoff(real, decoys[:12], 1.0)
+    rp, rc, r12 = TW.accept(s, thr_p), TW.accept(s, thr_c), TW.accept(s, thr_12)
     sh = np.array([r["twins"] for r in rows]) / max(rows[0]["elig_q"], 1)
     diag = dict(q=query.repo, t=target.repo, elig_q=rows[0]["elig_q"], candidates=rows[0]["candidates"], thr_primary=thr_p, thr_conservative=thr_c,
-                thr_k50=thr_50, twins_primary=len(rp.q_index), twins_conservative=len(rc.q_index), twins_k50=len(r50.q_index),
+                thr_k12=thr_12, twins_primary=len(rp.q_index), twins_conservative=len(rc.q_index), twins_k12=len(r12.q_index),
                 c_certified=float(np.mean([r["threshold"] > 0 for r in rows])), share_p10=float(np.percentile(sh, 10)),
                 share_p50=float(np.percentile(sh, 50)), share_p90=float(np.percentile(sh, 90)), share_mean=float(sh.mean()), share_seed0=float(sh[0]))
     keep = (rp.q_index.copy(), rp.t_index.copy(), rc.q_index.copy(), rc.t_index.copy())
@@ -130,7 +130,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--work", default="/srv/storage_16tb/projects/doom-e7-work")
     ap.add_argument("--out", default="/srv/storage_16tb/projects/doom-e7a2-work")
-    ap.add_argument("--k", type=int, default=100)
+    ap.add_argument("--k", type=int, default=25)
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--only", default="")
     a = ap.parse_args()
