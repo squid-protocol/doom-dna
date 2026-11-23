@@ -51,3 +51,15 @@ Between a port and its direct parent, normalisation changes nothing (for example
 **Consequence for E7 (and probably E8):** E7's low values for `woof`, `dsda-doom`, `prboom-plus`, `doom-ios` and `srb2` were understated because the per-pair threshold collapsed to 0 for those pairs. At a fixed 0.065 they sit at 0.10 to 0.16, above the background of the unrelated controls at the same threshold (`nginx` 0.023, `curl` 0.023, `libuv` 0.039, `helion` 0.030, `quake2` 0.074). The fixed threshold is not FDR-controlled, so this is evidence that the registered rule is unstable, not a corrected number.
 
 Eligibility (6 lines) and the exact-clone zone (12 lines) are layout dependent (`linuxdoom` 689 to 651 eligible; 69 functions leave the 12-line zone) but explain only about 10% of lost twins in `inter-doom`.
+
+## The flip, explored (2026-11-23)
+
+Same engine (`704cb35f0`) and same scanner checkout (`b1a9e92`, unchanged since Nov 15) in E7 and in this rerun. E7's registration pins scanner `bcd3cb7`; the code actually used was `b1a9e92`; the two differ only in `cli.py`, `lattice.py` and `port_evidence.py`, not in the matching code.
+
+The cutoff for "a real twin" comes from one seeded decoy shuffle per program pair. Rerunning `linuxdoom` against 13 programs with 30 different shuffles on identical scans (`flip_seeds.csv`):
+
+* **Stable and high** (cutoff never collapses): `chocolate-doom`, `crispy-doom`.
+* **Stable and low** (cutoff collapses to zero in all 30 shuffles, in both scan sets): `woof`, `dsda-doom`, `srb2`, `gzdoom`, `odamex` and the unrelated controls. Not random: the rule cannot certify them. At a fixed cutoff `woof`, `dsda-doom`, `srb2` show 0.10 to 0.15, which is uncertified.
+* **Borderline** (the shuffle decides): `inter-doom` (collapsed in 20 of 30 shuffles in E7; share 0.080 or 0.171), `prboom-plus` (E7: collapsed 30 of 30, share 0.025; normalised: 14 of 30, share 0.063 to 0.177, median 0.154), `fastdoom` (E7: 4 of 30, share 0.028 to 0.251).
+
+So E7's single-draw number for `inter-doom` and `fastdoom` was one outcome of a coin flip. E7's `prboom-plus` 0.025 was stable under shuffling, and normalisation genuinely moved it to borderline, so that gain is not pure luck.
