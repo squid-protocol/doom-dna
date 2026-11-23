@@ -1,0 +1,9 @@
+library,directory_pattern,found_in_map_programs
+zlib,zlib,"doomsday eternity odamex srb2 nginx"
+libpng,libpng*,"eternity odamex srb2"
+lua,lua|blua,"edge-classic srb2 lua"
+miniz,miniz,"edge-classic gzdoom inter-doom"
+md5,md5,"nugget-doom"
+libsamplerate,libsamplerate*,"inter-doom (and broom, withheld)"
+SDL,SDL*|sdl2|sdl3,"many (build and example trees)"
+opl,opl,"chocolate-doom crispy-doom doom-wasm inter-doom nugget-doom (documented Chocolate-origin library; also listed in e9_t3.csv)"

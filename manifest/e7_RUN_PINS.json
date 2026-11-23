@@ -1,0 +1,433 @@
+{
+ "registered": "2026-11-22T14:47-05:00 (US Eastern)",
+ "note": "Pins recorded at registration, before any E7 scan. Programs outside the 44-port manifest are pinned to the default-branch HEAD at registration; the SHAs measured in earlier work for those are not recorded and are not used.",
+ "engine": {
+  "repo": "squid-protocol/gitgalaxy",
+  "sha": "704cb35f075660a637b61331554d8ff0bf206036",
+  "commit_date": "2026-11-22T14:38:51-05:00",
+  "checkout": "/srv/storage_16tb/projects/gitgalaxy-worktrees/e7-engine (detached worktree)"
+ },
+ "sfs": {
+  "repo": "squid-protocol/structural-fingerprint-scanner",
+  "sha": "bcd3cb7248d4b9d5ce800be6729d8e68b4e9927a",
+  "branch": "main",
+  "version": "0.1.0",
+  "supersedes_pin": "b1a9e92 (draft \u00a73); b1a9e92 is an ancestor of this commit"
+ },
+ "reference_model": {
+  "file_sha256": "e0d78f52a6f0f0704b46f2e5a8515f23485d811b79aefe70e36303795bd61ed3",
+  "extracted_from_engine": "9f213ab83b599fc86f83455cc91dc90541a81571",
+  "refresh_check": "tools/refresh_reference.py re-run against engine 704cb35f0 on 2026-11-22 changed only provenance fields; spec_hash unchanged, so the model on sfs main is used as is and sfs is not modified",
+  "spec_hash_structure": "f5d525ed16bc91db",
+  "spec_hash_portable": "82dfe97689dec61b",
+  "portable_weights_sha256": "481362af338eab14318ef07867ca45a5f8b7792d41b3c412ad0e6b5e0294405b"
+ },
+ "scope_rules": "manifest/scope.csv as committed (keep/drop per repo)",
+ "programs": [
+  {
+   "name": "linuxdoom",
+   "upstream": "https://github.com/id-Software/DOOM",
+   "sha": "a77dfb96cb91780ca334d0d4cfd86957558007e0",
+   "role": "map"
+  },
+  {
+   "name": "chocolate-doom",
+   "upstream": "https://github.com/chocolate-doom/chocolate-doom",
+   "sha": "895f581c5d91497bdda0516612da803fe5843e28",
+   "role": "map"
+  },
+  {
+   "name": "crispy-doom",
+   "upstream": "https://github.com/fabiangreffrath/crispy-doom",
+   "sha": "39f4d9362acf2e7f8164edbd4f6d5176399ebffb",
+   "role": "map"
+  },
+  {
+   "name": "doomgeneric",
+   "upstream": "https://github.com/ozkl/doomgeneric",
+   "sha": "dcb7a8dbc7a16ce3dda29382ac9aae9d77d21284",
+   "role": "map"
+  },
+  {
+   "name": "doomretro",
+   "upstream": "https://github.com/bradharding/doomretro",
+   "sha": "71f94d210c5ac9a2adf5b75f77f9353195482de4",
+   "role": "map"
+  },
+  {
+   "name": "prboom-plus",
+   "upstream": "https://github.com/coelckers/prboom-plus",
+   "sha": "969515162c5aebea4ad7a125ee178dcad3d576ad",
+   "role": "map"
+  },
+  {
+   "name": "dsda-doom",
+   "upstream": "https://github.com/kraflab/dsda-doom",
+   "sha": "432d808d9e8492101df8ee1449cba759f8a62ea5",
+   "role": "map"
+  },
+  {
+   "name": "woof",
+   "upstream": "https://github.com/fabiangreffrath/woof",
+   "sha": "9d11c343c7fcc39c11fb6444d3cfd2a0e18a73d5",
+   "role": "map"
+  },
+  {
+   "name": "eternity",
+   "upstream": "https://github.com/team-eternity/eternity",
+   "sha": "339dfa50df9189d203dba9c703b20546b4008002",
+   "role": "map"
+  },
+  {
+   "name": "odamex",
+   "upstream": "https://github.com/odamex/odamex",
+   "sha": "3063c2e8fd8938ad16736c6715c5e83142d640a4",
+   "role": "map"
+  },
+  {
+   "name": "gzdoom",
+   "upstream": "https://github.com/ZDoom/gzdoom",
+   "sha": "c26ce2e6ca2a0c770f140cb25dde0d30073ca8f7",
+   "role": "map"
+  },
+  {
+   "name": "room4doom",
+   "upstream": "https://github.com/flukejones/room4doom",
+   "sha": "891b7ddf588ca95dc911bba4d2d7cd742886ddc5",
+   "role": "map"
+  },
+  {
+   "name": "gore",
+   "upstream": "https://github.com/AndreRenaud/gore",
+   "sha": "3e18c5dafef023bf7a245d77ab74f22f3f6797e3",
+   "role": "map"
+  },
+  {
+   "name": "managed-doom",
+   "upstream": "https://github.com/sinshu/managed-doom",
+   "sha": "9365696eb44326a3aab72c4bab217f7db8a87c96",
+   "role": "map"
+  },
+  {
+   "name": "mochadoom",
+   "upstream": "https://github.com/AXDOOMER/mochadoom",
+   "sha": "c0af1322ee5fd168b5cf8aaaf504cab2d1aabe93",
+   "role": "map"
+  },
+  {
+   "name": "rust-doom",
+   "upstream": "https://github.com/cristicbz/rust-doom",
+   "sha": "6aa7681cee4e181a2b13ecc9acfa3fcaa2df4014",
+   "role": "map"
+  },
+  {
+   "name": "doom-wasm",
+   "upstream": "https://github.com/cloudflare/doom-wasm",
+   "sha": "65e0d3ae2ffa604155eebd96ed40da6567bd08f4",
+   "role": "map"
+  },
+  {
+   "name": "fastdoom",
+   "upstream": "https://github.com/viti95/FastDoom",
+   "sha": "3e7a7a9c017304e2c62e840a6eba20668c315ddd",
+   "role": "map"
+  },
+  {
+   "name": "puredoom",
+   "upstream": "https://github.com/Daivuk/PureDOOM",
+   "sha": "355cfbd16fac119718879239336ee2ea408886bd",
+   "role": "map"
+  },
+  {
+   "name": "doom-ios",
+   "upstream": "https://github.com/id-Software/DOOM-IOS",
+   "sha": "3bf2af22f381441faccb13652bcf992a43bb8eb5",
+   "role": "map"
+  },
+  {
+   "name": "doom3-bfg",
+   "upstream": "https://github.com/id-Software/DOOM-3-BFG",
+   "sha": "1caba1979589971b5ed44e315d9ead30b278d8b4",
+   "role": "map"
+  },
+  {
+   "name": "doom-ascii",
+   "upstream": "https://github.com/wojciech-graj/doom-ascii",
+   "sha": "940528f138e12431e5a1417351863709f1620078",
+   "role": "map"
+  },
+  {
+   "name": "srb2",
+   "upstream": "https://github.com/STJr/SRB2",
+   "sha": "639b58c6d718452ef343a0bc927d043bed9e40d6",
+   "role": "map"
+  },
+  {
+   "name": "freedoom",
+   "upstream": "https://github.com/freedoom/freedoom",
+   "sha": "3ac019628d70b812ffb722f7f2365771b76a9d29",
+   "role": "map"
+  },
+  {
+   "name": "helion",
+   "upstream": "https://github.com/Helion-Engine/Helion",
+   "sha": "0e5a78fbd503f18ca51623a9e107c65ede5a129f",
+   "role": "map"
+  },
+  {
+   "name": "doomsday",
+   "upstream": "https://github.com/skyjake/Doomsday-Engine",
+   "sha": "aa09feba6449efe3b426013a71499bf7c310de15",
+   "role": "map"
+  },
+  {
+   "name": "edge-classic",
+   "upstream": "https://github.com/edge-classic/EDGE-classic",
+   "sha": "50b901f2f9b3abe23ca363cd9165679869697e51",
+   "role": "map"
+  },
+  {
+   "name": "nugget-doom",
+   "upstream": "https://github.com/MrAlaux/Nugget-Doom",
+   "sha": "42efefeb3c2a2e79ff4aa3563e0d140a5bde63ff",
+   "role": "map"
+  },
+  {
+   "name": "inter-doom",
+   "upstream": "https://github.com/JNechaevsky/inter-doom",
+   "sha": "e3018d269c1b703ec0f597688b49d291a360fdc5",
+   "role": "map"
+  },
+  {
+   "name": "sdl-doom",
+   "upstream": "https://github.com/AlexOberhofer/sdl2-doom",
+   "sha": "da7732ee6318371db2ee04ec4702c6064245846b",
+   "role": "map"
+  },
+  {
+   "name": "doom3do",
+   "upstream": "https://github.com/Olde-Skuul/doom3do",
+   "sha": "8a5cdae476e09f2bedd2cc4dcd105dae4b35d4af",
+   "role": "map"
+  },
+  {
+   "name": "sqldoom",
+   "upstream": "https://github.com/cedardb/sqldoom",
+   "sha": "95753a20e403d0658e624f623f972eb1f708deed",
+   "role": "map"
+  },
+  {
+   "name": "doomf77",
+   "upstream": "https://github.com/Amnibro/doomf77",
+   "sha": "1f82e3f40ca24c30aa808b5748e25aa5974b4fb9",
+   "role": "map"
+  },
+  {
+   "name": "doom-scheme",
+   "upstream": "https://github.com/brubsby/doom-scheme",
+   "sha": "a055cf96e74018dd46542e820b33187e0a584c98",
+   "role": "map"
+  },
+  {
+   "name": "dartdoom",
+   "upstream": "https://github.com/bdero/dartdoom",
+   "sha": "94b8e82ac1204e8d3d9654cf8f276bf3a6eb1931",
+   "role": "map"
+  },
+  {
+   "name": "doo-cr",
+   "upstream": "https://github.com/D-Shwagginz/doo-cr",
+   "sha": "4e17635d7184b3ef29bd79fde78069f12d96237f",
+   "role": "map"
+  },
+  {
+   "name": "kocoa-doom",
+   "upstream": "https://github.com/hiperbou/kocoa-doom",
+   "sha": "72d5113cd569f72bf7e8617904951175c4358f1e",
+   "role": "map"
+  },
+  {
+   "name": "fsharp-doom",
+   "upstream": "https://github.com/JamesRandall/fsharp-doom",
+   "sha": "d7bcf5c565f81aff9af68bce5e870c3ffadc871f",
+   "role": "map"
+  },
+  {
+   "name": "cssdoom",
+   "upstream": "https://github.com/NielsLeenheer/cssDOOM",
+   "sha": "438d2e17fb9f75fa3dbc54e1d21a3bc088ad009d",
+   "role": "map"
+  },
+  {
+   "name": "doom-fx",
+   "upstream": "https://github.com/RandalLinden/DOOM-FX",
+   "sha": "90af514994d6434b7ba6e74ca9109dad81639a28",
+   "role": "map"
+  },
+  {
+   "name": "fps-cob",
+   "upstream": "https://github.com/icitry/FPS.cob",
+   "sha": "7c557fe5d53be9f75027674a662001aba38f1359",
+   "role": "map"
+  },
+  {
+   "name": "agentic-cobol-doom-cc",
+   "upstream": "https://github.com/acherm/agentic-cobol-doom-cc",
+   "sha": "117db757cb69ed78dd0fe6195f66b219dca1042a",
+   "role": "map"
+  },
+  {
+   "name": "agentic-cobol-doom-codex",
+   "upstream": "https://github.com/acherm/agentic-cobol-doom-codex",
+   "sha": "0c4fe3e2c25480518290f5824920a3536bb25866",
+   "role": "map"
+  },
+  {
+   "name": "mood",
+   "upstream": "https://github.com/notactuallytreyanastasio/mood",
+   "sha": "9f2345d71361124cf3ac1383715cacad2e745f8d",
+   "role": "map"
+  },
+  {
+   "name": "lua",
+   "upstream": "https://github.com/lua/lua",
+   "sha": "8cb93bada561977eb370819e39d7d644e5fd0a3f",
+   "role": "map-negative-unrelated"
+  },
+  {
+   "name": "quake",
+   "upstream": "https://github.com/id-Software/Quake",
+   "sha": "bf4ac424ce754894ac8f1dae6a3981954bc9852d",
+   "role": "map-negative-same-studio"
+  },
+  {
+   "name": "quake2",
+   "upstream": "https://github.com/id-Software/Quake-2",
+   "sha": "372afde46e7defc9dd2d719a1732b8ace1fa096e",
+   "role": "map-negative-same-studio"
+  },
+  {
+   "name": "cydoomgeneric",
+   "upstream": "https://github.com/wojciech-graj/cydoomgeneric",
+   "sha": "31ed509edac10305a1cd7fe2d67fdbde7c7425c4",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "iron-doom",
+   "upstream": "https://github.com/Henrique194/iron-doom",
+   "sha": "f7d2a51f4824af406c20e71ecfc893129a241ff5",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "doomarkable",
+   "upstream": "https://github.com/LinusCDE/doomarkable",
+   "sha": "43d98e825b216f127dee31271c851d3eab3aa785",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "DOOM-style-Game",
+   "upstream": "https://github.com/StanislavPetrovV/DOOM-style-Game",
+   "sha": "07b2ce39a1d7ce1ab61050f587064a7094b7af3b",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "doome",
+   "upstream": "https://github.com/Patryk27/doome",
+   "sha": "9bd69b8685192d20e86a3583f80487852c610706",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "carddemo-cobol-ctrl",
+   "upstream": "https://github.com/aws-samples/aws-mainframe-modernization-carddemo",
+   "sha": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+   "role": "phase-B1-withheld",
+   "scope": "files COCRDLIC.cbl and COUSR00C.cbl only"
+  },
+  {
+   "name": "c-raycasting",
+   "upstream": "https://github.com/KjetilIN/raycasting",
+   "sha": "bca5ab97140bebc8283525ed4f870274425df34a",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "c-raycasting2",
+   "upstream": "https://github.com/Kinyarasam/Raycasting-C",
+   "sha": "f1ac6cee7253bfe9df29123e6a9e629b6ba8cf0f",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "goom3d",
+   "upstream": "https://github.com/garstas/goom3d",
+   "sha": "c4d653ea05d345b0c1af401853d220b7e15aecc5",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "bubbletea",
+   "upstream": "https://github.com/charmbracelet/bubbletea",
+   "sha": "585149e50e7c3f1002db5d0fc3912c44bbc6ef92",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "macroquad",
+   "upstream": "https://github.com/not-fl3/macroquad",
+   "sha": "8d602d3f8ebb8a3a582ee15d92983bbb81ee3ef6",
+   "role": "phase-B1-withheld"
+  },
+  {
+   "name": "derp",
+   "upstream": "https://github.com/robongrui/derp",
+   "sha": "610b050a5174659eb7c6bf4b78b35014078dbfee",
+   "role": "phase-B2-positive",
+   "expected_family_anchor": "linuxdoom",
+   "expected_basis": "README: \"a port of id Software's 1997 DOOM source release\""
+  },
+  {
+   "name": "d2k",
+   "upstream": "https://github.com/camgunz/d2k",
+   "sha": "94b6907a2c531ea06689ed277c6f5c167a4cb880",
+   "role": "phase-B2-positive",
+   "expected_family_anchor": "prboom-plus",
+   "expected_basis": "README: \"a fork of PrBoom+\""
+  },
+  {
+   "name": "cpp-doom",
+   "upstream": "https://github.com/patricia-gallardo/cpp-doom",
+   "sha": "323dd5be12644e765f6ad6603476fac0575e9c9e",
+   "role": "phase-B2-positive",
+   "expected_family_anchor": "crispy-doom",
+   "expected_basis": "description: \"a C++ fork of Crispy Doom 5.7.2\""
+  },
+  {
+   "name": "broom",
+   "upstream": "https://github.com/Henrique194/broom",
+   "sha": "95460585501c9249dd1c168890f9a3a326573156",
+   "role": "phase-B2-positive",
+   "expected_family_anchor": "linuxdoom",
+   "expected_basis": "README: refactors \"the original Doom codebase\"; compatible with Chocolate Doom"
+  },
+  {
+   "name": "nginx",
+   "upstream": "https://github.com/nginx/nginx",
+   "sha": "2e8440bcdc438f0f1cd03da778a3843ddb3c86d9",
+   "role": "map-negative-unrelated"
+  },
+  {
+   "name": "leveldb",
+   "upstream": "https://github.com/google/leveldb",
+   "sha": "29465588d3dfdc80fba5e198037582b8fdb5dd60",
+   "role": "map-negative-unrelated"
+  },
+  {
+   "name": "curl",
+   "upstream": "https://github.com/curl/curl",
+   "sha": "01798a002debb5018d693f7fe6237968218eb808",
+   "role": "map-negative-unrelated"
+  },
+  {
+   "name": "libuv",
+   "upstream": "https://github.com/libuv/libuv",
+   "sha": "f08538cca14f73e30c89625e473fea3f5f55e300",
+   "role": "map-negative-unrelated"
+  }
+ ]
+}

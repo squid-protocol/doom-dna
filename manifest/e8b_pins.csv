@@ -1,0 +1,9 @@
+name,repo,sha,commit_date,scope_key,role,dating
+boom-2.02,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/boom,2a11d37040be9ac40a61f4c7b7f4541bef2411bf,2025-01-08,,primary: prboom-plus (secondary: edge-classic),source headers 1999; filter date 1999-12-31
+mbf-2.03,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/mbf,8f705abd36ed2edc3ba64abb855f05a12dd71bc9,2025-01-08,,primary: woof; secondary: eternity,source headers 1999; filter date 1999-12-31
+smmu,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/smmu,173934b11e861c4379b6941145b7260fee317b24,2001-02-25,,primary: eternity,last commit 2001-02-25
+edge@2021-09-17,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/edge,d7adfc6a5320211502bb26b5f3b4aa571c913be3,2021-09-17,,primary: edge-classic (class C),last first-parent commit at or before 2021-10-16
+crispy-doom@2023-06-26,/srv/storage_16tb/projects/temporal-crucible-pool/doom-ports/crispy-doom,595ecb2e5ee8f03162c24e9a73b369b1fb0450c8,2023-06-26,|src/heretic src/hexen src/strife,primary: inter-doom (class C),last commit at or before 2023-07-06
+chocolate-doom@2013-12-10,/srv/storage_16tb/projects/temporal-crucible-pool/doom-ports/chocolate-doom,b9690ac0bbe2b5af137aeb09261aac4478f3fbf8,2013-12-10,|src/heretic src/hexen src/strife,"primary: doomretro (class C, inferred)",last commit at or before 2013-12-21
+winmbf,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/winmbf,3af60d718b1fe272769ee9eeb768b88e29a6cd7e,2016-08-20,,descriptive: woof's own early history (all 32 commits are inside the woof clone),2008-06-17 to 2016-08-20
+prboom-2.5.0,/srv/storage_16tb/projects/doom-e7-work/e8b/progenitors/prboom-2.5.0,da3313ffaeb94dff71778108f209aa3b75eada72,2026-08-07,,descriptive sibling only (NEWS tags changes taken from PrBoom+),release mirror

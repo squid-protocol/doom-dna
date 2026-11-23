@@ -1,0 +1,11 @@
+module,donor,borrower,borrower_path,type,evidence
+textscreen,chocolate-doom,eternity,source/textscreen,port-to-port (cross-clade),"directory named textscreen; 48 files carry 'Simon Howard' attribution (author of Chocolate Doom's library)"
+textscreen,chocolate-doom,odamex,libraries/textscreen,port-to-port (cross-clade),"51 files carry attribution"
+textscreen,chocolate-doom,woof,textscreen,port-to-port (cross-clade),"40 files carry attribution"
+textscreen,chocolate-doom,nugget-doom,textscreen,port-to-port (cross-clade),"40 files carry attribution"
+textscreen,chocolate-doom,prboom-plus,prboom2/src/TEXTSCREEN,port-to-port (cross-clade; partial: 1 c file),"7 files carry attribution"
+textscreen,chocolate-doom,dsda-doom,prboom2/src/textscreen,port-to-port (cross-clade; partial: 2 c files),"7 files carry attribution"
+textscreen,chocolate-doom,crispy-doom,textscreen,co-clade (Chocolate clade; vertical),"same clade, not scored as horizontal"
+textscreen,chocolate-doom,doom-wasm,textscreen,co-clade (Chocolate clade; vertical),"same clade, not scored as horizontal"
+textscreen,chocolate-doom,inter-doom,lib/textscreen,co-clade (Chocolate clade; vertical),"same clade, not scored as horizontal"
+opl,chocolate-doom,woof,opl,port-to-port or co-clade per clade table,"OPL emulation library carried by Chocolate-clade and Woof; audited by directory name only"
