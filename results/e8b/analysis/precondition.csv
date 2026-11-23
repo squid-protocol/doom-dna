@@ -1,0 +1,9 @@
+name,sha,commit_date,role,scan_rc,ctags_functions,pruned,eligible,dup_share,lang_c,lang_cpp,lang_other,status
+boom-2.02,2a11d37040be9ac40a61f4c7b7f4541bef2411bf,2025-01-08,primary: prboom-plus (secondary: edge-classic),0,2175,,856,0.083,0.946,0.027,0.027,usable
+mbf-2.03,8f705abd36ed2edc3ba64abb855f05a12dd71bc9,2025-01-08,primary: woof; secondary: eternity,0,2266,,935,0.105,0.919,0.025,0.056,usable
+smmu,173934b11e861c4379b6941145b7260fee317b24,2001-02-25,primary: eternity,0,3274,,1749,0.176,0.886,0.013,0.101,usable
+edge@2021-09-17,d7adfc6a5320211502bb26b5f3b4aa571c913be3,2021-09-17,primary: edge-classic (class C),0,18134,,6805,0.236,0.119,0.873,0.008,usable
+crispy-doom@2023-06-26,595ecb2e5ee8f03162c24e9a73b369b1fb0450c8,2023-06-26,primary: inter-doom (class C),0,4075,src/heretic src/hexen src/strife,2372,0.09,0.962,0.0,0.038,usable
+chocolate-doom@2013-12-10,b9690ac0bbe2b5af137aeb09261aac4478f3fbf8,2013-12-10,"primary: doomretro (class C, inferred)",0,3326,src/heretic src/hexen src/strife,1908,0.087,0.961,0.001,0.038,usable
+winmbf,3af60d718b1fe272769ee9eeb768b88e29a6cd7e,2016-08-20,descriptive: woof's own early history (all 32 commits are inside the woof clone),0,1826,,863,0.076,1.0,0.0,0.0,usable
+prboom-2.5.0,da3313ffaeb94dff71778108f209aa3b75eada72,2026-08-07,descriptive sibling only (NEWS tags changes taken from PrBoom+),0,2464,,1244,0.123,0.859,0.004,0.137,usable
