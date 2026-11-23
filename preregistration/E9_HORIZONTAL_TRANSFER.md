@@ -1,6 +1,6 @@
 # `DOOM-E9`: Horizontal transfer between ports: structure vs names vs random, validated against source text and git history
 
-**Status: DRAFT, not registered. [Amendment 1](E9_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E9 computation. Thresholds marked `[LOCK]` are proposals. Reuses `DOOM-E7`'s engine, sfs, name key, stoplist, twin machinery and Phase A map; runs after `DOOM-E8`'s scan pipeline is done (E8 and E9 do not share scans).
+**Status: REGISTERED (see Amendment 2). [Amendment 1](E9_AMENDMENT_1.md) (2026-11-22) reconciles two independent design reviews and supersedes the sections it names; read it with this file.** Registers when two independent design reviews are reconciled in a dated amendment and this file is committed before any E9 computation. Thresholds marked `[LOCK]` are proposals. Reuses `DOOM-E7`'s engine, sfs, name key, stoplist, twin machinery and Phase A map; runs after `DOOM-E8`'s scan pipeline is done (E8 and E9 do not share scans).
 
 ## 1. Why
 
