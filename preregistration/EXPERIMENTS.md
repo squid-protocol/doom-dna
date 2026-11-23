@@ -47,3 +47,7 @@ These experiments close the open questions documented in `RESULTS.md` and `artic
   * **H6.2 (`SRB2`):** Despite being a 3D Sonic platformer, Seed-and-Extend against `linuxdoom` recovers **`>= 25%` 1-to-1 name precision**, concentrated in core `z_zone` / `w_wad` / `r_bsp` / `p_map` routines.
   * **H6.3 (`Doom64EX`):** Recovers **`>= 40%` 1-to-1 name precision** against `linuxdoom`, with core engine retention and N64 rendering/scripting divergence.
   * **H6.4 (Heretic / Hexen):** Recovers **`>= 50%` 1-to-1 name precision** against `linuxdoom`, with higher retention in `z_zone` / `w_wad` / `r_bsp` than in `p_enemy` / `g_game`.
+
+## `DOOM-E7`: Three Trees and a Withheld Validation (REGISTERED 2026-11-22)
+* **Question:** Do function names and the name-blind scanner recover the 44 ports' ancestry independently of the declared lineage, which is better, and how do the declared, names and structure trees differ? Then: do 11 withheld programs (5 E5 held-outs, 6 added controls) place on the frozen map as expected?
+* **Full protocol:** [E7_THREE_TREES.md](E7_THREE_TREES.md), amended by [E7_AMENDMENT_1.md](E7_AMENDMENT_1.md); pins in `manifest/RUN_PINS.json`.

@@ -1,0 +1,33 @@
+name,parent,basis,reason,manifest_lineage_text
+chocolate-doom,linuxdoom,explicit,manifest states the parent,linuxdoom-1.10 (vanilla-accurate port)
+crispy-doom,chocolate-doom,explicit,manifest states the parent,Chocolate Doom
+doomgeneric,chocolate-doom,inferred,"manifest text says ""inferred""",Chocolate Doom codebase (inferred from Simon Howard 2005-2014 copyright headers; README silent)
+doomretro,chocolate-doom,inferred,"manifest text says ""inferred""",Chocolate Doom (inferred: crispy-doom README calls it 'his fork'; own README silent)
+doom-wasm,chocolate-doom,explicit,manifest states the parent,Chocolate Doom (WebAssembly port)
+doom-ascii,chocolate-doom,explicit,manifest states the parent,Chocolate Doom (terminal renderer)
+inter-doom,crispy-doom,explicit,manifest states the parent,Crispy Doom
+prboom-plus,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,PrBoom <- Boom <- linuxdoom (archived 2023; successor dsda-doom)
+dsda-doom,prboom-plus,explicit,manifest states the parent,PrBoom+
+puredoom,prboom-plus,explicit,manifest states the parent,PrBoom (single-header port)
+woof,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,WinMBF <- MBF <- Boom
+nugget-doom,woof,explicit,manifest states the parent,Woof
+eternity,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,SMMU <- MBF
+odamex,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,CSDoom 0.62 <- ZDoom 1.22
+gzdoom,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,ZDoom (OpenGL/Vulkan successor)
+edge-classic,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,EDGE (Boom-derived)
+srb2,linuxdoom,collapsed,manifest names an ancestor outside the corpus; parent is the nearest corpus ancestor,Doom Legacy <- Doom
+fastdoom,linuxdoom,explicit,manifest states the parent,linuxdoom (DOS x86 asm-optimised fork)
+sdl-doom,linuxdoom,explicit,manifest states the parent,linuxdoom (SDL2 port)
+doom-ios,linuxdoom,explicit,manifest states the parent,id Software iOS release (linuxdoom lineage)
+mood,linuxdoom,explicit,manifest states the parent,modified linuxdoom driving a COBOL AI on z/OS
+gore,linuxdoom,explicit,manifest states the parent,Go rewrite (linuxdoom lineage)
+managed-doom,linuxdoom,explicit,manifest states the parent,C# rewrite of linuxdoom 1.10
+mochadoom,linuxdoom,explicit,manifest states the parent,Java port of linuxdoom (Mocha Doom)
+kocoa-doom,mochadoom,explicit,manifest states the parent,Kotlin port of Mocha Doom
+doom-scheme,linuxdoom,explicit,manifest states the parent,Chez Scheme port of linuxdoom-1.10
+dartdoom,linuxdoom,explicit,manifest states the parent,Dart translation of the playsim and renderer
+doo-cr,puredoom,explicit,manifest states the parent,Crystal port based on PureDOOM / linuxdoom
+doo-cr,linuxdoom,dropped,dual parent: most specific parent (puredoom) kept (Amendment 1 C.1),Crystal port based on PureDOOM / linuxdoom
+room4doom,doom3do,excluded,"reimplementation: compatibility/inspiration, not code lineage (Amendment 1 C.1)",Clean-room-ish Rust rewrite from 3DO source dump; linuxdoom as reference
+room4doom,linuxdoom,excluded,"reimplementation: compatibility/inspiration, not code lineage (Amendment 1 C.1)",Clean-room-ish Rust rewrite from 3DO source dump; linuxdoom as reference
+doom3-bfg,linuxdoom,inferred,scope.csv keeps doomclassic/ (DOOM Classic bundled in id Tech 4),id Tech 4 / Doom 3 BFG (separate engine)
