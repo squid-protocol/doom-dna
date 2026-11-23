@@ -1,0 +1,417 @@
+{
+ "engine_match": {
+  "linuxdoom": {
+   "matched": 777,
+   "total": 779,
+   "rate": 0.9974,
+   "matched_eligible": 686,
+   "eligible": 686,
+   "rate_eligible": 1.0
+  },
+  "chocolate-doom": {
+   "matched": 2402,
+   "total": 2406,
+   "rate": 0.9983,
+   "matched_eligible": 2094,
+   "eligible": 2098,
+   "rate_eligible": 0.9981
+  },
+  "crispy-doom": {
+   "matched": 2748,
+   "total": 2752,
+   "rate": 0.9985,
+   "matched_eligible": 2375,
+   "eligible": 2379,
+   "rate_eligible": 0.9983
+  },
+  "doomgeneric": {
+   "matched": 1192,
+   "total": 1192,
+   "rate": 1.0,
+   "matched_eligible": 1036,
+   "eligible": 1036,
+   "rate_eligible": 1.0
+  },
+  "doomretro": {
+   "matched": 2232,
+   "total": 3167,
+   "rate": 0.7048,
+   "matched_eligible": 1913,
+   "eligible": 2434,
+   "rate_eligible": 0.7859
+  },
+  "prboom-plus": {
+   "matched": 2313,
+   "total": 2342,
+   "rate": 0.9876,
+   "matched_eligible": 1972,
+   "eligible": 1977,
+   "rate_eligible": 0.9975
+  },
+  "dsda-doom": {
+   "matched": 4494,
+   "total": 4536,
+   "rate": 0.9907,
+   "matched_eligible": 3462,
+   "eligible": 3479,
+   "rate_eligible": 0.9951
+  },
+  "woof": {
+   "matched": 3741,
+   "total": 4885,
+   "rate": 0.7658,
+   "matched_eligible": 3123,
+   "eligible": 3924,
+   "rate_eligible": 0.7959
+  },
+  "eternity": {
+   "matched": 5922,
+   "total": 9828,
+   "rate": 0.6026,
+   "matched_eligible": 4738,
+   "eligible": 7142,
+   "rate_eligible": 0.6634
+  },
+  "odamex": {
+   "matched": 6609,
+   "total": 10507,
+   "rate": 0.629,
+   "matched_eligible": 4662,
+   "eligible": 6047,
+   "rate_eligible": 0.771
+  },
+  "gzdoom": {
+   "matched": 13478,
+   "total": 43158,
+   "rate": 0.3123,
+   "matched_eligible": 9328,
+   "eligible": 25329,
+   "rate_eligible": 0.3683
+  },
+  "room4doom": {
+   "matched": 1,
+   "total": 1,
+   "rate": 1.0,
+   "matched_eligible": 1,
+   "eligible": 1,
+   "rate_eligible": 1.0
+  },
+  "gore": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "managed-doom": {
+   "matched": 1251,
+   "total": 1304,
+   "rate": 0.9594,
+   "matched_eligible": 944,
+   "eligible": 945,
+   "rate_eligible": 0.9989
+  },
+  "mochadoom": {
+   "matched": 3037,
+   "total": 3824,
+   "rate": 0.7942,
+   "matched_eligible": 1724,
+   "eligible": 1725,
+   "rate_eligible": 0.9994
+  },
+  "rust-doom": {
+   "matched": 10,
+   "total": 14,
+   "rate": 0.7143,
+   "matched_eligible": 9,
+   "eligible": 9,
+   "rate_eligible": 1.0
+  },
+  "doom-wasm": {
+   "matched": 2031,
+   "total": 2055,
+   "rate": 0.9883,
+   "matched_eligible": 1790,
+   "eligible": 1794,
+   "rate_eligible": 0.9978
+  },
+  "fastdoom": {
+   "matched": 1729,
+   "total": 1735,
+   "rate": 0.9965,
+   "matched_eligible": 1569,
+   "eligible": 1572,
+   "rate_eligible": 0.9981
+  },
+  "puredoom": {
+   "matched": 1545,
+   "total": 1558,
+   "rate": 0.9917,
+   "matched_eligible": 1258,
+   "eligible": 1258,
+   "rate_eligible": 1.0
+  },
+  "doom-ios": {
+   "matched": 1595,
+   "total": 1827,
+   "rate": 0.873,
+   "matched_eligible": 1384,
+   "eligible": 1541,
+   "rate_eligible": 0.8981
+  },
+  "doom3-bfg": {
+   "matched": 1005,
+   "total": 1053,
+   "rate": 0.9544,
+   "matched_eligible": 829,
+   "eligible": 829,
+   "rate_eligible": 1.0
+  },
+  "doom-ascii": {
+   "matched": 1019,
+   "total": 1019,
+   "rate": 1.0,
+   "matched_eligible": 890,
+   "eligible": 890,
+   "rate_eligible": 1.0
+  },
+  "srb2": {
+   "matched": 6331,
+   "total": 10703,
+   "rate": 0.5915,
+   "matched_eligible": 5369,
+   "eligible": 8629,
+   "rate_eligible": 0.6222
+  },
+  "freedoom": {
+   "matched": 79,
+   "total": 119,
+   "rate": 0.6639,
+   "matched_eligible": 65,
+   "eligible": 92,
+   "rate_eligible": 0.7065
+  },
+  "helion": {
+   "matched": 7793,
+   "total": 10600,
+   "rate": 0.7352,
+   "matched_eligible": 5938,
+   "eligible": 6328,
+   "rate_eligible": 0.9384
+  },
+  "doomsday": {
+   "matched": 17159,
+   "total": 21809,
+   "rate": 0.7868,
+   "matched_eligible": 10078,
+   "eligible": 11346,
+   "rate_eligible": 0.8882
+  },
+  "edge-classic": {
+   "matched": 4856,
+   "total": 9185,
+   "rate": 0.5287,
+   "matched_eligible": 3821,
+   "eligible": 6976,
+   "rate_eligible": 0.5477
+  },
+  "nugget-doom": {
+   "matched": 4126,
+   "total": 5270,
+   "rate": 0.7829,
+   "matched_eligible": 3369,
+   "eligible": 4170,
+   "rate_eligible": 0.8079
+  },
+  "inter-doom": {
+   "matched": 3053,
+   "total": 3477,
+   "rate": 0.8781,
+   "matched_eligible": 2489,
+   "eligible": 2806,
+   "rate_eligible": 0.887
+  },
+  "sdl-doom": {
+   "matched": 1079,
+   "total": 1079,
+   "rate": 1.0,
+   "matched_eligible": 952,
+   "eligible": 952,
+   "rate_eligible": 1.0
+  },
+  "doom3do": {
+   "matched": 487,
+   "total": 511,
+   "rate": 0.953,
+   "matched_eligible": 408,
+   "eligible": 408,
+   "rate_eligible": 1.0
+  },
+  "sqldoom": {
+   "matched": 266,
+   "total": 289,
+   "rate": 0.9204,
+   "matched_eligible": 201,
+   "eligible": 201,
+   "rate_eligible": 1.0
+  },
+  "doomf77": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "doom-scheme": {
+   "matched": 56,
+   "total": 90,
+   "rate": 0.6222,
+   "matched_eligible": 46,
+   "eligible": 46,
+   "rate_eligible": 1.0
+  },
+  "dartdoom": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "doo-cr": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "kocoa-doom": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "fsharp-doom": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "cssdoom": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "doom-fx": {
+   "matched": 1,
+   "total": 9,
+   "rate": 0.1111,
+   "matched_eligible": 0,
+   "eligible": 8,
+   "rate_eligible": 0.0
+  },
+  "fps-cob": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "agentic-cobol-doom-cc": {
+   "matched": 0,
+   "total": 0,
+   "rate": "",
+   "matched_eligible": 0,
+   "eligible": 0,
+   "rate_eligible": ""
+  },
+  "agentic-cobol-doom-codex": {
+   "matched": 52,
+   "total": 52,
+   "rate": 1.0,
+   "matched_eligible": 43,
+   "eligible": 43,
+   "rate_eligible": 1.0
+  },
+  "mood": {
+   "matched": 1547,
+   "total": 1559,
+   "rate": 0.9923,
+   "matched_eligible": 1371,
+   "eligible": 1378,
+   "rate_eligible": 0.9949
+  },
+  "lua": {
+   "matched": 1295,
+   "total": 1304,
+   "rate": 0.9931,
+   "matched_eligible": 1011,
+   "eligible": 1014,
+   "rate_eligible": 0.997
+  },
+  "quake": {
+   "matched": 3932,
+   "total": 4104,
+   "rate": 0.9581,
+   "matched_eligible": 3285,
+   "eligible": 3375,
+   "rate_eligible": 0.9733
+  },
+  "quake2": {
+   "matched": 4471,
+   "total": 4524,
+   "rate": 0.9883,
+   "matched_eligible": 2865,
+   "eligible": 2865,
+   "rate_eligible": 1.0
+  },
+  "nginx": {
+   "matched": 3410,
+   "total": 3413,
+   "rate": 0.9991,
+   "matched_eligible": 3292,
+   "eligible": 3295,
+   "rate_eligible": 0.9991
+  },
+  "leveldb": {
+   "matched": 1057,
+   "total": 1669,
+   "rate": 0.6333,
+   "matched_eligible": 652,
+   "eligible": 858,
+   "rate_eligible": 0.7599
+  },
+  "curl": {
+   "matched": 5972,
+   "total": 5992,
+   "rate": 0.9967,
+   "matched_eligible": 5482,
+   "eligible": 5496,
+   "rate_eligible": 0.9975
+  },
+  "libuv": {
+   "matched": 3040,
+   "total": 3695,
+   "rate": 0.8227,
+   "matched_eligible": 2135,
+   "eligible": 2714,
+   "rate_eligible": 0.7867
+  }
+ },
+ "n_pairs_written": 51258,
+ "skipped_same_clade_candidates": 20455,
+ "lsh_oversize_groups": 0,
+ "candidates": 7926225,
+ "runtime_s": 314
+}
