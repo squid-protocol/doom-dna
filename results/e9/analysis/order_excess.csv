@@ -1,0 +1,6 @@
+donor,recipient,lineage,n_dated,n_censored_excluded,donor_first,share,baseline,excess,n_baseline_donor,n_baseline_recipient
+chocolate-doom,dsda-doom,chocolate|prboom,4,0,4,1.0,0.7869032749131504,0.21309672508684963,1496,2055
+chocolate-doom,eternity,chocolate|eternity,224,0,223,0.9955357142857143,0.6584722559949961,0.33706345829071815,1329,2098
+chocolate-doom,odamex,chocolate|odamex,208,0,202,0.9711538461538461,0.7935079271133353,0.17764591904051086,1349,2024
+chocolate-doom,prboom-plus,chocolate|prboom,8,0,7,0.875,0.30741654759441084,0.5675834524055892,1511,1874
+chocolate-doom,woof,chocolate|woof,267,0,255,0.9550561797752809,0.9783945568319778,-0.023338377056696946,1159,2653

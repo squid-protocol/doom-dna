@@ -1,0 +1,93 @@
+{
+ "chocolate-spike-base": {
+  "ctags_functions": 3670,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "765e68c99252952e6280542c28f2d71ce9e24048",
+  "tag": "765e68c99252__9ff496"
+ },
+ "chocolate-spike-curl-a": {
+  "ctags_functions": 3912,
+  "rc": 0,
+  "seconds": 7,
+  "sha": "ce658ea561e8efba6b3daed159dd7f52c79211f1",
+  "tag": "ce658ea561e8__7e2d32"
+ },
+ "chocolate-spike-curl-b100": {
+  "ctags_functions": 3912,
+  "rc": 0,
+  "seconds": 6,
+  "sha": "acc2394e8ae8615790fcf909876ad5e9566e8efc",
+  "tag": "acc2394e8ae8__3b6e0e"
+ },
+ "chocolate-spike-curl-b50": {
+  "ctags_functions": 3912,
+  "rc": 0,
+  "seconds": 7,
+  "sha": "45f0803f0e3e26fdf6cec3066a8546de29e8716b",
+  "tag": "45f0803f0e3e__425c4d"
+ },
+ "chocolate-spike-curl-c": {
+  "ctags_functions": 3912,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "69505bbeb4b5cddcb37b0301b68942fe43202e13",
+  "tag": "69505bbeb4b5__ab7e50"
+ },
+ "chocolate-spike-curl-d": {
+  "ctags_functions": 3912,
+  "rc": 0,
+  "seconds": 6,
+  "sha": "425f30180ed723a94e77d95358c3b6e455d64883",
+  "tag": "425f30180ed7__a4b70a"
+ },
+ "chocolate-spike-curl-e": {
+  "ctags_functions": 3783,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "4b6f512a4b006cd2908335c2d966c909ceb853fd",
+  "tag": "4b6f512a4b00__e20fa6"
+ },
+ "chocolate-spike-libuv-a": {
+  "ctags_functions": 3804,
+  "rc": 0,
+  "seconds": 6,
+  "sha": "b440517f3da948f55584c2470b5d87f4e59c50b1",
+  "tag": "b440517f3da9__a144a8"
+ },
+ "chocolate-spike-libuv-b100": {
+  "ctags_functions": 3804,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "2cdd917576a9ca02d2a3cd964d9dcffb2eb5c125",
+  "tag": "2cdd917576a9__40f5f3"
+ },
+ "chocolate-spike-libuv-b50": {
+  "ctags_functions": 3804,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "81ce973dddb2e7d152a8a474a4742d20e2d93426",
+  "tag": "81ce973dddb2__bb92af"
+ },
+ "chocolate-spike-libuv-c": {
+  "ctags_functions": 3804,
+  "rc": 0,
+  "seconds": 6,
+  "sha": "e3f8160321e86c239710f946be81d837587ec6e7",
+  "tag": "e3f8160321e8__efab9d"
+ },
+ "chocolate-spike-libuv-d": {
+  "ctags_functions": 3804,
+  "rc": 0,
+  "seconds": 6,
+  "sha": "f56d63b99982c522c30e339e5343672de4f69df4",
+  "tag": "f56d63b99982__56ea45"
+ },
+ "chocolate-spike-libuv-e": {
+  "ctags_functions": 3710,
+  "rc": 0,
+  "seconds": 5,
+  "sha": "8f62d69c2ec7db998798e35a70c145ddd6d9a349",
+  "tag": "8f62d69c2ec7__0e0ea7"
+ }
+}

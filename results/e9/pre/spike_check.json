@@ -1,0 +1,269 @@
+{
+ "curl": {
+  "a": {
+   "count_ok": true,
+   "ctags_functions": 184,
+   "definition_count_mismatch": 0,
+   "expected": 184,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 0,
+   "renamed_names_with_several_defs_same_file": 0
+  },
+  "b100": {
+   "count_ok": true,
+   "ctags_functions": 184,
+   "definition_count_mismatch": 0,
+   "expected": 184,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 184,
+   "renamed_names_with_several_defs_same_file": 2
+  },
+  "b50": {
+   "count_ok": true,
+   "ctags_functions": 184,
+   "definition_count_mismatch": 0,
+   "expected": 184,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 92,
+   "renamed_names_with_several_defs_same_file": 1
+  },
+  "c": {
+   "count_ok": true,
+   "ctags_functions": 184,
+   "definition_count_mismatch": 0,
+   "expected": 184,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 184,
+   "renamed_names_with_several_defs_same_file": 2
+  },
+  "d": {
+   "count_ok": true,
+   "ctags_functions": 184,
+   "definition_count_mismatch": 0,
+   "expected": 184,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 184,
+   "renamed_names_with_several_defs_same_file": 2
+  },
+  "e": {
+   "count_ok": true,
+   "ctags_functions": 55,
+   "definition_count_mismatch": 0,
+   "expected": 55,
+   "files": 9,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 184,
+   "renamed_definitions": 0,
+   "renamed_names_with_several_defs_same_file": 0
+  }
+ },
+ "engine_row_match": {
+  "chocolate-spike-base": {
+   "kept_rows": 0,
+   "matched": 0
+  },
+  "chocolate-spike-curl-a": {
+   "kept_rows": 184,
+   "matched": 184
+  },
+  "chocolate-spike-curl-b100": {
+   "kept_rows": 184,
+   "matched": 184
+  },
+  "chocolate-spike-curl-b50": {
+   "kept_rows": 184,
+   "matched": 184
+  },
+  "chocolate-spike-curl-c": {
+   "kept_rows": 184,
+   "matched": 179
+  },
+  "chocolate-spike-curl-d": {
+   "kept_rows": 184,
+   "matched": 184
+  },
+  "chocolate-spike-curl-e": {
+   "kept_rows": 55,
+   "matched": 55
+  },
+  "chocolate-spike-libuv-a": {
+   "kept_rows": 134,
+   "matched": 133
+  },
+  "chocolate-spike-libuv-b100": {
+   "kept_rows": 134,
+   "matched": 133
+  },
+  "chocolate-spike-libuv-b50": {
+   "kept_rows": 134,
+   "matched": 133
+  },
+  "chocolate-spike-libuv-c": {
+   "kept_rows": 134,
+   "matched": 114
+  },
+  "chocolate-spike-libuv-d": {
+   "kept_rows": 134,
+   "matched": 132
+  },
+  "chocolate-spike-libuv-e": {
+   "kept_rows": 40,
+   "matched": 40
+  }
+ },
+ "formatter": "clang-format version 18.1.8",
+ "libuv": {
+  "a": {
+   "count_ok": true,
+   "ctags_functions": 134,
+   "definition_count_mismatch": 0,
+   "expected": 134,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 0,
+   "renamed_names_with_several_defs_same_file": 0
+  },
+  "b100": {
+   "count_ok": true,
+   "ctags_functions": 134,
+   "definition_count_mismatch": 0,
+   "expected": 134,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 134,
+   "renamed_names_with_several_defs_same_file": 1
+  },
+  "b50": {
+   "count_ok": true,
+   "ctags_functions": 134,
+   "definition_count_mismatch": 0,
+   "expected": 134,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 66,
+   "renamed_names_with_several_defs_same_file": 0
+  },
+  "c": {
+   "count_ok": true,
+   "ctags_functions": 134,
+   "definition_count_mismatch": 0,
+   "expected": 134,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 134,
+   "renamed_names_with_several_defs_same_file": 1
+  },
+  "d": {
+   "count_ok": true,
+   "ctags_functions": 134,
+   "definition_count_mismatch": 0,
+   "expected": 134,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 134,
+   "renamed_names_with_several_defs_same_file": 1
+  },
+  "e": {
+   "count_ok": true,
+   "ctags_functions": 40,
+   "definition_count_mismatch": 0,
+   "expected": 40,
+   "files": 6,
+   "mapping_injective_per_file": true,
+   "orig_name_left_in_code": 0,
+   "original_functions": 134,
+   "renamed_definitions": 0,
+   "renamed_names_with_several_defs_same_file": 0
+  }
+ },
+ "loc_changed_tier_c_vs_b100": {
+  "curl": {
+   "changed": 128,
+   "compared": 177
+  },
+  "libuv": {
+   "changed": 108,
+   "compared": 114
+  }
+ },
+ "scans": {
+  "chocolate-spike-base": {
+   "ctags_functions": 3670,
+   "rc": 0
+  },
+  "chocolate-spike-curl-a": {
+   "ctags_functions": 3912,
+   "rc": 0
+  },
+  "chocolate-spike-curl-b100": {
+   "ctags_functions": 3912,
+   "rc": 0
+  },
+  "chocolate-spike-curl-b50": {
+   "ctags_functions": 3912,
+   "rc": 0
+  },
+  "chocolate-spike-curl-c": {
+   "ctags_functions": 3912,
+   "rc": 0
+  },
+  "chocolate-spike-curl-d": {
+   "ctags_functions": 3912,
+   "rc": 0
+  },
+  "chocolate-spike-curl-e": {
+   "ctags_functions": 3783,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-a": {
+   "ctags_functions": 3804,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-b100": {
+   "ctags_functions": 3804,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-b50": {
+   "ctags_functions": 3804,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-c": {
+   "ctags_functions": 3804,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-d": {
+   "ctags_functions": 3804,
+   "rc": 0
+  },
+  "chocolate-spike-libuv-e": {
+   "ctags_functions": 3710,
+   "rc": 0
+  }
+ }
+}

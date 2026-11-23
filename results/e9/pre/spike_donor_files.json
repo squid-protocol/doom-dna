@@ -1,0 +1,38 @@
+{
+ "seed": 20261122,
+ "clang_format": "clang-format version 18.1.8",
+ "config_sha1": "8375fa1c7da771ddd21aade34640f102bd095477",
+ "donors": {
+  "curl": {
+   "pin": "01798a002debb5018d693f7fe6237968218eb808",
+   "repo": "/srv/storage_16tb/projects/doom-e7-work/repos/curl",
+   "files": [
+    "lib/altsvc.c",
+    "lib/amigaos.c",
+    "lib/api.c",
+    "lib/bufq.c",
+    "lib/bufref.c",
+    "lib/cf-h1-proxy.c",
+    "lib/cf-h2-proxy.c",
+    "lib/cf-haproxy.c",
+    "lib/cf-https-connect.c"
+   ],
+   "n_functions": 184,
+   "n_eligible": 162
+  },
+  "libuv": {
+   "pin": "f08538cca14f73e30c89625e473fea3f5f55e300",
+   "repo": "/srv/storage_16tb/projects/doom-e7-work/halflife/controls/libuv",
+   "files": [
+    "src/unix/aix-common.c",
+    "src/unix/aix.c",
+    "src/unix/async.c",
+    "src/unix/bsd-ifaddrs.c",
+    "src/unix/bsd-proctitle.c",
+    "src/unix/core.c"
+   ],
+   "n_functions": 134,
+   "n_eligible": 106
+  }
+ }
+}

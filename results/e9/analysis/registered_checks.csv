@@ -1,0 +1,12 @@
+check,value,result
+P1 (primary),"diff 0.198 [0.119, 0.265], structure 0.390 vs names 0.192",structure higher
+P1 (dedup),"diff 0.176 [0.100, 0.243], structure 0.368 vs names 0.192",structure higher
+P1 Holm-adjusted p,0.0010,< 0.05
+P2 (primary),"hard-negative upper 95% per 1,000: structure 17.881 (FP 60) vs names certified 0.721 (FP 0); n 4153",structure bound not lower
+P2 (dedup),"hard-negative upper 95% per 1,000: structure 18.068 (FP 60) vs names certified 0.729 (FP 0); n 4110",structure bound not lower
+P2 Holm-adjusted p,1.0000,>= 0.05
+"Spike-in: structure recall >= 0.80 under tier (c), both sizes","size large: 0.494 [0.414, 0.573] (80/162); size small: 0.638 [0.539, 0.730] (67/105)",not met
+Order excess above baseline (deterministic check),"0.157 [-0.003, 0.343]",not above baseline
+Import-cluster excess over permuted baseline (deterministic check),"0.479 [0.410, 0.569]",above baseline
+Falsification: recipient dated strictly before donor,20,listed
+Power gate,gate met,H9.1 inferential
