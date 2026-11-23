@@ -1,0 +1,4 @@
+criterion,value,result
+median structure tau <= -0.6,-0.7142857142857143,met
+structure Delta >= +0.10 in >= 70% of scored lineages,0.45454545454545453,not met
+(secondary) lineages with tau_struct < 0; exact one-sided sign-test p,8.0,0.1133

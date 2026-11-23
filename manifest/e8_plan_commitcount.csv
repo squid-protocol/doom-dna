@@ -1,0 +1,78 @@
+port,role,stratum,first_parent_commits,same_language,scope_key,head_in_history,fraction,sha,date
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,1,895f581c5d91497bdda0516612da803fe5843e28,2026-09-08
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0.5,f7c88d8dd307a277bbecf1b64a916d8d9dbb060e,2011-02-12
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0.25,1a20757516d576dec50d01fe3d75091453cf766b,2007-01-07
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0.125,d5b2877a8e4d1c189cf77a8951f847f853327a7d,2006-03-24
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0.0625,e2c0f46e4f64f7970005a66056be85a6929b5227,2005-10-16
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0.03125,2076aabf66dc3d14ff8e5ad5b110bc3eae461874,2005-09-13
+chocolate-doom,lineage,history-preserving,3050,yes,|src/heretic src/hexen src/strife,1,0,66a2cc66d7504c9b64e1c461e62ad2a9d964fa95,2005-07-23
+woof,lineage,history-preserving,3209,yes,,1,1,9d11c343c7fcc39c11fb6444d3cfd2a0e18a73d5,2026-10-05
+woof,lineage,history-preserving,3209,yes,,1,0.5,5987722d5ce1c03286769f27bdc3a1b0a4627848,2023-05-23
+woof,lineage,history-preserving,3209,yes,,1,0.25,6c14a81ecb27d23d4a64c119b7984d31daffd0e3,2022-04-06
+woof,lineage,history-preserving,3209,yes,,1,0.125,fb74a8e5edfe599928f12189f60f4d5311bc3e65,2021-05-13
+woof,lineage,history-preserving,3209,yes,,1,0.0625,1486a7e310faac3f0dbfc80405f8ebaf8baebeb2,2020-03-29
+woof,lineage,history-preserving,3209,yes,,1,0.03125,7e6ff37fdbeb36f4c37e0d47ff8ab9fa25121d46,2020-01-18
+woof,lineage,history-preserving,3209,yes,,1,0,9ab0817c7caf13a77e11c00720983eab57f3666f,2008-06-17
+prboom-plus,lineage,history-preserving,3208,yes,,1,1,969515162c5aebea4ad7a125ee178dcad3d576ad,2023-06-20
+prboom-plus,lineage,history-preserving,3208,yes,,1,0.5,9a452802c375a0fcfd7565609f520d00a4ca4ba0,2009-08-11
+prboom-plus,lineage,history-preserving,3208,yes,,1,0.25,2736db8ac1f8d46154d038aaf9764852d51c286a,2006-09-07
+prboom-plus,lineage,history-preserving,3208,yes,,1,0.125,ad20c0f0dd27fa4b38aee5ba13fbca8cb6e7594f,2001-02-11
+prboom-plus,lineage,history-preserving,3208,yes,,1,0.0625,149c4e6d02a750ade45675d014c28db3d0a9d292,2000-05-21
+prboom-plus,lineage,history-preserving,3208,yes,,1,0.03125,f47e16c0bc69aa8513f27f852fc363beaa518c68,2000-05-12
+prboom-plus,lineage,history-preserving,3208,yes,,1,0,6a6521de13729b248cea016264902e30a44620df,2000-03-09
+eternity,lineage,history-preserving,3689,yes,,1,1,339dfa50df9189d203dba9c703b20546b4008002,2026-10-04
+eternity,lineage,history-preserving,3689,yes,,1,0.5,ea1708affaa3984a3e2edcfb3effdcfb707f2542,2013-05-27
+eternity,lineage,history-preserving,3689,yes,,1,0.25,e76bb0c2089915aa62593560eea6145d35abd024,2009-11-23
+eternity,lineage,history-preserving,3689,yes,,1,0.125,2dc908aab20816e5e8c948f0ec9d9ce4102b630c,2008-05-24
+eternity,lineage,history-preserving,3689,yes,,1,0.0625,e5987a039a8fa175b71601eff1fe7df8e3cd6ad4,2007-01-18
+eternity,lineage,history-preserving,3689,yes,,1,0.03125,6dca4927da234589ad2552876bd4348e249d6051,2006-09-05
+eternity,lineage,history-preserving,3689,yes,,1,0,a22e63c62afdcb8aba4bab709f8cd826b263586f,2006-02-07
+odamex,lineage,history-preserving,4168,yes,,1,1,3063c2e8fd8938ad16736c6715c5e83142d640a4,2026-10-05
+odamex,lineage,history-preserving,4168,yes,,1,0.5,2d94100e798cb59fd92e80f981f0a0e6cbc56f3d,2013-03-25
+odamex,lineage,history-preserving,4168,yes,,1,0.25,6d8578ec8434c4ffae08817f431be7f8fdea6b5c,2008-08-15
+odamex,lineage,history-preserving,4168,yes,,1,0.125,84d638a28aebf1b760781a08d04a7764d1033d14,2008-04-02
+odamex,lineage,history-preserving,4168,yes,,1,0.0625,566c3971ce0bad684c3bec045cbcd65a70eb37fe,2007-08-29
+odamex,lineage,history-preserving,4168,yes,,1,0.03125,1fbaf17cf3cf7e28a9d0ac24b962f924029c1bc8,2007-02-03
+odamex,lineage,history-preserving,4168,yes,,1,0,bccf4eff44aaded0deaf2b61c08ca818cc1ea790,2007-01-16
+gzdoom,lineage,history-preserving,13615,yes,,1,1,c26ce2e6ca2a0c770f140cb25dde0d30073ca8f7,2026-08-10
+gzdoom,lineage,history-preserving,13615,yes,,1,0.5,f7e45b06b717b89855ef1a6bf539ccd40b4a73bf,2018-03-25
+gzdoom,lineage,history-preserving,13615,yes,,1,0.25,00d5bee72ff969c40759d69df02cde377e617fde,2013-02-16
+gzdoom,lineage,history-preserving,13615,yes,,1,0.125,e846e5e50fc0b4f769a7783be540e5307f2649de,2009-09-27
+gzdoom,lineage,history-preserving,13615,yes,,1,0.0625,b192762bc1113d42052c7232ffb1b96c3fc41fb8,2008-04-26
+gzdoom,lineage,history-preserving,13615,yes,,1,0.03125,981afe2831b80e61753bf69ab044847ad76cb50c,2007-02-15
+gzdoom,lineage,history-preserving,13615,yes,,1,0,cf11cbdb307cb86624e9288134106caaec8b754c,2006-02-24
+doomretro,lineage,import,20930,yes,,1,1,71f94d210c5ac9a2adf5b75f77f9353195482de4,2026-10-05
+doomretro,lineage,import,20930,yes,,1,0.5,10a4efbf5197d67d95f4ab3896d094de063646fc,2020-05-06
+doomretro,lineage,import,20930,yes,,1,0.25,95143a381e8f426b122f4f255730264d00e73a3c,2016-11-16
+doomretro,lineage,import,20930,yes,,1,0.125,6f34cea83e45c76697bd8105d65e1fedee0f52f1,2015-04-21
+doomretro,lineage,import,20930,yes,,1,0.0625,49a947751dfeea30a7272cee365a82c2a69b751a,2014-09-27
+doomretro,lineage,import,20930,yes,,1,0.03125,5120b1bd2ffdb254a1325223707083f0bab7f003,2014-05-14
+doomretro,lineage,import,20930,yes,,1,0,24e44542a935339766e5e07fec22c40a65bec836,2013-12-21
+srb2,lineage,import,2387,yes,,1,1,639b58c6d718452ef343a0bc927d043bed9e40d6,2025-07-29
+srb2,lineage,import,2387,yes,,1,0.5,d03742b15b4b6193c5dd4d17f963860f256a33d7,2020-05-04
+srb2,lineage,import,2387,yes,,1,0.25,9d2e7b66baab51d078d6cc4e10240485106c22b7,2019-08-22
+srb2,lineage,import,2387,yes,,1,0.125,8fdbc5669cea4495d30be741c45012cf2f6c0e4d,2017-04-04
+srb2,lineage,import,2387,yes,,1,0.0625,0e3ce03ca94bc8f303e3984ffcdffa40121af2bb,2015-03-25
+srb2,lineage,import,2387,yes,,1,0.03125,25739b38e38b426783d40827efbb30333841c108,2014-08-04
+srb2,lineage,import,2387,yes,,1,0,b93cb1b65ab4a27b57c951b8c3e5af5ce8f80426,2014-03-15
+fastdoom,lineage,import,3028,yes,,1,1,3e7a7a9c017304e2c62e840a6eba20668c315ddd,2026-10-16
+fastdoom,lineage,import,3028,yes,,1,0.5,59694c51fde37508a2342c2994fcc40c74c8547c,2023-01-30
+fastdoom,lineage,import,3028,yes,,1,0.25,4a7610b8c16a7ef71fbc07c7b59e678ccaf68890,2021-03-18
+fastdoom,lineage,import,3028,yes,,1,0.125,ecf1dea843088398c46511e188aa9e0898b26885,2020-08-24
+fastdoom,lineage,import,3028,yes,,1,0.0625,3daa47b7d0e077e49f00bc39027ad49f5408d1c3,2020-06-02
+fastdoom,lineage,import,3028,yes,,1,0.03125,182e14cfb6868872410e8c7066f2466ecd326dea,2020-05-16
+fastdoom,lineage,import,3028,yes,,1,0,cd864fbd13851d63b8bc173ad7c37342164ae502,2017-03-18
+edge-classic,lineage,import,2707,yes,,1,1,50b901f2f9b3abe23ca363cd9165679869697e51,2026-10-14
+edge-classic,lineage,import,2707,yes,,1,0.5,128b5f891b2bae5875274920772943099f11cd5a,2023-04-26
+edge-classic,lineage,import,2707,yes,,1,0.25,2a0de80ca3171809e64627b915f304d5ade4075e,2022-08-31
+edge-classic,lineage,import,2707,yes,,1,0.125,ab97bb49b9c7510de512ba4b8327df4bdd27ff4f,2022-04-09
+edge-classic,lineage,import,2707,yes,,1,0.0625,7fe2c39f45d110497ffebb5edfd33b98e5a5a4b3,2022-01-01
+edge-classic,lineage,import,2707,yes,,1,0.03125,1a95b357f268de985537a894c7ee3454facb9fae,2021-11-23
+edge-classic,lineage,import,2707,yes,,1,0,8c5a56c23682047c47537e5beda9872c47a3308f,2021-10-16
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,1,e3018d269c1b703ec0f597688b49d291a360fdc5,2026-10-16
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0.5,08c9cbd93af83e21bfaa59c3637297a33658c536,2024-10-05
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0.25,c180e7869e481c6c8292222cc0bbf1b2ee930cc7,2024-01-30
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0.125,a7bf03549d5bb2a300f837251b84901d71694e3a,2023-11-09
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0.0625,ea432496e2c49ab555fbdc638a600cb81c69c109,2023-09-06
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0.03125,1b553d2522610644bab9dc03ea07af39ecf08e66,2023-07-22
+inter-doom,lineage,import,1445,yes,|src/heretic src/hexen,1,0,b845695b07094cb35688450de27aa56e99f48467,2023-07-06
