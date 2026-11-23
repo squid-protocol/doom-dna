@@ -23,3 +23,31 @@ Other: resolved-triplet compatibility with the declared tree, structure 0.848 to
 * Detectability changes mix real signal with changed function coverage (doom3-bfg, doom-ios), so counts of "detectable" ports should be read with that in mind.
 * The scan mode matters: a first run without git mode made doomgeneric drop to 0 functions (a `.gitignore` effect, not normalisation). It was caught by a function-count check and rerun in E7's git mode. My earlier spike-in comparisons used the no-git mode for the normalised side and need rechecking.
 * Normalisation only helps ports whose code is copied and reformatted. It cannot recover rewritten code, which is what most flat ports appear to be.
+
+## Follow-up (2026-11-23): what actually moved, and why
+
+**By relationship** (pairs with at least 0.02 shared structure in either run; change = normalised minus E7; "up/down/flat" at +-0.02):
+
+| Relationship | Pairs | Mean change | Up | Down | Flat |
+|---|---:|---:|---:|---:|---:|
+| Declared parent and child | 30 | +0.012 | 6 | 3 | 21 |
+| Further declared ancestor | 14 | -0.001 | 1 | 2 | 11 |
+| Same lineage (shared non-root ancestor) | 18 | -0.008 | 1 | 3 | 14 |
+| Only `linuxdoom` / unrelated | 191 | +0.005 | 36 | 12 | 143 |
+
+Between a port and its direct parent, normalisation changes nothing (for example `chocolate-doom` to `crispy-doom` 0.790 to 0.776; `inter-doom` to `crispy-doom` 0.492 to 0.475).
+
+**The large moves are a threshold effect, not formatting.** E7 sets a threshold per pair from decoy matches (target-decoy, FDR 0.01). That threshold is unstable: for `linuxdoom` to `inter-doom` it went 0.065 (E7) to 0.000 (normalised); for `linuxdoom` to `prboom-plus` it went 0.000 (E7) to 0.061 (normalised). At a threshold fixed at 0.065 in both runs, shared structure with `linuxdoom` is almost unchanged by normalisation:
+
+| Port | Own threshold E7 / normalised | Fixed 0.065 E7 / normalised |
+|---|---|---|
+| inter-doom | 0.168 / 0.077 | 0.167 / 0.164 |
+| prboom-plus | 0.025 / 0.169 | 0.157 / 0.175 |
+| doom-ios | 0.026 / 0.084 | 0.164 / 0.190 |
+| woof | 0.009 / 0.023 | 0.126 / 0.120 |
+| dsda-doom | 0.019 / 0.032 | 0.151 / 0.146 |
+| srb2 | 0.019 / 0.015 | 0.100 / 0.109 |
+
+**Consequence for E7 (and probably E8):** E7's low values for `woof`, `dsda-doom`, `prboom-plus`, `doom-ios` and `srb2` were understated because the per-pair threshold collapsed to 0 for those pairs. At a fixed 0.065 they sit at 0.10 to 0.16, above the background of the unrelated controls at the same threshold (`nginx` 0.023, `curl` 0.023, `libuv` 0.039, `helion` 0.030, `quake2` 0.074). The fixed threshold is not FDR-controlled, so this is evidence that the registered rule is unstable, not a corrected number.
+
+Eligibility (6 lines) and the exact-clone zone (12 lines) are layout dependent (`linuxdoom` 689 to 651 eligible; 69 functions leave the 12-line zone) but explain only about 10% of lost twins in `inter-doom`.
