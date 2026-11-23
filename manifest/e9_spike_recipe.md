@@ -9,7 +9,7 @@
 
 **Recipient:** a scratch copy (outside the repository) of `chocolate-doom` at its E7 pin with the scope pruning of E7; the donor files are added under a new directory `spike/`.
 
-**Tiers (cumulative where stated):** (a) verbatim; (b) functions renamed at 50% and at 100% of definitions, with every call site updated (word-boundary replacement of each renamed function in the donor files); (c) 100% renamed + comments stripped + `clang-format` as pinned; (d) light refactor on top of (c): reorder function definitions within each file and wrap single-call helpers... (specific local rewrites listed by the builder before use and committed); (e) partial module: a deterministic 30% subset of the functions (with their call sites left valid).
+**Tiers (cumulative where stated):** (a) verbatim; (b) functions renamed at 50% and at 100% of definitions, with every call site updated (word-boundary replacement of each renamed function in the donor files); (c) 100% renamed + comments stripped + `clang-format` as pinned; (d) light refactor on top of (c): reorder the function definitions within each file by a seeded hash, and insert a no-op statement `(void)0;` as the first statement of every function body (this changes statement count and physical line count slightly while leaving behaviour intact); (e) partial module: a deterministic 30% subset of the functions (with their call sites left valid).
 
 **Renaming scheme:** each function name `f` becomes `s9_<8 hex chars of sha1(seed + f)>`, preserving nothing of the original token; macros and struct members are untouched.
 
