@@ -1,0 +1,14 @@
+predictor,variant,n_pred,n_unmapped
+geometry,dedup,23292,2600
+geometry,primary,22683,2694
+names,dedup,21483,992
+names,multikey,8785,3180
+names,n2,20334,1176
+names,unique_key,21038,972
+names,unique_key_vnk,7864,551
+r1,dedup,23348,3440
+r1,primary,22739,3139
+structure,dedup,9304,1023
+structure,premasked,8004,962
+structure,primary,8616,925
+structure,primary_vnk,7680,873

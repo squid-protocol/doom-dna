@@ -409,6 +409,13 @@ def spike_recall(spike_truth: pd.DataFrame, pred: pd.DataFrame, predictor: str, 
     g = get_set(pred, predictor, variant, flavour)
     hit = {pk(a, fa, b, fb) for a, fa, b, fb in zip(g.prog_a, g.func_a, g.prog_b, g.func_b)}
     st = spike_truth.copy()
+    # only kept, eligible functions that map to an engine row on the recipient side count (blank rows are removed or sub-6-line functions)
+    ok = st.recipient_engine_row.notna() & (st.recipient_engine_row.astype(str).str.strip() != "")
+    if "kept" in st:
+        ok &= st.kept.astype(str) == "1"
+    if "eligible" in st:
+        ok &= st.eligible.astype(str) == "1"
+    st = st[ok].copy()
     st["hit"] = [pk(d, df_, r, str(int(float(row)))) in hit for d, df_, r, row in
                  zip(st.donor, st.donor_func_id, st.recipient_program, st.recipient_engine_row)]
     rows = []
