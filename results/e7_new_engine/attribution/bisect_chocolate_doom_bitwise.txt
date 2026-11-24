@@ -1,0 +1,12 @@
+Which commit between #8939 (3c436c8c57) and the new engine (beb46cfbc6) changes the function signals of chocolate-doom?
+Method: scan chocolate-doom (same harness, scan_programs.py) at a commit, compare with the #8939 scan with compare_scans.py; GOOD = identical on every column the
+structure arm reads, BAD = not. Search list = the 45 commits that touch gitgalaxy/ (git log --reverse 3c436c8c57..HEAD -- gitgalaxy/), binary search.
+Script: /srv/storage_16tb/projects/doom-e7-newengine-work/bisect_bitwise.sh (copied next to this file).
+beb46cfbc6 BAD 5 {'bitwise_ops': 5}
+0f95e7b89f BAD 5 {'bitwise_ops': 5}
+5f8ff476e9 GOOD 0 {}
+80a8eb1504 GOOD 0 {}
+9e1124c3c8 BAD 5 {'bitwise_ops': 5}
+fcc440b3a8 BAD 5 {'bitwise_ops': 5}
+first bad: fcc440b3a8  "Rebless once for nine stacked engine fixes (supersedes #9053 ... #9067) (#9111)"  - signal-detector (core/detector.py, prism.py) and language-rule fixes, not call-graph code
+(last good: 80a8eb1504, Elixir #9064)
