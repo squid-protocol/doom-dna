@@ -95,6 +95,8 @@ def main():
     rate("Nearest-is-family, corrected, names, common set", "| names | all edges | common |", 3)
     rate("Nearest-is-family, corrected, names, own detectable set", "| names | all edges | own detectable |", 3)
     rate("Nearest-is-family, old root-sibling rule (inflated), struct, common", "| struct | all edges | common |", 4, exact_ci=False)
+    rate("Nearest-is-family, old root-sibling rule (inflated), names, common", "| names | all edges | common |", 4, exact_ci=False)
+    rate("Declared parent rank, mean, struct, common", "| struct | all edges | common |", 5, exact_ci=False)
     rate("Declared parent rank, median, struct, common", "| struct | all edges | common |", 6, exact_ci=False)
     o = float(row_cells(oa, "| struct | all edges | common |")[6]); n = float(row_cells(NA, "| struct | all edges | common |")[6])
     L[-1] = L[-1].rsplit("|", 2)[0] + ("| moved (>= 0.5 rank) |" if abs(n - o) >= 0.5 else "| no |")

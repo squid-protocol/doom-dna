@@ -99,11 +99,12 @@ def main():
     out["P_A4_max_share_unrelated_controls_primary"] = float(max(pm[idx[c], others].max() for c in ctrl))
     # cross-language background (primary)
     grp = {r["name"]: r["language_group"] for r in rd(REPO / "manifest" / "e7_groups.csv")}
-    wr = {(r["q"], r["t"]): float(r["wilson"]) for r in prim}  # ordered pairs, unsymmetrised Wilson lower bound
+    wr = {(r["q"], r["t"]): int(r["twins"]) / max(int(r["elig_q"]), 1) for r in prim}  # ordered pairs, share twins / elig_q (as the Amendment 2 results quote)
     vals = [v for (q, t), v in wr.items() if grp[q] != grp[t]]
     out["cross_language_pairs_primary"] = {"n": len(vals), "median": float(np.median(vals)), "p95": float(np.percentile(vals, 95)),
                                            "p99": float(np.percentile(vals, 99)), "max": float(max(vals)),
                                            "share_above_0.02": float(np.mean(np.array(vals) > 0.02))}
+    # all-pairs stability of the primary share between this run and a reference run is computed by the caller (side_by_side)
     # fixed set nearest-is-family (E7's own detectable programs)
     if a.fixed_from:
         fnames = json.load(open(a.fixed_from / "run_meta.json"))["programs"]

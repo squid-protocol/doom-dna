@@ -1,0 +1,424 @@
+{
+ "detectable_by_floor": {
+  "0.02": {
+   "single": 25,
+   "primary": 35,
+   "conservative": 25
+  },
+  "0.03": {
+   "single": 25,
+   "primary": 30,
+   "conservative": 23
+  },
+  "0.05": {
+   "single": 22,
+   "primary": 23,
+   "conservative": 20
+  },
+  "0.08": {
+   "single": 20,
+   "primary": 20,
+   "conservative": 18
+  }
+ },
+ "detectable_programs_0.02": {
+  "single": [
+   "chocolate-doom",
+   "crispy-doom",
+   "doom-ascii",
+   "doom-ios",
+   "doom-wasm",
+   "doomgeneric",
+   "doomsday",
+   "dsda-doom",
+   "edge-classic",
+   "eternity",
+   "fastdoom",
+   "inter-doom",
+   "linuxdoom",
+   "lua",
+   "mochadoom",
+   "mood",
+   "nugget-doom",
+   "odamex",
+   "prboom-plus",
+   "puredoom",
+   "quake",
+   "quake2",
+   "sdl-doom",
+   "srb2",
+   "woof"
+  ],
+  "primary": [
+   "agentic-cobol-doom-codex",
+   "chocolate-doom",
+   "crispy-doom",
+   "cssdoom",
+   "dartdoom",
+   "doom-ascii",
+   "doom-ios",
+   "doom-wasm",
+   "doom3-bfg",
+   "doom3do",
+   "doomgeneric",
+   "doomretro",
+   "doomsday",
+   "dsda-doom",
+   "edge-classic",
+   "eternity",
+   "fastdoom",
+   "fps-cob",
+   "freedoom",
+   "gzdoom",
+   "helion",
+   "inter-doom",
+   "linuxdoom",
+   "lua",
+   "mochadoom",
+   "mood",
+   "nugget-doom",
+   "odamex",
+   "prboom-plus",
+   "puredoom",
+   "quake",
+   "quake2",
+   "sdl-doom",
+   "srb2",
+   "woof"
+  ],
+  "conservative": [
+   "chocolate-doom",
+   "crispy-doom",
+   "doom-ascii",
+   "doom-ios",
+   "doom-wasm",
+   "doomgeneric",
+   "doomsday",
+   "dsda-doom",
+   "edge-classic",
+   "eternity",
+   "fastdoom",
+   "inter-doom",
+   "linuxdoom",
+   "lua",
+   "mochadoom",
+   "mood",
+   "nugget-doom",
+   "odamex",
+   "prboom-plus",
+   "puredoom",
+   "quake",
+   "quake2",
+   "sdl-doom",
+   "srb2",
+   "woof"
+  ]
+ },
+ "active_pairs": 352,
+ "P_A1_cutoff_above_zero": 0.9886363636363636,
+ "stability_classes_active": {
+  "stable-certified": 156,
+  "stable-uncertified": 116,
+  "unstable": 80
+ },
+ "convergence_share_active_pairs_k12_vs_k25_differ_gt_2pct": 0.019886363636363636,
+ "linuxdoom_to_port_share": {
+  "chocolate-doom": {
+   "single": 0.5587808417997098,
+   "primary": 0.5471698113207547,
+   "conservative": 0.5384615384615384
+  },
+  "crispy-doom": {
+   "single": 0.35413642960812775,
+   "primary": 0.3671988388969521,
+   "conservative": 0.3555878084179971
+  },
+  "doomgeneric": {
+   "single": 0.5732946298984035,
+   "primary": 0.579100145137881,
+   "conservative": 0.5747460087082729
+  },
+  "doomretro": {
+   "single": 0.0043541364296081275,
+   "primary": 0.010159651669085631,
+   "conservative": 0.0043541364296081275
+  },
+  "prboom-plus": {
+   "single": 0.02467343976777939,
+   "primary": 0.1204644412191582,
+   "conservative": 0.02467343976777939
+  },
+  "dsda-doom": {
+   "single": 0.018867924528301886,
+   "primary": 0.10159651669085631,
+   "conservative": 0.018867924528301886
+  },
+  "woof": {
+   "single": 0.008708272859216255,
+   "primary": 0.06966618287373004,
+   "conservative": 0.008708272859216255
+  },
+  "eternity": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "odamex": {
+   "single": 0.001451378809869376,
+   "primary": 0.001451378809869376,
+   "conservative": 0.001451378809869376
+  },
+  "gzdoom": {
+   "single": 0.005805515239477504,
+   "primary": 0.01451378809869376,
+   "conservative": 0.005805515239477504
+  },
+  "room4doom": {
+   "single": 0.0043541364296081275,
+   "primary": 0.0043541364296081275,
+   "conservative": 0.0043541364296081275
+  },
+  "gore": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "managed-doom": {
+   "single": 0.001451378809869376,
+   "primary": 0.005805515239477504,
+   "conservative": 0.001451378809869376
+  },
+  "mochadoom": {
+   "single": 0.05660377358490566,
+   "primary": 0.06676342525399129,
+   "conservative": 0.05660377358490566
+  },
+  "rust-doom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "doom-wasm": {
+   "single": 0.5384615384615384,
+   "primary": 0.5399129172714079,
+   "conservative": 0.5355587808417998
+  },
+  "fastdoom": {
+   "single": 0.1509433962264151,
+   "primary": 0.21480406386066764,
+   "conservative": 0.1799709724238026
+  },
+  "puredoom": {
+   "single": 0.001451378809869376,
+   "primary": 0.001451378809869376,
+   "conservative": 0.001451378809869376
+  },
+  "doom-ios": {
+   "single": 0.026124818577648767,
+   "primary": 0.14513788098693758,
+   "conservative": 0.026124818577648767
+  },
+  "doom3-bfg": {
+   "single": 0.0,
+   "primary": 0.062409288824383166,
+   "conservative": 0.0
+  },
+  "doom-ascii": {
+   "single": 0.5631349782293179,
+   "primary": 0.5645863570391872,
+   "conservative": 0.5631349782293179
+  },
+  "srb2": {
+   "single": 0.018867924528301886,
+   "primary": 0.06386066763425254,
+   "conservative": 0.018867924528301886
+  },
+  "freedoom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "helion": {
+   "single": 0.005805515239477504,
+   "primary": 0.01451378809869376,
+   "conservative": 0.005805515239477504
+  },
+  "doomsday": {
+   "single": 0.005805515239477504,
+   "primary": 0.013062409288824383,
+   "conservative": 0.005805515239477504
+  },
+  "edge-classic": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "nugget-doom": {
+   "single": 0.008708272859216255,
+   "primary": 0.06095791001451379,
+   "conservative": 0.008708272859216255
+  },
+  "inter-doom": {
+   "single": 0.1683599419448476,
+   "primary": 0.14078374455732948,
+   "conservative": 0.07982583454281568
+  },
+  "sdl-doom": {
+   "single": 0.5776487663280117,
+   "primary": 0.5776487663280117,
+   "conservative": 0.5732946298984035
+  },
+  "doom3do": {
+   "single": 0.00725689404934688,
+   "primary": 0.02902757619738752,
+   "conservative": 0.00725689404934688
+  },
+  "sqldoom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "doomf77": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "doom-scheme": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "dartdoom": {
+   "single": 0.002902757619738752,
+   "primary": 0.005805515239477504,
+   "conservative": 0.002902757619738752
+  },
+  "doo-cr": {
+   "single": 0.0,
+   "primary": 0.00725689404934688,
+   "conservative": 0.0
+  },
+  "kocoa-doom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "fsharp-doom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "cssdoom": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "doom-fx": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "fps-cob": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "agentic-cobol-doom-cc": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "agentic-cobol-doom-codex": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "mood": {
+   "single": 0.07111756168359942,
+   "primary": 0.07692307692307693,
+   "conservative": 0.07111756168359942
+  },
+  "lua": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "quake": {
+   "single": 0.0043541364296081275,
+   "primary": 0.010159651669085631,
+   "conservative": 0.0043541364296081275
+  },
+  "quake2": {
+   "single": 0.011611030478955007,
+   "primary": 0.047895500725689405,
+   "conservative": 0.011611030478955007
+  },
+  "nginx": {
+   "single": 0.001451378809869376,
+   "primary": 0.001451378809869376,
+   "conservative": 0.001451378809869376
+  },
+  "leveldb": {
+   "single": 0.0,
+   "primary": 0.0,
+   "conservative": 0.0
+  },
+  "curl": {
+   "single": 0.002902757619738752,
+   "primary": 0.008708272859216255,
+   "conservative": 0.002902757619738752
+  },
+  "libuv": {
+   "single": 0.00725689404934688,
+   "primary": 0.015965166908563134,
+   "conservative": 0.00725689404934688
+  }
+ },
+ "P_A4_max_share_unrelated_controls_primary": 0.02813599062133646,
+ "cross_language_pairs_primary": {
+  "n": 1216,
+  "median": 0.0,
+  "p95": 0.010497742839352429,
+  "p99": 0.025236291946046825,
+  "max": 0.08333333333333333,
+  "share_above_0.02": 0.019736842105263157
+ },
+ "fixed_set_n": 25,
+ "fixed_set": [
+  "chocolate-doom",
+  "crispy-doom",
+  "doom-ascii",
+  "doom-ios",
+  "doom-wasm",
+  "doomgeneric",
+  "doomsday",
+  "dsda-doom",
+  "edge-classic",
+  "eternity",
+  "fastdoom",
+  "inter-doom",
+  "linuxdoom",
+  "lua",
+  "mochadoom",
+  "mood",
+  "nugget-doom",
+  "odamex",
+  "prboom-plus",
+  "puredoom",
+  "quake",
+  "quake2",
+  "sdl-doom",
+  "srb2",
+  "woof"
+ ],
+ "nearest_is_family_fixed_set": {
+  "single": 0.6190476190476191,
+  "primary": 0.6190476190476191,
+  "conservative": 0.6190476190476191
+ },
+ "nearest_is_family_own_detectable": {
+  "single": 0.6190476190476191,
+  "primary": 0.56,
+  "conservative": 0.6190476190476191
+ }
+}
