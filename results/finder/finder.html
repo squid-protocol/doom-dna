@@ -123,7 +123,7 @@
           <li><strong>Exact</strong> means identical structural fingerprint, not identical text. Unrelated programs still produce a few exact pairs on very short functions (8 to 12 lines).</li>
           <li><strong>Seeds</strong> are precise call-graph matches across languages (Go, Scheme, Dart). <strong>Extension</strong> adds reach, not accuracy: it keeps producing matches whether or not there is anything to find, so treat hop 2 and 3 as leads.</li>
           <li><strong>The gate</strong> is a coherence check on a whole port's extension. A failed gate means do not trust extension matches for that port. A passed gate does not mean they are right (managed-doom passes, and its matches are almost all wrong).</li>
-          <li><strong>C# ports</strong> (managed-doom, kocoa-doom): neither route finds them. "No match" there means unsolved, not "kept nothing".</li>
+          <li><strong>The C# and Kotlin ports</strong> (managed-doom, kocoa-doom): neither route finds them. "No match" there means unsolved, not "kept nothing".</li>
           <li><strong>Translation checks</strong> use function-name agreement, which misses ports that renamed their functions: it is a lower bound. A blind audit by model readers confirmed 80 of 80 name-agreeing pairs.</li>
           <li>Ports above 10,000 functions (gzdoom, doomsday, doom3-bfg) are not covered. Nothing here measures whether architecture was preserved.</li>
         </ul>
@@ -144,7 +144,7 @@ var TIER_INFO = {
   ext2: ["Extension, hop 2", "Two steps from a seed. Treat as a lead."],
   ext3: ["Extension, hop 3", "Three steps from a seed. Weakest tier."]
 };
-var LANG = { "gore": "Go", "doom-scheme": "Scheme", "dartdoom": "Dart", "mochadoom": "Java", "managed-doom": "C#", "kocoa-doom": "C#" };
+var LANG = { "gore": "Go", "doom-scheme": "Scheme", "dartdoom": "Dart", "mochadoom": "Java", "managed-doom": "C#", "kocoa-doom": "Kotlin" };
 var GROUPS = [["SL", "Same-language ports (C and C++)"], ["T", "Translations into other languages"], ["K", "Controls: unrelated programs (and DOOM's cousins quake and quake2)"]];
 var PICKS = ["A_Chase", "P_SpawnMobj", "R_DrawColumn", "P_Ticker", "D_DoomMain", "P_CheckSight", "M_Drawer", "S_StartSound"];
 var S = { idx: null, ports: {}, refs: new Map(), list: [], trust: {}, sel: null };
@@ -242,7 +242,7 @@ function showFn(key) {
     h += '<tr class="grp"><td colspan="5">' + esc(g[1]) + "</td></tr>";
     ports.forEach(function (p) {
       var r = e.m[p.port]; var lang = LANG[p.port] ? ' <span class="lang">' + LANG[p.port] + "</span>" : (p.group === "DEV" ? ' <span class="lang">dev port</span>' : "");
-      if (!r) { h += '<tr><td class="port">' + esc(p.port) + lang + '</td><td colspan="4" class="none">no match' + (p.port === "managed-doom" || p.port === "kocoa-doom" ? " (unsolved for C#, not necessarily absent)" : "") + "</td></tr>"; return; }
+      if (!r) { h += '<tr><td class="port">' + esc(p.port) + lang + '</td><td colspan="4" class="none">no match' + (p.port === "managed-doom" || p.port === "kocoa-doom" ? " (unsolved for this language, not necessarily absent)" : "") + "</td></tr>"; return; }
       var also = r[8].length ? '<div class="small muted">also: ' + r[8].map(function (t) { return esc(TIER_INFO[t][0]); }).join(", ") + "</div>" : "";
       var tl = trustLine(p.group, r[6]);
       var caution = (!p.gate.passes && (r[6] === "seed" || r[6].indexOf("ext") === 0)) ? '<div class="small" style="color:var(--bad-ink)">gate failed for this port: treat as unreliable</div>' : "";
@@ -263,7 +263,7 @@ function showPort(pn) {
   if (g === "K") note = '<div class="banner bad">Control: this program is unrelated to DOOM (quake and quake2 share an engine lineage but not DOOM code). Every match shown is wrong by construction. Use it to see how often each tier fires with nothing to find.</div>';
   else if (!d.gate.passes) note = '<div class="banner warn">The coherence gate failed for this port (neighbour support ' + d.gate.mean_sup.toFixed(2) + " against a threshold of 2.10). Seed and extension matches here are unreliable.</div>";
   else if (pn === "managed-doom") note = '<div class="banner warn">The gate passes, but almost none of this port\'s matches are right (name agreement about 0%). The gate checks coherence, not correctness. C# is unsolved.</div>';
-  else if (pn === "kocoa-doom") note = '<div class="banner warn">C# port: no route finds it. Treat everything below as noise.</div>';
+  else if (pn === "kocoa-doom") note = '<div class="banner warn">Kotlin port: no route finds it. Treat everything below as noise.</div>';
   $("portSummary").innerHTML = '<div style="margin-top:10px"><strong style="font-size:17px">' + esc(pn) + "</strong> " + gateChip(d) + ' <span class="muted small">' + d.eligible + " functions of 6+ lines · " + total + " matched to linuxdoom</span></div>" + bar + leg + note;
   S.portTierSel = S.portTierSel || "all";
   $("tierFilters").innerHTML = '<span class="chip' + (S.portTierSel === "all" ? " on" : "") + '" data-tf="all">all</span>' + TIERS.filter(function (t) { return counts[t]; }).map(function (t) { return '<span class="chip' + (S.portTierSel === t ? " on" : "") + '" data-tf="' + t + '">' + esc(TIER_INFO[t][0]) + " " + counts[t] + "</span>"; }).join("");
