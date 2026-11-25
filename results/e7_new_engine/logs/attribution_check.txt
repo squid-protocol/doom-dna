@@ -1,0 +1,4 @@
+map programs compared: 51
+programs whose call-graph outputs (edges or fan-in/out) differ between #8939 and the new engine: 16
+  of those, twin vectors and keys byte-identical: 11; not identical (program, functions whose vector inputs changed): [('eternity', 13), ('odamex', 24), ('gzdoom', 24), ('doom-scheme', 5), ('curl', 292)]
+programs with byte-identical twin vectors and keys, all: 38 of 51

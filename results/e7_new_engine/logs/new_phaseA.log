@@ -1,0 +1,15 @@
+phase A: 51 programs, 2550 ordered pairs, spec f5d525ed16bc91db, eligible total 123654
+  200/2550 pairs, 37s
+  400/2550 pairs, 76s
+  600/2550 pairs, 173s
+  800/2550 pairs, 191s
+  1000/2550 pairs, 217s
+  1200/2550 pairs, 249s
+  1400/2550 pairs, 348s
+  1600/2550 pairs, 365s
+  1800/2550 pairs, 377s
+  2000/2550 pairs, 396s
+  2200/2550 pairs, 407s
+  2400/2550 pairs, 448s
+  2550/2550 pairs, 482s
+done 482 s

@@ -35,3 +35,6 @@ UPGMA structure-tree triplet compatibility 0.848 / 0.700 / 0.873 (the primary sc
 
 ## Reading
 E7's structure results hold where the signal is strong: the ranking, the families, the controls, and H7.1. The single-shuffle cutoff understated weak-to-moderate sharing for ports such as `woof`, `dsda-doom`, `prboom-plus` and `doom-ios`, and misreported `inter-doom` and `fastdoom` by a coin flip. The pooled rule corrects that, at the cost of letting a few weak cross-language attachments cross a 2% floor.
+
+## Addendum (2026-11-23): the cutoff should be chosen by the question
+E9p (draft PR on E9) reran E9's horizontal-transfer structure arm under this amendment's pooled K = 25 cutoff. For **detecting individual transferred functions**, the pooled rule was worse: confirmed near-copies unchanged (1,826 to 1,831), precision 0.39 to 0.30, false positives on unrelated code 4.6 times higher. So the pooled rule is the better choice for **estimating how much two programs share** (this amendment's use), and the original conservative single-shuffle behaviour (or the conservative variant S1) is the safer choice for **flagging individual functions**. The amendment itself is unchanged.
