@@ -303,8 +303,8 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
   <section class="col prose">
     <h2>Core Claims</h2>
     <ul class="claims-list">
-      <li><b>A function's structural shape + call-graph neighborhood acts like DNA, even with zero names read.</b> Unsupervised <b>Seed-and-Extend</b> (<code>composition</code> mode + <code>NO_COMPLEXITY</code> + Fused Gromov–Wasserstein + <code>delta</code> offset + 3-hop extension) recovers <b>67–95%</b> of 1-to-1 functions across C ports (<code>mood</code> 95.3%, <code>puredoom</code> 89.9%, <code>doomgeneric</code> 85.7%, <code>sdl-doom</code> 83.5%, <code>doom-ascii</code> 82.5%, <code>doom-wasm</code> 80.7%, <code>chocolate-doom</code> 66.7%).</li>
-      <li><b>Structural DNA survives cross-language translation.</b> Ported to Go (<code>gore</code>, flat directory layout, 0.2% filename match), Seed-and-Extend calibrates the <code>C &rarr; Go</code> translation vector and recovers <b>430 / 561 (76.6%)</b> exact 1-to-1 functions (<b>92.5%</b> on Tier-1 seeds).</li>
+      <li><b>A function's structural shape + call-graph neighborhood acts like DNA, even with zero names read.</b> Unsupervised <b>Seed-and-Extend</b> (<code>composition</code> mode + <code>NO_COMPLEXITY</code> + Fused Gromov–Wasserstein + <code>delta</code> offset + 3-hop extension) proposes 1-to-1 function pairs across C ports, and <b>67–95%</b> of the proposed pairs agree with the original's function name, which the method never saw (<code>mood</code> 95.3%, <code>puredoom</code> 89.9%, <code>doomgeneric</code> 85.7%, <code>sdl-doom</code> 83.5%, <code>doom-ascii</code> 82.5%, <code>doom-wasm</code> 80.7%, <code>chocolate-doom</code> 66.7%).</li>
+      <li><b>Structural DNA survives translation into some languages, not all.</b> Ported to Go (<code>gore</code>, flat directory layout, 0.2% filename match), Seed-and-Extend calibrates the <code>C &rarr; Go</code> translation vector and proposes 561 pairs, <b>430 (76.6%)</b> of which agree by name (about 43% of the port's functions; <b>92.5%</b> on Tier-1 seeds). Scheme and Dart work the same way, Java is matched by its fingerprints instead, and the Kotlin and C# ports are matched by neither route.</li>
       <li><b>True from-scratch rewrites and unrelated controls sit at ~0% noise.</b> Across <b>9</b> permissive controls (<code>lua</code>, <code>quake</code>, <code>quake2</code>, <code>carddemo-cobol-ctrl</code>, <code>c-raycasting</code>, <code>c-raycasting2</code>, <code>goom3d</code>, <code>bubbletea</code>, <code>macroquad</code>) and <b>66</b> cross-pair permutations of novel/from-scratch/agentic repos, every non-DOOM pair scores <b>0–1</b> accidental hits.</li>
       <li><b>Paradigm shifts erase call-graph DNA.</b> In preregistered held-out test <code>DOOM-E5</code>, <code>cydoomgeneric</code> hit <b>100.0%</b> Tier-1 (156/156, <code>FGW_cost=0.313</code>) against <code>doomgeneric</code>, while <code>iron-doom</code> (ported from Chocolate Doom into <b>Bevy ECS</b>) dropped to <b>0.0%</b> (0/147).</li>
       <li><b>Horizontal borrowing across separate branches is visible without names.</b> Subtracting <code>linuxdoom</code> isolates Chocolate Doom's <code>textscreen</code> inside <code>odamex</code>, <code>eternity</code>, <code>woof</code>, and <code>doom-wasm</code>; <code>src/hexen</code> inside <code>dsda-doom</code>; MBF21 pointers between <code>dsda-doom</code> and <code>woof</code>; and hidden ancestry (<code>doom-ios</code> embedding <code>prboom-plus</code>, <code>sdl-doom</code> matching <code>doomgeneric</code>).</li>
@@ -463,7 +463,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
     </figure>
     <figure>
       <div class="over">The wiring diagram, against chance</div>
-      <h3>The Scheme and Go translations kept DOOM's wiring as well as a straight C copy; Java, Kotlin and C# kept none</h3>
+      <h3>The Scheme and Go translations kept DOOM's wiring as well as a straight C copy; Java, Kotlin and C# show none in this test</h3>
       <div class="legend" aria-hidden="true"><span><i style="background:var(--measured)"></i>match with the original's wiring</span><span><i style="background:var(--chance)"></i>same program, functions shuffled</span></div>
       <div class="chart" id="chart-wiring"></div>
       <figcaption>Wiring match, from 0 (nothing in common) to 1 (identical). The number on the right is the gap from grey to
@@ -471,7 +471,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
       <details><summary>Show as a table</summary><div class="tablewrap" id="table-wiring"></div></details>
     </figure>
     <p>The Scheme and Go translations keep the original's wiring as far above chance as the closest C copy, doom-wasm, and further than Chocolate Doom itself. The Dart
-      translation keeps some. The Fortran, Java, Kotlin and C# translations keep none, and programs written from scratch,
+      translation keeps some. The Fortran, Java, Kotlin and C# translations show none in this test (a limit of the wiring test, not proof that nothing survived: Java's functions are still matched one by one through their fingerprints), and programs written from scratch,
       or not related to DOOM at all, sit at chance, as they should. Don't take our word for it: draw the maps yourself.</p>
   </section>
 
