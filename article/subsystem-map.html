@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Structural Ancestry Maps — 16 Call-Graph Community Tracks</title>
+<title>Call-Graph Subsystem Map</title>
 <style>
   :root {
     --bg: #fafaf9; --card: #ffffff; --ink: #1c1917; --muted: #78716c; --border: #e7e5e4;
@@ -88,9 +88,9 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Structural Ancestry Maps — 16 Call-Graph Community Tracks <span class="badge">LIVE DATA</span></h1>
+    <h1>Call-Graph Subsystem Map <span class="badge">LIVE DATA</span></h1>
     <p class="sub">
-      All <strong>16 tracks</strong> are communities discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules). Horizontal additions (like <code>textscreen</code>) and port-unique functions are placed into the call-graph system they connect to: <strong>Grey</strong> = unique to this port; <strong>colored bands</strong> = matched by Seed-and-Extend or structural twins to an ancestor/donor.
+      All <strong>16 subsystems</strong> are found directly from <code>linuxdoom</code>'s call graph, with no file names (community detection, kept only where 100 runs agree; the count is a setting, about 11 to 24 depending on it). Each port's functions are placed on those subsystems by Seed-and-Extend, which follows call edges, so this shows <em>where a port's functions fall among DOOM's subsystems</em>, not an independent measure of preserved architecture. <strong>Grey</strong> = unique to this port; <strong>colored bands</strong> = matched by Seed-and-Extend or structural twins to an ancestor/donor.
     </p>
   </header>
 

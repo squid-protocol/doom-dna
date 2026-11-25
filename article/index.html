@@ -297,7 +297,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 
   <figure class="hero band" id="hero">
     <svg id="collage" viewBox="0 0 1200 600" role="img" aria-label="The names of the 55 programs in the study, with the original, linuxdoom, at the centre; each name is sized by how many functions the program has"></svg>
-    <figcaption>All 55 programs in the updated study around <code>linuxdoom</code>. Each name is sized by how many functions it has. Tap any name to open its profile and 16-track DNA gene map.</figcaption>
+    <figcaption>All 55 programs in the updated study around <code>linuxdoom</code>. Each name is sized by how many functions it has. Tap any name to open its profile and call-graph subsystem map.</figcaption>
   </figure>
 
   <section class="col prose">
@@ -327,12 +327,12 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
   <div class="bigfacts col" aria-label="The three headline facts">
     <div class="bigfact"><b>65–95% / 75.9%</b><span>Unsupervised Seed-and-Extend recovers 65–95% of 1-to-1 functions across C ports and 75.9% across C &rarr; Go (<code>gore</code>, 92.5% Tier-1)</span></div>
     <div class="bigfact"><b>0 to 0.6%</b><span>across all 9 permissive controls &amp; 66 cross-pair permutations; Bevy ECS rewrite <code>iron-doom</code> also drops to 0.0%</span></div>
-    <div class="bigfact"><b>16 tracks · 49 targets</b><span>Pure call-graph communities discovered directly from <code>linuxdoom</code>'s edges, with horizontal transfers highlighted</span></div>
+    <div class="bigfact"><b>16 subsystems · 44 programs</b><span>Subsystems found from <code>linuxdoom</code>'s call graph alone, with every program's functions placed on them and branch transfers highlighted</span></div>
   </div>
 
   <nav class="jump col" aria-label="Jump to an interactive">
     <span>Jump to the toys:</span>
-    <a href="#subsystem-map-band">16-Track DNA Gene Map</a><a href="#se-band">Seed-and-Extend &amp; DOOM-E5</a><a href="#follow">Follow a function</a><a href="#tree-band">The family tree</a><a href="#wiring-band">Compare the wiring</a><a href="#explore">Explore all 54</a>
+    <a href="#subsystem-map-band">Call-Graph Subsystem Map</a><a href="#se-band">Seed-and-Extend &amp; DOOM-E5</a><a href="#follow">Follow a function</a><a href="#tree-band">The family tree</a><a href="#wiring-band">Compare the wiring</a><a href="#explore">Explore all 54</a>
   </nav>
 
   <section class="col prose">
@@ -484,9 +484,9 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
     <p class="cap" id="wirenote"></p>
   </section>
 
-  <section class="band card" id="subsystem-map-band" aria-label="16-Track Call-Graph DNA Gene Map">
-    <div class="bandhead"><div class="kicker accent">Recalculated Gene Map · All 49 Targets</div><h2>16-Track Call-Graph DNA Gene Map</h2>
-      <p class="cap">All <b>16 tracks</b> are communities discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules). We strip every function name, pair functions blindfolded by structural shape and call-graph wiring, and color each band by the <b>searched donor/ancestor pool</b> it matches best (<b>Grey</b> = unique to this port). <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> &gt;10k funcs omitted from dense FGW.)</i></p></div>
+  <section class="band card" id="subsystem-map-band" aria-label="Call-Graph Subsystem Map">
+    <div class="bandhead"><div class="kicker accent">Call-graph subsystem map · 44 programs</div><h2>Call-Graph Subsystem Map</h2>
+      <p class="cap">All <b>16 subsystems</b> are found directly from <code>linuxdoom</code>'s call graph, with no file names: community detection (Louvain), kept only where 100 runs agree. The count is a setting, not a law (about 11 to 24 at other settings; 16 is the default), and the names are ours, read from what each group contains. We then place every port's functions on those subsystems by structural shape and call-graph wiring (Seed-and-Extend, which follows call edges) and color each band by the <b>searched donor/ancestor pool</b> it matches best (<b>Grey</b> = unique to this port). <b>How to read it:</b> the map shows <i>where a port's functions fall among DOOM's subsystems</i>; because the placement follows call edges it is not an independent test of how much architecture a port preserved. <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> have more than 10,000 functions and are omitted; <code>heretic</code>, <code>hexen</code> and <code>doom64ex</code> from the earlier version are dropped because their scans no longer exist.)</i></p></div>
     <div class="submap-controls">
       <div class="submap-pills" id="submapPills"></div>
       <label style="font-size:12px;">Palette:
@@ -500,12 +500,12 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
       <label style="font-size:12px;"><input type="checkbox" id="submapScale" checked /> Scale track by log(LOC)</label>
     </div>
     <div class="submap-legend" id="submapLegend"></div>
-    <div class="submap-grid" id="submapGrid"><p class="loading">Loading <code>subsystem_map_data.json</code> (49 targets)...</p></div>
+    <div class="submap-grid" id="submapGrid"><p class="loading">Loading <code>subsystem_map_data.json</code> (44 programs)...</p></div>
   </section>
 
   <section class="band card" id="se-band" aria-label="Seed-and-Extend, DOOM-E5 & Horizontal Transfers">
     <div class="bandhead"><div class="kicker accent">Recalculated Evidence</div><h2>Seed-and-Extend, Held-Out DOOM-E5 &amp; Horizontal Transfers</h2>
-      <p class="cap">How to read these numbers: we hid every function name and file path, paired functions between each port and <code>linuxdoom</code> using only structural shape and call-graph wiring (Seed-and-Extend), and then peeked at the real names afterward to grade the pairing. For example, in <code>gore</code> (Go), the blind matcher paired <b>561</b> functions with <code>linuxdoom</code>, and <b>430 / 561 (76.6%)</b> had the exact same DOOM function name — measuring <i>matching precision</i> among paired functions, whereas the 16-track DNA map above shows the matched share of <code>gore</code>'s total LOC (since <code>gore</code> also has 532 Go-specific functions).</p></div>
+      <p class="cap">How to read these numbers: we hid every function name and file path, paired functions between each port and <code>linuxdoom</code> using only structural shape and call-graph wiring (Seed-and-Extend), and then peeked at the real names afterward to grade the pairing. For example, in <code>gore</code> (Go), the blind matcher paired <b>561</b> functions with <code>linuxdoom</code>, and <b>430 / 561 (76.6%)</b> had the exact same DOOM function name — measuring <i>matching precision</i> among paired functions, whereas the call-graph subsystem map above shows the matched share of <code>gore</code>'s total LOC (since <code>gore</code> also has 532 Go-specific functions).</p></div>
     <div class="chart" id="chart-se"></div>
     <details><summary>Show Seed-and-Extend + DOOM-E5 + Controls table</summary><div class="tablewrap" id="table-se"></div></details>
     <h3 style="margin-top:1.2rem;">Horizontal Transfers &amp; Hidden Lineage</h3>
@@ -514,7 +514,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 
   <section class="col prose">
     <h2>Explore all 54</h2>
-    <p>Every descendant, held-out <code>DOOM-E5</code> target, and permissive control has its own profile: Seed-and-Extend recovery, 16-track DNA gene map, famous functions, wiring, and history. Pick one from the list, or compare any two.</p>
+    <p>Every descendant, held-out <code>DOOM-E5</code> target, and permissive control has its own profile: Seed-and-Extend recovery, call-graph subsystem map, famous functions, wiring, and history. Pick one from the list, or compare any two.</p>
   </section>
 
   <div class="layout band" id="explore">
@@ -1117,7 +1117,7 @@ function renderDetail(p) {
         ${stat(bl ? pct(bl.accuracy) + " vs " + pct(bl.accuracy_null) : "not tested", bl ? "of its functions put in the right part of the game with every name hidden, vs chance" : "the blind test was run on 14 descendants", !bl)}
       </div>
     </section>
-    <section class="card" id="detail-submap" hidden><h3>16-Track Call-Graph DNA Gene Map</h3><div id="detail-submap-body"></div></section>
+    <section class="card" id="detail-submap" hidden><h3>Call-Graph Subsystem Map</h3><div id="detail-submap-body"></div></section>
     ${compareHTML(p, BY[state.cmp])}
     <div class="two">${sizeHTML(p)}${heroHTML(p)}</div>
     ${famousHTML(p)}
@@ -1544,7 +1544,7 @@ function renderSeAndHorizontal() {
   }
 }
 
-// ---------------------------------------------------------------- 16-Track Call-Graph DNA Gene Map (embedded)
+// ---------------------------------------------------------------- Call-Graph Subsystem Map (embedded)
 const SUBMAP_PALETTES = {
   contrast: { 'linuxdoom': '#dc2626', 'chocolate-doom': '#2563eb', 'prboom-plus': '#16a34a', 'doomgeneric': '#9333ea', 'woof': '#0891b2', unique: '#e5e5e5' },
   okabe:    { 'linuxdoom': '#d55e00', 'chocolate-doom': '#0072b2', 'prboom-plus': '#009e73', 'doomgeneric': '#cc79a7', 'woof': '#56b4e9', unique: '#e5e5e5' },
@@ -1577,7 +1577,7 @@ function buildSubsystemCard(portName, scaleLog) {
   }));
   const chips = SUBMAP_ANC.filter((a) => (ancTotals[a.id] || 0) > 0)
     .map((a) => `<span><b style="color:${ancColor(a.id)}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</b> ${a.id}</span>`)
-    .join(' &middot; ') || '<b>0.0%</b> matched ancestor DNA';
+    .join(' &middot; ') || '<b>0.0%</b> matched ancestor code';
 
   const card = document.createElement('div');
   card.className = 'submap-card';
