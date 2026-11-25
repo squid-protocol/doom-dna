@@ -26,7 +26,7 @@ for prog in ["gore", "doom-scheme", "dartdoom", "mochadoom"]:
     tp, _, _ = L.tables(prog, "P"); tl, _, _ = L.tables("linuxdoom", "P"); idx_p, idx_l = starts(prog), starts("linuxdoom")
     lst = [(a, b) for a, b, _ in json.load(open(lj))["E3c"] if tp.loc[a] >= L.MIN_LOC and tl.loc[b] >= L.MIN_LOC][:250]
     rng = random.Random(12); pick = rng.sample(lst, min(40, len(lst))); key = []
-    md = [f"# Blind audit sample: {prog} against linuxdoom\n\nFor each pair, judge whether function A (port) is a translation or close port of function B (linuxdoom): **same / similar-derived / different / cannot tell**. Judge from the code and what it does; ignore anything else you may infer.\n"]
+    md = [f"# Blind audit sample: {prog} against linuxdoom\n\nFor each pair, judge whether the two functions are the same function translated or closely ported between languages: **same / similar-derived / different / cannot tell**. Judge from the code and what it does; ignore anything else you may infer.\n"]
     for k, (a, b) in enumerate(pick, 1):
         flip = rng.random() < 0.5; A = (tp, a, idx_p, prog); B = (tl, b, idx_l, "linuxdoom")
         md.append(f"\n## Pair {k}\n\n**Function X** ({'C' if flip else prog})\n```\n{body(*( (B[3], str(B[0].path[B[1]]), str(B[0].name[B[1]]), B[2]) if flip else (A[3], str(A[0].path[A[1]]), str(A[0].name[A[1]]), A[2]) ))}\n```\n**Function Y** ({prog if flip else 'C'})\n```\n{body(*( (A[3], str(A[0].path[A[1]]), str(A[0].name[A[1]]), A[2]) if flip else (B[3], str(B[0].path[B[1]]), str(B[0].name[B[1]]), B[2]) ))}\n```\n")
