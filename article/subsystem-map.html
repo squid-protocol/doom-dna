@@ -111,7 +111,7 @@
   </div>
 
   <div class="legend" id="legend"></div>
-  <div class="grid" id="cardsGrid"><div class="card">Loading <code>dna_tracks_data.json</code>...</div></div>
+  <div class="grid" id="cardsGrid"><div class="card">Loading <code>subsystem_map_data.json</code>...</div></div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
@@ -274,11 +274,11 @@ compareEl.onchange = renderCards;
 scaleEl.onchange = renderCards;
 paletteEl.onchange = () => { activePalette = paletteEl.value; renderControls(); renderCards(); };
 
-fetch('dna_tracks_data.json')
+fetch('subsystem_map_data.json')
   .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
   .then(json => { DATA = json; renderControls(); renderCards(); })
   .catch(err => {
-    gridEl.innerHTML = `<div class="err">Could not load <code>dna_tracks_data.json</code> (${err.message}). Serve <code>article/</code> over HTTP (e.g. <code>python3 -m http.server</code>).</div>`;
+    gridEl.innerHTML = `<div class="err">Could not load <code>subsystem_map_data.json</code> (${err.message}). Serve <code>article/</code> over HTTP (e.g. <code>python3 -m http.server</code>).</div>`;
   });
 </script>
 </body>

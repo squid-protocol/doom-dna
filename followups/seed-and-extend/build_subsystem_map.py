@@ -33,6 +33,28 @@ from scipy.spatial import cKDTree
 from scipy.spatial.distance import cdist
 
 
+# Names for linuxdoom's 16 call-graph subsystems at the default setting (Louvain consensus, resolution 1.0), keyed by the two
+# highest-degree functions of each group.
+SUBSYSTEM_NAMES = {
+    "S_StartSound / FixedMul": "Monsters & Mayhem",
+    "I_Error / D_DoomMain": "The Engine Room",
+    "P_AddThinker / P_CrossSpecialLine": "Doors, Lifts & Lights",
+    "FixedDiv / AM_Responder": "Lines & Sightlines",
+    "S_ChangeMusic / S_StartSoundAtVolume": "Soundstage & Scoreboard",
+    "W_CacheLumpName / V_DrawPatch": "The 2D Painter",
+    "Z_Malloc / W_CacheLumpNum": "The Archivist",
+    "M_Responder / M_SetupNextMenu": "Front Desk",
+    "R_RenderPlayerView / R_DrawVisSprite": "The 3D Eye",
+    "main / grabdata": "The Sound Daemon",
+    "main / Error": "Dial-Up Deathmatch",
+    "Error / main": "LAN Party",
+    "HU_Start / HU_Responder": "Heads-Up Text",
+    "AM_Drawer / AM_drawLineCharacter": "The Automap Pen",
+    "ST_createWidgets / I_SetPalette": "Status Bar & Palette",
+    "I_SoundSetTimer / I_SoundDelTimer": "Odds & Ends",
+}
+
+
 def discover_communities(n: int, edges: np.ndarray, locs: np.ndarray, desc: np.ndarray, gamma: float = 1.0,
                          nrun: int = 100, tau: float = 0.5, min_group: int = 10):
     """Louvain subsystems with iterative consensus. Returns (node_to_group, groups, info)."""
@@ -186,7 +208,10 @@ def main() -> int:
     track_labels = []
     for cid, g in enumerate(ld_groups):
         hubs = [ld["names"][i] for i in sorted(g, key=lambda i: (-deg_ld[i], -ld["locs"][i]))[:2]]
-        track_labels.append(f"S{cid + 1:02d}: " + " / ".join(hubs))
+        hub_label = " / ".join(hubs)
+        # Names read from each subsystem's contents (files and hub functions of linuxdoom). They are keyed by the hub
+        # label so a different partition falls back to the hub label instead of a wrong name.
+        track_labels.append(f"S{cid + 1:02d}: " + SUBSYSTEM_NAMES.get(hub_label, hub_label))
 
     print(f"Found {len(track_labels)} call-graph subsystems (sizes {comm_info['group_sizes']}):")
     for idx, lbl in enumerate(track_labels):
@@ -410,7 +435,7 @@ def main() -> int:
         del P
         gc.collect()
 
-    payload = {"subsystems": track_labels, "ports": out_ports, "provenance": {"engine": "704cb35f0", "subsystems": comm_info, "placement": "Seed-and-Extend (reads call-graph neighbours); donors by structural twins"}}
+    payload = {"subsystems": track_labels, "ports": out_ports, "provenance": {"engine": "704cb35f0", "subsystems": comm_info, "names": "read from each subsystem's files and hub functions", "placement": "Seed-and-Extend (reads call-graph neighbours); donors by structural twins"}}
     out_json.write_text(json.dumps(payload), encoding="utf-8")
     print(f"Wrote {out_json} ({out_json.stat().st_size // 1024} KB)")
     return 0

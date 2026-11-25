@@ -6,7 +6,7 @@ description: "DOOM's DNA: 44+ DOOM ports, 9 permissive controls, and 5 held-out 
 *By Joe Esquibel · November 2026 · Built with [GitGalaxy](https://github.com/squid-protocol/gitgalaxy) & [structural-fingerprint-scanner](https://github.com/squid-protocol/gitgalaxy-population-analyses)*
 
 > **Interactive Visualizers:**
-> * **[Open the 16-Track Call-Graph DNA Gene Map →](dna-tracks-mockup.html)** *(recalculated across all ports, pure call-graph communities, no filename rules)*
+> * **[Open the 16-Track Call-Graph DNA Gene Map →](subsystem-map.html)** *(recalculated across all ports, pure call-graph communities, no filename rules)*
 > * **[Open the Legacy Function & Tree Explorer →](index.html)**
 
 ---
@@ -45,7 +45,7 @@ Instead of forcing code into manual filename buckets, we run greedy modularity o
 * **Cyan (`woof`):** MBF / WinMBF
 * **Light Grey:** functions unique to that port
 
-**[Launch the Interactive 16-Track DNA Gene Map →](dna-tracks-mockup.html)** *(live recalculated data in [`dna_tracks_data.json`](dna_tracks_data.json))*
+**[Launch the Interactive 16-Track DNA Gene Map →](subsystem-map.html)** *(live recalculated data in [`subsystem_map_data.json`](subsystem_map_data.json))*
 
 ---
 
