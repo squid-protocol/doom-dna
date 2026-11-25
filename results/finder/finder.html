@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DOOM Function Finder</title>
+<style>
+  :root {
+    --bg: #fafaf9; --card: #ffffff; --ink: #1c1917; --muted: #78716c; --border: #e7e5e4; --soft: #f5f5f4;
+    --t-exact: #166534; --t-twin: #0f766e; --t-xtwin: #0369a1; --t-seed: #6d28d9; --t-ext1: #a16207; --t-ext2: #c2410c; --t-ext3: #b91c1c;
+    --warn-bg: #fffbeb; --warn-ink: #92400e; --bad-bg: #fef2f2; --bad-ink: #991b1b; --ok-bg: #f0fdf4; --ok-ink: #166534;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141210; --card: #1c1917; --ink: #f5f5f4; --muted: #a8a29e; --border: #3a3633; --soft: #26221f;
+      --t-exact: #4ade80; --t-twin: #2dd4bf; --t-xtwin: #38bdf8; --t-seed: #a78bfa; --t-ext1: #facc15; --t-ext2: #fb923c; --t-ext3: #f87171;
+      --warn-bg: #2a2110; --warn-ink: #fcd34d; --bad-bg: #2a1212; --bad-ink: #fca5a5; --ok-bg: #112417; --ok-ink: #86efac;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px 16px 60px; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.45; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  h2 { font-size: 15px; margin: 22px 0 8px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; max-width: 78ch; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .tab { border: 1px solid var(--border); background: var(--card); color: var(--ink); padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  input[type=search], select { width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--ink); }
+  .row2 { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .picks { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; font-size: 12.5px; color: var(--muted); align-items: center; }
+  .chip { border: 1px solid var(--border); background: var(--soft); color: var(--ink); padding: 3px 9px; border-radius: 999px; font-size: 12px; cursor: pointer; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .chip:hover { border-color: var(--muted); }
+  .results { margin-top: 8px; max-height: 280px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; }
+  .res { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 7px 12px; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .res:last-child { border-bottom: 0; }
+  .res:hover, .res.sel { background: var(--soft); }
+  .res .p { color: var(--muted); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .res .n { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .banner { padding: 10px 12px; border-radius: 8px; font-size: 13px; margin: 10px 0; }
+  .banner.warn { background: var(--warn-bg); color: var(--warn-ink); }
+  .banner.bad { background: var(--bad-bg); color: var(--bad-ink); }
+  .banner.ok { background: var(--ok-bg); color: var(--ok-ink); }
+  .fn-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .fn-name { font-size: 20px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.port { font-weight: 600; white-space: nowrap; }
+  td.port .lang { font-weight: 400; color: var(--muted); font-size: 12px; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+  .none { color: var(--muted); font-style: italic; }
+  .tier { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; color: #fff; white-space: nowrap; }
+  .tier.exact { background: var(--t-exact); } .tier.twin { background: var(--t-twin); } .tier.xtwin { background: var(--t-xtwin); }
+  .tier.seed { background: var(--t-seed); } .tier.ext1 { background: var(--t-ext1); } .tier.ext2 { background: var(--t-ext2); } .tier.ext3 { background: var(--t-ext3); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tier { color: #141210; } }
+  .check { display: inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11.5px; border: 1px solid var(--border); }
+  .check.good { border-color: var(--ok-ink); color: var(--ok-ink); }
+  .check.weak { border-color: var(--warn-ink); color: var(--warn-ink); }
+  .check.bad { border-color: var(--bad-ink); color: var(--bad-ink); }
+  .gate { font-size: 11.5px; padding: 1px 7px; border-radius: 6px; }
+  .gate.ok { background: var(--ok-bg); color: var(--ok-ink); } .gate.fail { background: var(--bad-bg); color: var(--bad-ink); }
+  .grp td { background: var(--soft); font-weight: 700; font-size: 12.5px; padding: 6px 8px; }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 16px; font-size: 12.5px; }
+  .legend div { display: flex; gap: 8px; align-items: baseline; }
+  .bar { display: flex; height: 18px; border-radius: 5px; overflow: hidden; background: var(--soft); margin: 8px 0; }
+  .bar span { display: block; height: 100%; }
+  .bar .exact { background: var(--t-exact); } .bar .twin { background: var(--t-twin); } .bar .xtwin { background: var(--t-xtwin); }
+  .bar .seed { background: var(--t-seed); } .bar .ext1 { background: var(--t-ext1); } .bar .ext2 { background: var(--t-ext2); } .bar .ext3 { background: var(--t-ext3); }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .filters .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  details { margin-top: 10px; } summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+  .loading { color: var(--muted); font-size: 13px; padding: 8px 0; }
+  .err { padding: 12px; background: var(--bad-bg); color: var(--bad-ink); border-radius: 8px; font-size: 13px; }
+  @media (max-width: 720px) { td.hide-sm, th.hide-sm { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>DOOM Function Finder</h1>
+  <p class="sub">Pick a function from <code>linuxdoom</code> (the 1997 id Software source) and see what each of 26 DOOM ports did with it. Every match was made <strong>without names</strong>, from each function's shape and its place in the call graph, and is tagged with <strong>which route found it</strong>, so you can see how far to trust it. Unrelated programs sit at the bottom as controls.</p>
+
+  <div id="status" class="loading">Loading data…</div>
+
+  <div id="app" hidden>
+    <div class="tabs">
+      <button class="tab active" data-tab="fn">By function</button>
+      <button class="tab" data-tab="port">By port</button>
+      <button class="tab" data-tab="how">How to read this</button>
+    </div>
+
+    <section id="tab-fn">
+      <div class="card">
+        <input id="q" type="search" placeholder="Search a linuxdoom function or file, e.g. A_Chase, p_enemy, R_DrawColumn" autocomplete="off" aria-label="Search linuxdoom functions" />
+        <div class="picks">Try: <span id="picks"></span></div>
+        <div id="results" class="results" hidden></div>
+      </div>
+      <div id="detail"></div>
+    </section>
+
+    <section id="tab-port" hidden>
+      <div class="card">
+        <div class="row2"><div style="flex:1;min-width:220px"><select id="portSel" aria-label="Choose a port"></select></div></div>
+        <div id="portSummary"></div>
+      </div>
+      <div class="card"><div class="filters" id="tierFilters"></div><input id="pq" type="search" placeholder="Filter this port's matches by function or file name" aria-label="Filter matches" /><div id="portList" style="margin-top:8px"></div></div>
+    </section>
+
+    <section id="tab-how" hidden>
+      <div class="card">
+        <h2 style="margin-top:0">The seven tiers, and how often each is confirmed</h2>
+        <p class="small muted">In same-language ports, the share of matches that a separate text comparison also confirmed (a floor: "not listed" means the comparison did not list that pair, not that it is wrong). The text comparison never chooses a match.</p>
+        <div id="trustTable"></div>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">What you can and cannot conclude</h2>
+        <ul class="small" style="margin:0;padding-left:20px">
+          <li><strong>Exact</strong> means identical structural fingerprint, not identical text. Unrelated programs still produce a few exact pairs on very short functions (8 to 12 lines).</li>
+          <li><strong>Seeds</strong> are precise call-graph matches across languages (Go, Scheme, Dart). <strong>Extension</strong> adds reach, not accuracy: it keeps producing matches whether or not there is anything to find, so treat hop 2 and 3 as leads.</li>
+          <li><strong>The gate</strong> is a coherence check on a whole port's extension. A failed gate means do not trust extension matches for that port. A passed gate does not mean they are right (managed-doom passes, and its matches are almost all wrong).</li>
+          <li><strong>C# ports</strong> (managed-doom, kocoa-doom): neither route finds them. "No match" there means unsolved, not "kept nothing".</li>
+          <li><strong>Translation checks</strong> use function-name agreement, which misses ports that renamed their functions: it is a lower bound. A blind audit by model readers confirmed 80 of 80 name-agreeing pairs.</li>
+          <li>Ports above 10,000 functions (gzdoom, doomsday, doom3-bfg) are not covered. Nothing here measures whether architecture was preserved.</li>
+        </ul>
+        <p class="small muted">Full results and caveats: <code>results/e12/E12_REPORT.md</code>. Data format: <code>README_FINDER_DATA.md</code>.</p>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+"use strict";
+var TIERS = ["exact", "twin", "xtwin", "seed", "ext1", "ext2", "ext3"];
+var TIER_INFO = {
+  exact: ["Exact", "Identical structural fingerprint (clones of 12 or more lines need no further test)."],
+  twin: ["Twin", "Near-identical fingerprint, passed the false-discovery test. Within one language."],
+  xtwin: ["Cross-language twin", "Fingerprint twin after adjusting for the language's style."],
+  seed: ["Seed", "Reciprocal best match on shape plus call-graph position; the top 15%."],
+  ext1: ["Extension, hop 1", "Neighbour of a seed's match, voted by call-graph position."],
+  ext2: ["Extension, hop 2", "Two steps from a seed. Treat as a lead."],
+  ext3: ["Extension, hop 3", "Three steps from a seed. Weakest tier."]
+};
+var LANG = { "gore": "Go", "doom-scheme": "Scheme", "dartdoom": "Dart", "mochadoom": "Java", "managed-doom": "C#", "kocoa-doom": "C#" };
+var GROUPS = [["SL", "Same-language ports (C and C++)"], ["T", "Translations into other languages"], ["K", "Controls: unrelated programs (and DOOM's cousins quake and quake2)"]];
+var PICKS = ["A_Chase", "P_SpawnMobj", "R_DrawColumn", "P_Ticker", "D_DoomMain", "P_CheckSight", "M_Drawer", "S_StartSound"];
+var S = { idx: null, ports: {}, refs: new Map(), list: [], trust: {}, sel: null };
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function grpOf(g) { return g === "DEV" ? "SL" : (g === "H" ? "K" : g); }
+function pct(x) { return Math.round(x * 100) + "%"; }
+
+function fetchJSON(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }); }
+
+function load() {
+  fetchJSON("index.json").then(function (idx) {
+    S.idx = idx;
+    var done = 0, total = idx.ports.length;
+    return Promise.all(idx.ports.map(function (p) {
+      return fetchJSON(p.port + ".json").then(function (d) { S.ports[p.port] = d; done++; $("status").textContent = "Loading data… " + done + " of " + total + " programs"; });
+    }));
+  }).then(function () { build(); $("status").hidden = true; $("app").hidden = false; route(); })
+    .catch(function (e) { $("status").className = "err"; $("status").textContent = "Could not load data (" + e.message + "). Serve this folder over http, for example: python3 -m http.server"; });
+}
+
+function build() {
+  // reference index: key -> {name, path, loc, m: {port: pair}}
+  Object.keys(S.ports).forEach(function (pn) {
+    S.ports[pn].pairs.forEach(function (r) {
+      var k = r[3] + "|" + r[4]; var e = S.refs.get(k);
+      if (!e) { e = { key: k, name: r[3], path: r[4], loc: r[5], m: {} }; S.refs.set(k, e); }
+      e.m[pn] = r; });
+  });
+  S.list = Array.from(S.refs.values()); S.list.forEach(function (e) { e.nPorts = Object.keys(e.m).filter(function (p) { return grpOf(S.ports[p].group) !== "K"; }).length; });
+  S.list.sort(function (a, b) { return b.nPorts - a.nPorts || a.name.localeCompare(b.name); });
+  // pooled trust per tier: SL+DEV text confirmation; T name agreement
+  var t = S.idx.tier_truth_by_group;
+  function share(groups, keys) {
+    var out = {};
+    TIERS.forEach(function (tier) { var n = 0, ok = 0;
+      groups.forEach(function (g) { var c = (t[g] || {})[tier]; if (!c) return; Object.keys(c).forEach(function (k) { n += c[k]; if (keys.indexOf(k) >= 0) ok += c[k]; }); });
+      out[tier] = { n: n, ok: n ? ok / n : null }; });
+    return out;
+  }
+  S.trust.SL = share(["SL", "DEV"], ["near", "derived"]); S.trust.T = share(["T"], ["name-match"]);
+  S.trust.K = {}; TIERS.forEach(function (tier) { var n = 0; ["K", "H"].forEach(function (g) { var c = (t[g] || {})[tier]; if (c) n += c.control || 0; }); S.trust.K[tier] = { n: n, ok: 0 }; });
+  // UI
+  $("picks").innerHTML = PICKS.filter(function (n) { return S.list.some(function (e) { return e.name === n; }); }).map(function (n) { return '<span class="chip" data-pick="' + esc(n) + '">' + esc(n) + "</span>"; }).join(" ");
+  var sel = $("portSel"); var order = [];
+  GROUPS.forEach(function (g) { S.idx.ports.filter(function (p) { return grpOf(p.group) === g[0]; }).sort(function (a, b) { return a.port.localeCompare(b.port); }).forEach(function (p) { order.push(p); }); });
+  sel.innerHTML = order.map(function (p) { return '<option value="' + esc(p.port) + '">' + esc(p.port) + (LANG[p.port] ? " (" + LANG[p.port] + ")" : "") + (p.group === "DEV" ? " (development port)" : "") + (grpOf(p.group) === "K" ? " (control)" : "") + "</option>"; }).join("");
+  $("trustTable").innerHTML = trustTable();
+}
+
+function trustTable() {
+  var h = '<table><thead><tr><th>Tier</th><th>What it is</th><th>Same-language: confirmed</th><th>Translations: name agrees</th><th class="hide-sm">Controls: pairs</th></tr></thead><tbody>';
+  TIERS.forEach(function (tier) {
+    var a = S.trust.SL[tier], b = S.trust.T[tier], c = S.trust.K[tier];
+    h += "<tr><td>" + tierBadge(tier) + '</td><td class="small">' + esc(TIER_INFO[tier][1]) + "</td><td>" + (a.n ? pct(a.ok) + ' <span class="muted small">of ' + a.n + "</span>" : "—") + "</td><td>" + (b.n ? pct(b.ok) + ' <span class="muted small">of ' + b.n + "</span>" : "—") + '</td><td class="hide-sm">' + (c.n ? c.n + ' <span class="muted small">(all wrong by construction)</span>' : "0") + "</td></tr>";
+  });
+  return h + "</tbody></table>";
+}
+function tierBadge(t) { return '<span class="tier ' + t + '" title="' + esc(TIER_INFO[t][1]) + '">' + esc(TIER_INFO[t][0]) + "</span>"; }
+
+function checkChip(truth) {
+  var m = { near: ["good", "text near-copy"], derived: ["good", "text: derived"], none: ["weak", "not listed"], unmapped: ["weak", "not checkable"], "name-match": ["good", "same name"], "no-name-match": ["weak", "name differs"], control: ["bad", "unrelated program"] };
+  var x = m[truth] || ["weak", truth]; var tip = { none: "The text comparison did not list this pair. That is not proof it is wrong.", "no-name-match": "The function names differ. Ports that renamed functions look like this even when correct.", unmapped: "This function could not be mapped into the text comparison." }[truth] || ""; return '<span class="check ' + x[0] + '"' + (tip ? ' title="' + esc(tip) + '"' : "") + ">" + x[1] + "</span>";
+}
+function gateChip(p) { return p.gate.passes ? '<span class="gate ok" title="Extension on this port is coherent">gate ok</span>' : '<span class="gate fail" title="Extension on this port is not coherent: do not trust seed and extension matches">gate failed</span>'; }
+
+function trustLine(group, tier) { var g = grpOf(group); var s = S.trust[g] && S.trust[g][tier]; if (!s || !s.n) return ""; if (g === "K") return ""; return pct(s.ok) + (g === "SL" ? " confirmed" : " name-agree") + " overall"; }
+
+function search(qs) {
+  qs = qs.trim().toLowerCase(); if (!qs) return [];
+  var out = []; for (var i = 0; i < S.list.length && out.length < 40; i++) { var e = S.list[i]; if (e.name.toLowerCase().indexOf(qs) >= 0 || e.path.toLowerCase().indexOf(qs) >= 0) out.push(e); }
+  return out;
+}
+function renderResults(list) {
+  var box = $("results"); if (!list.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = list.map(function (e) { return '<div class="res" data-key="' + esc(e.key) + '"><div><strong>' + esc(e.name) + '</strong> <span class="p">' + esc(e.path) + "</span></div><div class=\"n\">" + e.nPorts + " ports</div></div>"; }).join("");
+}
+
+function showFn(key) {
+  var e = S.refs.get(key); if (!e) { $("detail").innerHTML = '<div class="card muted">Function not found in this data.</div>'; return; }
+  S.sel = key; $("results").hidden = true; location.hash = "f=" + encodeURIComponent(key);
+  var tc = {}, cc = {}, real = 0, ctrl = 0, totalReal = 0, totalCtrl = 0;
+  S.idx.ports.forEach(function (p) { var r = e.m[p.port]; if (grpOf(p.group) === "K") { totalCtrl++; if (r) { ctrl++; cc[r[6]] = (cc[r[6]] || 0) + 1; } } else { totalReal++; if (r) { real++; tc[r[6]] = (tc[r[6]] || 0) + 1; } } });
+  function tierCounts(c) { var a = TIERS.filter(function (t) { return c[t]; }).map(function (t) { return c[t] + " " + esc(TIER_INFO[t][0].toLowerCase()); }); return a.length ? a.join(", ") : "none"; }
+  var strong = (tc.exact || 0) + (tc.twin || 0) + (tc.xtwin || 0);
+  var h = '<div class="card"><div class="fn-head"><span class="fn-name">' + esc(e.name) + '</span><span class="muted small mono">' + esc(e.path) + " · " + e.loc + " lines</span></div>";
+  h += '<p class="small" style="margin:6px 0 0">In the <strong>' + totalReal + " ports</strong>: " + tierCounts(tc) + ". <span class=\"muted\">(Fingerprint evidence, the strongest tier, in " + strong + " ports. Extension matches are leads, not proof.)</span></p>";
+  h += '<p class="small" style="margin:4px 0 0">In the <strong>' + totalCtrl + " unrelated programs</strong> (all wrong by construction): " + tierCounts(cc) + ".</p>";
+  if (ctrl > 0) h += '<div class="banner warn">The unrelated programs also "matched" this function in ' + ctrl + " of " + totalCtrl + ", mostly at the weak tiers. That is the method firing with nothing to find; compare a port's tier with this row before trusting it.</div>";
+  h += "</div>";
+  h += '<div class="card" style="padding:6px 8px"><table><thead><tr><th>Port</th><th>Its function</th><th>Found by</th><th class="hide-sm">Check</th><th class="hide-sm">Gate</th></tr></thead><tbody>';
+  GROUPS.forEach(function (g) {
+    var ports = S.idx.ports.filter(function (p) { return grpOf(p.group) === g[0]; }).sort(function (a, b) { var ma = e.m[a.port] ? 0 : 1, mb = e.m[b.port] ? 0 : 1; return ma - mb || a.port.localeCompare(b.port); });
+    h += '<tr class="grp"><td colspan="5">' + esc(g[1]) + "</td></tr>";
+    ports.forEach(function (p) {
+      var r = e.m[p.port]; var lang = LANG[p.port] ? ' <span class="lang">' + LANG[p.port] + "</span>" : (p.group === "DEV" ? ' <span class="lang">dev port</span>' : "");
+      if (!r) { h += '<tr><td class="port">' + esc(p.port) + lang + '</td><td colspan="4" class="none">no match' + (p.port === "managed-doom" || p.port === "kocoa-doom" ? " (unsolved for C#, not necessarily absent)" : "") + "</td></tr>"; return; }
+      var also = r[8].length ? '<div class="small muted">also: ' + r[8].map(function (t) { return esc(TIER_INFO[t][0]); }).join(", ") + "</div>" : "";
+      var tl = trustLine(p.group, r[6]);
+      var caution = (!p.gate.passes && (r[6] === "seed" || r[6].indexOf("ext") === 0)) ? '<div class="small" style="color:var(--bad-ink)">gate failed for this port: treat as unreliable</div>' : "";
+      h += '<tr><td class="port">' + esc(p.port) + lang + '</td><td><div class="mono">' + esc(r[0]) + '</div><div class="small muted mono">' + esc(r[1]) + " · " + r[2] + " lines</div></td><td>" + tierBadge(r[6]) + (tl ? '<div class="small muted">' + tl + "</div>" : "") + also + caution + '</td><td class="hide-sm">' + checkChip(r[9]) + '</td><td class="hide-sm">' + gateChip(p) + "</td></tr>";
+    });
+  });
+  h += "</tbody></table></div>";
+  $("detail").innerHTML = h;
+}
+
+function showPort(pn) {
+  var d = S.ports[pn], p = S.idx.ports.filter(function (x) { return x.port === pn; })[0]; if (!d) return;
+  $("portSel").value = pn; S.portTier = S.portTier || {}; location.hash = "p=" + encodeURIComponent(pn);
+  var counts = d.tier_counts, total = d.pairs.length;
+  var bar = '<div class="bar" role="img" aria-label="Matches by tier">' + TIERS.map(function (t) { return counts[t] ? '<span class="' + t + '" style="width:' + (100 * counts[t] / total) + '%" title="' + esc(TIER_INFO[t][0]) + ": " + counts[t] + '"></span>' : ""; }).join("") + "</div>";
+  var leg = '<div class="legend">' + TIERS.map(function (t) { return counts[t] ? "<div>" + tierBadge(t) + " <span>" + counts[t] + (trustLine(d.group, t) ? ' <span class="muted">· ' + trustLine(d.group, t) + "</span>" : "") + "</span></div>" : ""; }).join("") + "</div>";
+  var g = grpOf(d.group), note = "";
+  if (g === "K") note = '<div class="banner bad">Control: this program is unrelated to DOOM (quake and quake2 share an engine lineage but not DOOM code). Every match shown is wrong by construction. Use it to see how often each tier fires with nothing to find.</div>';
+  else if (!d.gate.passes) note = '<div class="banner warn">The coherence gate failed for this port (neighbour support ' + d.gate.mean_sup.toFixed(2) + " against a threshold of 2.10). Seed and extension matches here are unreliable.</div>";
+  else if (pn === "managed-doom") note = '<div class="banner warn">The gate passes, but almost none of this port\'s matches are right (name agreement about 0%). The gate checks coherence, not correctness. C# is unsolved.</div>';
+  else if (pn === "kocoa-doom") note = '<div class="banner warn">C# port: no route finds it. Treat everything below as noise.</div>';
+  $("portSummary").innerHTML = '<div style="margin-top:10px"><strong style="font-size:17px">' + esc(pn) + "</strong> " + gateChip(d) + ' <span class="muted small">' + d.eligible + " functions of 6+ lines · " + total + " matched to linuxdoom</span></div>" + bar + leg + note;
+  S.portTierSel = S.portTierSel || "all";
+  $("tierFilters").innerHTML = '<span class="chip' + (S.portTierSel === "all" ? " on" : "") + '" data-tf="all">all</span>' + TIERS.filter(function (t) { return counts[t]; }).map(function (t) { return '<span class="chip' + (S.portTierSel === t ? " on" : "") + '" data-tf="' + t + '">' + esc(TIER_INFO[t][0]) + " " + counts[t] + "</span>"; }).join("");
+  renderPortList();
+}
+function renderPortList() {
+  var pn = $("portSel").value, d = S.ports[pn], q = $("pq").value.trim().toLowerCase(), tf = S.portTierSel || "all";
+  var rows = d.pairs.filter(function (r) { return (tf === "all" || r[6] === tf) && (!q || (r[0] + " " + r[1] + " " + r[3] + " " + r[4]).toLowerCase().indexOf(q) >= 0); });
+  var shown = rows.slice(0, 150);
+  $("portList").innerHTML = '<table><thead><tr><th>Port function</th><th>linuxdoom function</th><th>Found by</th><th class="hide-sm">Check</th></tr></thead><tbody>' + shown.map(function (r) {
+    return '<tr><td><div class="mono">' + esc(r[0]) + '</div><div class="small muted mono">' + esc(r[1]) + '</div></td><td><a href="#f=' + encodeURIComponent(r[3] + "|" + r[4]) + '" class="mono">' + esc(r[3]) + '</a><div class="small muted mono">' + esc(r[4]) + "</div></td><td>" + tierBadge(r[6]) + '</td><td class="hide-sm">' + checkChip(r[9]) + "</td></tr>"; }).join("") + "</tbody></table>" + (rows.length > shown.length ? '<p class="small muted">Showing ' + shown.length + " of " + rows.length + ". Narrow with the filters above.</p>" : (rows.length ? "" : '<p class="muted small">No matches.</p>'));
+}
+
+function setTab(t) {
+  ["fn", "port", "how"].forEach(function (x) { $("tab-" + x).hidden = x !== t; });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) { b.classList.toggle("active", b.getAttribute("data-tab") === t); });
+}
+function route() {
+  var h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  if (h.indexOf("f=") === 0) { setTab("fn"); showFn(h.slice(2)); }
+  else if (h.indexOf("p=") === 0) { setTab("port"); showPort(h.slice(2)); }
+  else if (h === "how") { setTab("how"); }
+  else { setTab("fn"); var first = S.list.filter(function (e) { return e.name === "A_Chase"; })[0] || S.list[0]; if (first) showFn(first.key); }
+}
+
+document.addEventListener("click", function (ev) {
+  var t = ev.target.closest("[data-tab],[data-pick],[data-key],[data-tf]"); if (!t) return;
+  if (t.hasAttribute("data-tab")) { var tab = t.getAttribute("data-tab"); setTab(tab); if (tab === "port") showPort($("portSel").value); }
+  else if (t.hasAttribute("data-pick")) { var e = S.list.filter(function (x) { return x.name === t.getAttribute("data-pick"); })[0]; if (e) { setTab("fn"); showFn(e.key); } }
+  else if (t.hasAttribute("data-key")) showFn(t.getAttribute("data-key"));
+  else if (t.hasAttribute("data-tf")) { S.portTierSel = t.getAttribute("data-tf"); showPort($("portSel").value); }
+});
+$("q").addEventListener("input", function () { renderResults(search($("q").value)); });
+$("portSel").addEventListener("change", function () { S.portTierSel = "all"; showPort($("portSel").value); });
+$("pq").addEventListener("input", renderPortList);
+window.addEventListener("hashchange", function () { if (S.idx) route(); });
+try { load(); } catch (e) { $("status").textContent = "Error: " + e.message; }
+</script>
+</body>
+</html>

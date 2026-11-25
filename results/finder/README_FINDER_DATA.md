@@ -12,3 +12,6 @@ One file per program (`<program>.json`) plus `index.json`. 35 programs: 19 same-
 
 **Not in the data:** the fingerprint sweep settings other than the registered one; pairs for programs above 10,000 functions; anything about subsystems or architecture.
 Source: `measure/finder_export.py` (reuses `measure/e12_ladder.py`; one output field, `E3c_hop_ends`, was added after the E12 run and changes no result).
+
+## The page
+`finder.html` (this folder) is a single static page, no build step: it loads `index.json` and the 35 shards over http. To try it: `cd results/finder && python3 -m http.server`, then open `http://localhost:8000/finder.html`. Views: by function (search a `linuxdoom` function, see every port's match with tier, trust and gate), by port (tier bar, filter, controls), how to read it. Deep links: `#f=<name>|<path>`, `#p=<port>`, `#how`. Moving it into `article/` means copying this folder (page plus data) and keeping the relative paths.
