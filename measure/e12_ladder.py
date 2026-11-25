@@ -209,7 +209,7 @@ def run_program(args):
 def main(smoke=False):
     names = (DEV + SL + TR + CTRL + HELD) if not smoke else ["doomgeneric", "gore", "lua"]
     t0 = time.time(); rows = []
-    with ProcessPoolExecutor(3) as ex:
+    with ProcessPoolExecutor(1 if smoke else 2) as ex:  # owner 11-25: 2 cores after the smoke test (pin with taskset, OMP/OPENBLAS threads=1)
         for r in ex.map(run_program, [(n, smoke) for n in names]): rows += r
     keys = sorted({k for r in rows for k in r}, key=lambda k: (k not in ("program", "group", "rung", "N", "truth"), k))
     with open(OUT / ("e12_table_smoke.csv" if smoke else "e12_table.csv"), "w", newline="") as f: w = csv.DictWriter(f, fieldnames=keys); w.writeheader(); w.writerows(rows)
