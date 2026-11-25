@@ -71,9 +71,9 @@ def fingerprint_rungs(name, uni_ok):
                 out[(preset, fdr, ratio)] = [(i, j, 1.0 - d) for i, j, d in one_to_one(cands)]
     return out
 
-def graph_rungs(name, rng, rewire=False):
+def graph_rungs(name, rng, rewire=False, ref_name="linuxdoom"):
     """G0, G1, G2, S, E1, E2, E3, E3c: returns ({rung: ordered list of (port_row, ref_row, score)}, gate stats). Uses blind views of the portable composition tables."""
-    tp, ref, sc = tables(name, "P"); tl, _, scl = tables("linuxdoom", "P"); pv = BL.blind_view(tp); rv = BL.blind_view(tl)
+    tp, ref, sc = tables(name, "P"); tl, _, scl = tables(ref_name, "P"); pv = BL.blind_view(tp); rv = BL.blind_view(tl)
     if rewire: pv = BL.rewired(pv, rng)
     na = len(ref.archetype_names); hp = BL.hop_matrix(pv, bp.hop_cap); hr = BL.hop_matrix(rv, bp.hop_cap)
     keep = [i for i, n in enumerate(ref.feature_names) if n not in ("log_complexity", "func_internal_density")]
@@ -117,6 +117,7 @@ def graph_rungs(name, rng, rewire=False):
     tr = [float(t[qi, rc_] / (t[qi].max() + 1e-12)) for qi, rc_ in anchor.items()]
     gate = dict(strong_fgw=float(np.mean([x >= 0.5 for x in tr])) if tr else 0.0, mean_sup=float(np.mean(sup)) if sup else 0.0)
     gate["passes"] = bool(gate["strong_fgw"] >= 0.20 and gate["mean_sup"] >= 2.10)
+    gate["E3c_hop_ends"] = [len(cal[h]) for h in (1, 2, 3)]  # added after the E12 run (finder / subsystem map); changes no result
     toRow = lambda lst: [(int(pv.rows[i]), int(rv.rows[j]), s) for i, j, s in lst]
     return {"G0": toRow(g0), "G1": toRow(g1), "G2": toRow(g2), "S": toRow(seeds), "E1": toRow(unc[1]), "E2": toRow(unc[2]), "E3": toRow(unc[3]), "E3c": toRow(cal[3])}, gate
 

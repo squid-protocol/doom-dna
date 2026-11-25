@@ -486,7 +486,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 
   <section class="band card" id="subsystem-map-band" aria-label="Call-Graph Subsystem Map">
     <div class="bandhead"><div class="kicker accent">Call-graph subsystem map · 44 programs</div><h2>Call-Graph Subsystem Map</h2>
-      <p class="cap">All <b>16 subsystems</b> are found directly from <code>linuxdoom</code>'s call graph, with no file names: community detection (Louvain), kept only where 100 runs agree. The count is a setting, not a law (about 11 to 24 at other settings; 16 is the default), and the names are ours, read from what each group contains. We then place every port's functions on those subsystems by structural shape and call-graph wiring (Seed-and-Extend, which follows call edges) and color each band by the <b>searched donor/ancestor pool</b> it matches best (<b>Grey</b> = unique to this port). <b>How to read it:</b> the map shows <i>where a port's functions fall among DOOM's subsystems</i>; because the placement follows call edges it is not an independent test of how much architecture a port preserved. <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> have more than 10,000 functions and are omitted; <code>heretic</code>, <code>hexen</code> and <code>doom64ex</code> from the earlier version are dropped because their scans no longer exist.)</i></p></div>
+      <p class="cap">All <b>16 subsystems</b> are found directly from <code>linuxdoom</code>'s call graph, with no file names: community detection (Louvain), kept only where 100 runs agree. The count is a setting, not a law (about 11 to 24 at other settings; 16 is the default), and the names are ours, read from what each group contains. We then place every port's functions on those subsystems and color each band by the ancestor it traces to, using the same evidence ladder as the function finder: <b>solid</b> = a fingerprint match, <b>lighter</b> = a graph seed, <b>faintest</b> = an extension lead (extension keeps matching even on unrelated programs, so treat those as leads; seeds and extension are used only where the coherence gate passes). <b>Grey</b> = no ancestor found by any route, which is not proof the code is original. <b>How to read it:</b> the map shows <i>where a port's functions fall among DOOM's subsystems</i>; because the placement follows call edges it is not an independent test of how much architecture a port preserved. <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> have more than 10,000 functions and are omitted; <code>heretic</code>, <code>hexen</code> and <code>doom64ex</code> from the earlier version are dropped because their scans no longer exist.)</i></p></div>
     <div class="submap-controls">
       <div class="submap-pills" id="submapPills"></div>
       <label style="font-size:12px;">Palette:
@@ -496,6 +496,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
           <option value="vivid">Vivid Print (Crimson / Cobalt / Gold / Magenta / Teal)</option>
         </select>
       </label>
+      <label style="font-size:12px;"><input type="checkbox" id="submapLeads" checked /> Show extension leads</label>
       <label style="font-size:12px;"><input type="checkbox" id="submapCompare" /> Compare vs. <code>linuxdoom</code></label>
       <label style="font-size:12px;"><input type="checkbox" id="submapScale" checked /> Scale track by log(LOC)</label>
     </div>
@@ -1558,6 +1559,11 @@ const SUBMAP_ANC = [
   { id: 'woof', label: 'woof (MBF/WinMBF)' }
 ];
 const SUBMAP_ANC_MAP = Object.fromEntries(SUBMAP_ANC.map((a) => [a.id, a]));
+const TIER_OP = { self: 1, exact: 1, twin: 1, xtwin: 0.85, seed: 0.7, ext1: 0.5, ext2: 0.38, ext3: 0.28 };
+const TIER_LABEL = { self: 'the reference itself', exact: 'exact fingerprint', twin: 'fingerprint twin', xtwin: 'cross-language fingerprint twin', seed: 'graph seed', ext1: 'extension, hop 1 (a lead)', ext2: 'extension, hop 2 (a lead)', ext3: 'extension, hop 3 (a lead)' };
+const TIER_ORDER = ['exact', 'twin', 'xtwin', 'seed', 'ext1', 'ext2', 'ext3'];
+const isLead = (t) => typeof t === 'string' && t.indexOf('ext') === 0;
+const GATE_NOTE = 'The coherence gate failed for this port against linuxdoom, so seed and extension matches are left out and only fingerprint evidence shows. Grey here means no direct fingerprint match, not that the code is original.';
 let SUBMAP_DATA = null;
 let SUBMAP_PORT = 'eternity';
 let SUBMAP_PAL = 'contrast';
@@ -1571,10 +1577,16 @@ function buildSubsystemCard(portName, scaleLog) {
   const trackLocs = port.tracks.map((fns) => fns.reduce((s, f) => s + f[1], 0));
   const maxLog = Math.max(...trackLocs.map((l) => Math.log1p(l)), 1);
   const totalLoc = trackLocs.reduce((a, b) => a + b, 0);
+  const showLeads = !document.getElementById('submapLeads') || document.getElementById('submapLeads').checked;
   const ancTotals = {};
-  port.tracks.forEach((fns) => fns.forEach(([, loc, donor]) => {
-    if (donor && !SUBMAP_HIDDEN.has(donor)) ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+  let strongLoc = 0;
+  port.tracks.forEach((fns) => fns.forEach(([, loc, donor, , tier]) => {
+    if (!donor || SUBMAP_HIDDEN.has(donor) || (isLead(tier) && !showLeads)) return;
+    ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+    if (!isLead(tier)) strongLoc += loc;
   }));
+  const gate = port.gates && port.gates.linuxdoom;
+  const gateNote = gate && !gate.passes ? `<div style="margin:0 0 10px;padding:8px 10px;border-radius:8px;background:#fffbeb;color:#92400e;font-size:12.5px">${GATE_NOTE}</div>` : '';
   const chips = SUBMAP_ANC.filter((a) => (ancTotals[a.id] || 0) > 0)
     .map((a) => `<span><b style="color:${ancColor(a.id)}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</b> ${a.id}</span>`)
     .join(' &middot; ') || '<b>0.0%</b> matched ancestor code';
@@ -1585,7 +1597,7 @@ function buildSubsystemCard(portName, scaleLog) {
     <strong style="font-size:15px;">${esc(portName)}</strong>
     <span style="font-size:12px;color:var(--ink-3);">${esc(port.meta)}</span></div>
     <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--rule);display:flex;gap:12px;flex-wrap:wrap;">
-      <span><b>${totalLoc.toLocaleString()}</b> total LOC</span><span>${chips}</span></div>`;
+      <span><b>${totalLoc.toLocaleString()}</b> total LOC</span><span>${chips}</span><span>fingerprint or seed evidence: <b>${(100 * strongLoc / Math.max(1, totalLoc)).toFixed(1)}%</b> of LOC</span></div>${gateNote}`;
 
   SUBMAP_DATA.subsystems.forEach((sub, idx) => {
     const fns = port.tracks[idx];
@@ -1598,11 +1610,12 @@ function buildSubsystemCard(portName, scaleLog) {
     if (fns.length > 0 && loc > 0) {
       let x = 0;
       const ordered = [...fns].sort((a, b) => a[0].localeCompare(b[0]));
-      ordered.forEach(([fnName, fnLoc, donor, refName]) => {
+      ordered.forEach(([fnName, fnLoc, donor, refName, tier]) => {
         const w = (fnLoc / loc) * lineW;
-        const isDonor = donor && !SUBMAP_HIDDEN.has(donor) && SUBMAP_ANC_MAP[donor];
+        const isDonor = donor && !SUBMAP_HIDDEN.has(donor) && SUBMAP_ANC_MAP[donor] && !(isLead(tier) && !showLeads);
         const fill = isDonor ? ancColor(donor) : uniqColor();
-        segs += `<rect class="submap-fn" data-fn="${esc(fnName)}" data-loc="${fnLoc}" data-donor="${isDonor ? esc(donor) : ''}" data-ref="${esc(refName || '')}" x="${x.toFixed(2)}" y="3.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
+        const op = isDonor ? (TIER_OP[tier] === undefined ? 1 : TIER_OP[tier]) : 1;
+        segs += `<rect class="submap-fn" data-fn="${esc(fnName)}" data-loc="${fnLoc}" data-donor="${isDonor ? esc(donor) : ''}" data-ref="${esc(refName || '')}" data-tier="${isDonor ? esc(tier || '') : ''}" x="${x.toFixed(2)}" y="3.5" width="${w.toFixed(2)}" height="11" fill="${fill}" fill-opacity="${op}"/>`;
         x += w;
       });
     }
@@ -1611,8 +1624,9 @@ function buildSubsystemCard(portName, scaleLog) {
       const t = e.target;
       if (t && t.classList && t.classList.contains('submap-fn')) {
         const dn = t.getAttribute('data-donor');
-        showTip(e, dn ? `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>Matched: <b style="color:${ancColor(dn)}">${esc(dn)}</b> &rarr; <code>${esc(t.getAttribute('data-ref'))}</code>`
-          : `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>Unique to ${esc(portName)}`);
+        const tr = t.getAttribute('data-tier');
+        showTip(e, dn ? `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>Traces to: <b style="color:${ancColor(dn)}">${esc(dn)}</b> &rarr; <code>${esc(t.getAttribute('data-ref'))}</code>${tr ? '<br>Evidence: ' + esc(TIER_LABEL[tr] || tr) : ''}`
+          : `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>No ancestor found by any route`);
       } else {
         showTip(e, `<b>${esc(portName)} — ${esc(sub)}</b><br>${fns.length} functions, ${loc.toLocaleString()} LOC`);
       }
@@ -1643,7 +1657,7 @@ function renderSubsystemMap() {
   });
 
   const pal = SUBMAP_PALETTES[SUBMAP_PAL];
-  leg.innerHTML = `<div class="submap-leg-item" style="font-weight:600;cursor:default;">Searched donor pools (not necessarily direct lineage):</div><div class="submap-leg-item"><span class="submap-swatch" style="background:${pal.unique}"></span><span>Unique to this port</span></div>`;
+  leg.innerHTML = `<div class="submap-leg-item" style="font-weight:600;cursor:default;">Ancestor a function traces to (not necessarily direct lineage):</div><div class="submap-leg-item" style="cursor:default"><span class="submap-swatch" style="background:${pal.unique}"></span><span>No ancestor found</span></div>`;
   SUBMAP_ANC.forEach((a) => {
     const item = document.createElement('div');
     item.className = 'submap-leg-item' + (SUBMAP_HIDDEN.has(a.id) ? ' dim' : '');
@@ -1651,6 +1665,11 @@ function renderSubsystemMap() {
     item.onclick = () => { if (SUBMAP_HIDDEN.has(a.id)) SUBMAP_HIDDEN.delete(a.id); else SUBMAP_HIDDEN.add(a.id); renderSubsystemMap(); };
     leg.appendChild(item);
   });
+  const conf = document.createElement('div');
+  conf.className = 'submap-leg-item';
+  conf.style.cursor = 'default';
+  conf.innerHTML = '<span style="font-weight:600">Evidence:</span>' + TIER_ORDER.map((t) => `<span class="submap-swatch" title="${TIER_LABEL[t]}" style="background:${pal['linuxdoom']};opacity:${TIER_OP[t]}"></span>`).join('') + '<span>exact &middot; twin &middot; cross-language twin &middot; seed &middot; extension hops 1-3</span>';
+  leg.appendChild(conf);
 
   grid.innerHTML = '';
   const showCmp = cmp && cmp.checked && SUBMAP_PORT !== 'linuxdoom';
@@ -1675,6 +1694,7 @@ function renderPortSubsystemsInDetail(portName) {
 }
 
 document.getElementById('submapCompare')?.addEventListener('change', renderSubsystemMap);
+document.getElementById('submapLeads')?.addEventListener('change', renderSubsystemMap);
 document.getElementById('submapScale')?.addEventListener('change', renderSubsystemMap);
 document.getElementById('submapPalette')?.addEventListener('change', (e) => { SUBMAP_PAL = e.target.value; renderSubsystemMap(); if (state.port) renderPortSubsystemsInDetail(state.port); });
 

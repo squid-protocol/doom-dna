@@ -90,7 +90,7 @@
   <header>
     <h1>Call-Graph Subsystem Map <span class="badge">LIVE DATA</span></h1>
     <p class="sub">
-      All <strong>16 subsystems</strong> are found directly from <code>linuxdoom</code>'s call graph, with no file names (community detection, kept only where 100 runs agree; the count is a setting, about 11 to 24 depending on it). Each port's functions are placed on those subsystems by Seed-and-Extend, which follows call edges, so this shows <em>where a port's functions fall among DOOM's subsystems</em>, not an independent measure of preserved architecture. <strong>Grey</strong> = unique to this port; <strong>colored bands</strong> = matched by Seed-and-Extend or structural twins to an ancestor/donor.
+      All <strong>16 subsystems</strong> are found directly from <code>linuxdoom</code>'s call graph, with no file names (community detection, kept only where 100 runs agree; the count is a setting, about 11 to 24 depending on it). Each port's functions are placed on those subsystems through their matches to <code>linuxdoom</code>, then through their call-graph neighbours, so this shows <em>where a port's functions fall among DOOM's subsystems</em>, not an independent measure of preserved architecture. Each band is one function, shaded by how strong the evidence is: <strong>solid</strong> = a fingerprint match to the ancestor, <strong>lighter</strong> = a graph seed, <strong>faintest</strong> = an extension lead (extension keeps producing matches even on unrelated programs, so treat those as leads). <strong>Red</strong> = traces to <code>linuxdoom</code>; other colors = a later port the function traces to but <code>linuxdoom</code> does not. <strong>Grey</strong> = no ancestor found by any route, which is not proof the code is original, and for the C# and Kotlin ports means the method found nothing. Matching is the E12 ladder; seeds and extension are used only where the coherence gate passes.
     </p>
   </header>
 
@@ -105,6 +105,7 @@
           <option value="vivid">Vivid Print (Crimson / Cobalt / Gold / Magenta / Teal)</option>
         </select>
       </label>
+      <label><input type="checkbox" id="leadsToggle" checked /> Show extension leads</label>
       <label><input type="checkbox" id="compareToggle" /> Compare vs. <code>linuxdoom</code></label>
       <label><input type="checkbox" id="scaleToggle" checked /> Scale track by log(LOC)</label>
     </div>
@@ -137,14 +138,18 @@ const ANCESTORS = [
   { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/man)' },
   { id: 'prboom-plus',    label: 'prboom-plus / dsda (deh/MBF21)' },
   { id: 'doomgeneric',    label: 'doomgeneric (DG_* shim)' },
-  { id: 'woof',           label: 'woof (MBF/WinMBF)' },
-  { id: 'heretic',        label: 'heretic (1994 id Tech 1 RPG)' }
+  { id: 'woof',           label: 'woof (MBF/WinMBF)' }
 ];
 const ANC_MAP = Object.fromEntries(ANCESTORS.map(a => [a.id, a]));
 let activePalette = 'contrast';
 const ancColor = (id) => PALETTES[activePalette][id];
 const uniqueColor = () => PALETTES[activePalette].unique;
 
+const TIER_OP = { self: 1, exact: 1, twin: 1, xtwin: 0.85, seed: 0.7, ext1: 0.5, ext2: 0.38, ext3: 0.28 };
+const TIER_LABEL = { self: 'the reference itself', exact: 'exact fingerprint', twin: 'fingerprint twin', xtwin: 'cross-language fingerprint twin', seed: 'graph seed', ext1: 'extension, hop 1 (a lead)', ext2: 'extension, hop 2 (a lead)', ext3: 'extension, hop 3 (a lead)' };
+const TIER_ORDER = ['exact', 'twin', 'xtwin', 'seed', 'ext1', 'ext2', 'ext3'];
+const isLead = (t) => typeof t === 'string' && t.indexOf('ext') === 0;
+const GATE_NOTE = 'The coherence gate failed for this port against linuxdoom, so seed and extension matches are left out and only fingerprint evidence shows. Grey here means no direct fingerprint match, not that the code is original.';
 let DATA = null;
 let activePort = 'eternity';
 const hiddenAnc = new Set();
@@ -154,6 +159,7 @@ const legendEl = document.getElementById('legend');
 const gridEl = document.getElementById('cardsGrid');
 const compareEl = document.getElementById('compareToggle');
 const scaleEl = document.getElementById('scaleToggle');
+const leadsEl = document.getElementById('leadsToggle');
 const paletteEl = document.getElementById('paletteSelect');
 const tipEl = document.getElementById('tooltip');
 
@@ -167,7 +173,7 @@ function renderControls() {
     pillsEl.appendChild(b);
   });
 
-  legendEl.innerHTML = `<div class="leg-item"><span class="swatch" style="background:${uniqueColor()}"></span><span>Unique to this port</span></div>`;
+  legendEl.innerHTML = `<div class="leg-item" style="cursor:default"><span class="swatch" style="background:${uniqueColor()}"></span><span>No ancestor found</span></div>`;
   ANCESTORS.forEach(a => {
     const item = document.createElement('div');
     item.className = 'leg-item' + (hiddenAnc.has(a.id) ? ' dim' : '');
@@ -178,6 +184,11 @@ function renderControls() {
     };
     legendEl.appendChild(item);
   });
+  const conf = document.createElement('div');
+  conf.className = 'leg-item';
+  conf.style.cursor = 'default';
+  conf.innerHTML = '<span style="font-weight:600">Evidence:</span>' + TIER_ORDER.map(t => `<span class="swatch" title="${TIER_LABEL[t]}" style="background:${ancColor('linuxdoom')};opacity:${TIER_OP[t]}"></span>`).join('') + '<span>exact &middot; twin &middot; cross-language twin &middot; seed &middot; extension hops 1-3</span>';
+  legendEl.appendChild(conf);
 }
 
 function renderCard(portName) {
@@ -186,10 +197,16 @@ function renderCard(portName) {
   const maxLog = Math.max(...trackLocs.map(l => Math.log1p(l)), 1);
   const totalLoc = trackLocs.reduce((a, b) => a + b, 0);
 
+  const showLeads = leadsEl.checked;
   const ancTotals = {};
-  port.tracks.forEach(fns => fns.forEach(([, loc, donor]) => {
-    if (donor && !hiddenAnc.has(donor)) ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+  let strongLoc = 0;
+  port.tracks.forEach(fns => fns.forEach(([, loc, donor, , tier]) => {
+    if (!donor || hiddenAnc.has(donor) || (isLead(tier) && !showLeads)) return;
+    ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+    if (!isLead(tier)) strongLoc += loc;
   }));
+  const gate = port.gates && port.gates.linuxdoom;
+  const gateNote = gate && !gate.passes ? `<div style="margin:0 0 10px;padding:8px 10px;border-radius:8px;background:#fffbeb;color:#92400e;font-size:12.5px">${GATE_NOTE}</div>` : '';
 
   const card = document.createElement('div');
   card.className = 'card';
@@ -205,7 +222,9 @@ function renderCard(portName) {
     <div class="summary-bar">
       <span><strong>${totalLoc.toLocaleString()}</strong> total LOC</span>
       <span>${chips}</span>
+      <span>fingerprint or seed evidence: <strong>${(100 * strongLoc / Math.max(1, totalLoc)).toFixed(1)}%</strong> of LOC</span>
     </div>
+    ${gateNote}
   `;
 
   DATA.subsystems.forEach((sub, idx) => {
@@ -222,11 +241,12 @@ function renderCard(portName) {
       let x = 0;
       // Sort functions deterministically by name so bands sit in consistent order across the track
       const ordered = [...fns].sort((a, b) => a[0].localeCompare(b[0]));
-      ordered.forEach(([fnName, fnLoc, donor, refName]) => {
+      ordered.forEach(([fnName, fnLoc, donor, refName, tier]) => {
         const w = (fnLoc / loc) * lineW;
-        const isDonor = donor && !hiddenAnc.has(donor) && ANC_MAP[donor];
+        const isDonor = donor && !hiddenAnc.has(donor) && ANC_MAP[donor] && !(isLead(tier) && !showLeads);
         const fill = isDonor ? ancColor(donor) : uniqueColor();
-        segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${isDonor ? donor : ''}" data-ref="${refName || ''}" x="${x.toFixed(2)}" y="4.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
+        const op = isDonor ? (TIER_OP[tier] === undefined ? 1 : TIER_OP[tier]) : 1;
+        segs += `<rect class="gene" data-fn="${fnName}" data-loc="${fnLoc}" data-donor="${isDonor ? donor : ''}" data-ref="${refName || ''}" data-tier="${isDonor ? (tier || '') : ''}" x="${x.toFixed(2)}" y="4.5" width="${w.toFixed(2)}" height="11" fill="${fill}" fill-opacity="${op}"/>`;
         x += w;
       });
     }
@@ -246,10 +266,11 @@ function renderCard(portName) {
         const fl = target.getAttribute('data-loc');
         const dn = target.getAttribute('data-donor');
         const rf = target.getAttribute('data-ref');
+        const tr = target.getAttribute('data-tier');
         if (dn && ANC_MAP[dn]) {
-          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Matched: <span style="color:${ancColor(dn)};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>`;
+          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br>Traces to: <span style="color:${ancColor(dn)};font-weight:700">${dn}</span> &rarr; <code>${rf}</code>${tr ? '<br>Evidence: ' + (TIER_LABEL[tr] || tr) : ''}`;
         } else {
-          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br><span style="color:#d6d3d1">Unique to ${portName}</span>`;
+          tipEl.innerHTML = `<strong>${portName}: ${fn}</strong> (${fl} LOC)<br><span style="color:#d6d3d1">No ancestor found by any route</span>`;
         }
       } else {
         tipEl.innerHTML = `<strong>${portName} — ${sub}</strong><br>${fns.length} functions, ${loc.toLocaleString()} LOC`;
@@ -271,6 +292,7 @@ function renderCards() {
 }
 
 compareEl.onchange = renderCards;
+leadsEl.onchange = renderCards;
 scaleEl.onchange = renderCards;
 paletteEl.onchange = () => { activePalette = paletteEl.value; renderControls(); renderCards(); };
 
