@@ -117,6 +117,7 @@ def graph_rungs(name, rng, rewire=False):
     tr = [float(t[qi, rc_] / (t[qi].max() + 1e-12)) for qi, rc_ in anchor.items()]
     gate = dict(strong_fgw=float(np.mean([x >= 0.5 for x in tr])) if tr else 0.0, mean_sup=float(np.mean(sup)) if sup else 0.0)
     gate["passes"] = bool(gate["strong_fgw"] >= 0.20 and gate["mean_sup"] >= 2.10)
+    gate["E3c_hop_ends"] = [len(cal[h]) for h in (1, 2, 3)]  # added after the E12 run for the finder export; does not change any result
     toRow = lambda lst: [(int(pv.rows[i]), int(rv.rows[j]), s) for i, j, s in lst]
     return {"G0": toRow(g0), "G1": toRow(g1), "G2": toRow(g2), "S": toRow(seeds), "E1": toRow(unc[1]), "E2": toRow(unc[2]), "E3": toRow(unc[3]), "E3c": toRow(cal[3])}, gate
 
