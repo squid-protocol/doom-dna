@@ -4,7 +4,7 @@ Run 2026-11-25 (US Eastern). Design registered before any scoring (commit 4a5b9b
 
 ## The answer in four lines
 1. **Within one language, fingerprints alone beat the extension.** At the same number of emitted pairs, plain fingerprint twins are more precise and recover more functions than the seed-and-extend method. Prediction P1b (extension adds recall) **failed**.
-2. **Across languages the picture reverses, but only for some languages.** Fingerprints find nothing for Go, Scheme and Dart; seeds plus extension match 91% (Go), 43% (Scheme) and 59% to 75% (Dart) of the pairs at 250. Neither method finds the C# ports. For the Java port (mochadoom) fingerprints work (72% to 90% precision on 29 to 46 pairs) and the graph methods fail (4%).
+2. **Across languages the picture reverses, but only for some languages.** Fingerprints find nothing for Go, Scheme and Dart; seeds plus extension match 91% (Go), 43% (Scheme) and 59% to 75% (Dart) of the pairs at 250. Neither method finds the C# or Kotlin ports. For the Java port (mochadoom) fingerprints work (72% to 90% precision on 29 to 46 pairs) and the graph methods fail (4%).
 3. **The call graph carries real signal, and the extension depends on it.** Shuffling the call graph (keeping each function's number of calls) drops call-graph-only matching from 0.37 to 0.01 precision and extension from 0.45 to 0.11. The seeds hold up better (0.50 to 0.32), so they lean partly on the per-function measurements.
 4. **Extension emits pairs whether or not there is anything to find.** On every control program it fills its quota (100 of 100). The coherence gate is what stops it, and the gate rejected all five controls but also three genuinely diverged same-language ports.
 
@@ -47,10 +47,10 @@ Forty emitted pairs per translation were drawn at random from E3c at N=250 and r
 The name key is a **safe lower bound**: every pair it counts was confirmed (80 of 80). It undercounts ports that renamed functions: dartdoom's true rate is about 0.75 not 0.65, mochadoom's about 0.18 not 0.03. The audit sample is small; the rater is a model, not a person.
 
 ## What this says about the three-step method
-* **Step 1 (fingerprints) is the right first tool inside a language and for Java**, where it is both precise and fast. It is blind to Go, Scheme, Dart, C#.
+* **Step 1 (fingerprints) is the right first tool inside a language and for Java**, where it is both precise and fast. It is blind to Go, Scheme, Dart, C# and Kotlin.
 * **Step 2 (reciprocal graph-and-measurement seeds) is the right tool across languages** where the call-graph shape survives (Go, Scheme, Dart): 0.52 to 0.96 precision on 40 to 70 pairs.
 * **Step 3 (extension) buys reach, not accuracy**: more pairs per program, at falling precision, and only with the real call graph. It needs the coherence gate to avoid emitting pairs on unrelated programs.
-* Neither covers the C# ports (kocoa-doom, managed-doom: about 0). Whatever transfers there is not captured by either route.
+* Neither covers the C# port (managed-doom) or the Kotlin port (kocoa-doom): about 0. Whatever transfers there is not captured by either route.
 
 ## Caveats and departures from the registration
 **A. Precision is a lower bound.** The registration said unlabelled pairs are never counted false. The text-truth table lists only pairs above Jaccard 0.6, so a pair that is a true homolog below that is indistinguishable from a wrong one, and the code counts it as false. That affects every same-language precision here, hardest on the 11 programs whose truth lists fewer than 100 functions (`doomretro` 2, `eternity` 3, `odamex` 9, `srb2` 9, `woof` 21, `nugget-doom` 26, `dsda-doom` 26, and so on). P1a and P1b are therefore close to uninformative for those programs and I registered them anyway; the reviewers had warned the truth was thin for woof and prboom-plus, and I added more diverged ports without raising that.
@@ -61,4 +61,4 @@ The name key is a **safe lower bound**: every pair it counts was confirmed (80 o
 **F. Scope:** programs over 10,000 functions (gzdoom, doomsday, doom3-bfg) are not covered; no architecture or wiring claim is made.
 
 ## What is left
-Nothing in the registration is unfinished. Open questions this raises: whether a combined method (fingerprints first, graph seeds for what fingerprints miss) beats either route; whether the C# ports can be matched at all; and why the gate fails the three most diverged C++ ports.
+Nothing in the registration is unfinished. Open questions this raises: whether a combined method (fingerprints first, graph seeds for what fingerprints miss) beats either route; whether the C# and Kotlin ports can be matched at all; and why the gate fails the three most diverged C++ ports.
