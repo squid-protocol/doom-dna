@@ -13,7 +13,7 @@
 2. **Evolved C/C++ ports** (crispy, woof, prboom-plus, eternity, odamex, srb2, edge-classic, doomretro, dsda): fewer twins as divergence grows; the truth gets thin; the gate rejects the three most diverged. Show honestly as "few reliable matches".
 3. **Translations with surviving call-graph shape** (gore/Go, doom-scheme, dartdoom): fingerprints find nothing; seeds do; extension reaches further at lower precision.
 4. **Java** (mochadoom): fingerprints work, the graph does not.
-5. **C#** (managed-doom, kocoa-doom): no route works; present as an open problem, not as "kept nothing".
+5. **C# and Kotlin** (managed-doom, kocoa-doom): no route works; present as an open problem, not as "kept nothing".
 6. **Controls:** extension fills its quota anyway; the gate and the tier labels are what keep the page honest.
 7. **Horizontal transfers** (E9, E9p): pairs between ports that do not go through `linuxdoom`; take the numbers and cutoff choice from the claims register, not from memory.
 

@@ -19,7 +19,7 @@
 
 ## 3. Results to carry (from E12; numbers in `results/e12/E12_REPORT.md`)
 * Within a language, fingerprints beat extension at equal volume (8 well-covered programs, N = 250: 0.83 / 0.63 vs 0.60 / 0.48, precision / recall).
-* Across languages: seeds and extension reach 0.91 (Go), 0.43 (Scheme), 0.59 to 0.75 (Dart) where fingerprints find nothing; fingerprints work for the Java port and the graph does not; no route works for the C# ports.
+* Across languages: seeds and extension reach 0.91 (Go), 0.43 (Scheme), 0.59 to 0.75 (Dart) where fingerprints find nothing; fingerprints work for the Java port and the graph does not; no route works for the C# or Kotlin ports.
 * The real call graph matters: rewiring drops graph-only matching 0.37 to 0.01 and extension 0.45 to 0.11; seeds 0.50 to 0.32.
 * Calibration alone adds nothing; extension hops differ only beyond 250 pairs.
 
@@ -33,4 +33,4 @@
 Precision is a lower bound (unlisted homologs count as unmatched); thin text truth for 11 of 19 same-language programs; gate thresholds fit after the fact on the development port; programs above 10,000 functions not covered; single model rater for the audit; architecture preservation under translation is unmeasured.
 
 ## 6. Open items before a paper
-Combined method (A then B) vs either alone, scored at matched volume; why the gate rejects the three most diverged C++ ports; whether the C# ports are matchable at all; a second independent rater set; a gate chosen on held-out programs.
+Combined method (A then B) vs either alone, scored at matched volume; why the gate rejects the three most diverged C++ ports; whether the C# and Kotlin ports are matchable at all; a second independent rater set; a gate chosen on held-out programs.
