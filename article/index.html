@@ -267,22 +267,22 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 .claims-list li { margin-bottom: 0.55rem; line-height: 1.5; }
 .gif-figure { margin: 1.4rem auto; text-align: center; }
 .gif-figure img { max-width: 100%; border-radius: 10px; border: 1px solid var(--rule); display: block; margin: 0 auto; }
-.dna-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
-.dna-pills { display: flex; flex-wrap: wrap; gap: 5px; max-height: 132px; overflow-y: auto; padding: 2px 0; }
-.dna-pill { border: 1px solid var(--rule); background: var(--panel); color: var(--ink); padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; }
-.dna-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.dna-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; margin: 8px 0 12px; padding: 8px 12px; background: var(--bg); border-radius: 8px; }
-.dna-leg-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
-.dna-leg-item.dim { opacity: 0.35; }
-.dna-swatch { width: 16px; height: 6px; border-radius: 3px; display: inline-block; }
-.dna-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-.dna-grid.two { grid-template-columns: 1fr 1fr; }
-@media (max-width: 960px) { .dna-grid.two { grid-template-columns: 1fr; } }
-.dna-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; }
-.dna-track-row { display: grid; grid-template-columns: 195px 1fr 56px; align-items: center; gap: 8px; height: 22px; }
-.dna-track-label { font-size: 11px; font-family: var(--font-mono); color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dna-track-loc { font-size: 11px; font-family: var(--font-mono); color: var(--ink-3); text-align: right; }
-.dna-track-svg { width: 100%; height: 18px; display: block; overflow: visible; }
+.submap-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.submap-pills { display: flex; flex-wrap: wrap; gap: 5px; max-height: 132px; overflow-y: auto; padding: 2px 0; }
+.submap-pill { border: 1px solid var(--rule); background: var(--panel); color: var(--ink); padding: 4px 9px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; }
+.submap-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.submap-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 12px; margin: 8px 0 12px; padding: 8px 12px; background: var(--bg); border-radius: 8px; }
+.submap-leg-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+.submap-leg-item.dim { opacity: 0.35; }
+.submap-swatch { width: 16px; height: 6px; border-radius: 3px; display: inline-block; }
+.submap-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.submap-grid.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 960px) { .submap-grid.two { grid-template-columns: 1fr; } }
+.submap-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; }
+.submap-track-row { display: grid; grid-template-columns: 195px 1fr 56px; align-items: center; gap: 8px; height: 22px; }
+.submap-track-label { font-size: 11px; font-family: var(--font-mono); color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.submap-track-loc { font-size: 11px; font-family: var(--font-mono); color: var(--ink-3); text-align: right; }
+.submap-track-svg { width: 100%; height: 18px; display: block; overflow: visible; }
 </style>
 
 </head>
@@ -297,7 +297,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 
   <figure class="hero band" id="hero">
     <svg id="collage" viewBox="0 0 1200 600" role="img" aria-label="The names of the 55 programs in the study, with the original, linuxdoom, at the centre; each name is sized by how many functions the program has"></svg>
-    <figcaption>All 55 programs in the updated study around <code>linuxdoom</code>. Each name is sized by how many functions it has. Tap any name to open its profile and 16-track DNA gene map.</figcaption>
+    <figcaption>All 55 programs in the updated study around <code>linuxdoom</code>. Each name is sized by how many functions it has. Tap any name to open its profile and call-graph subsystem map.</figcaption>
   </figure>
 
   <section class="col prose">
@@ -327,12 +327,12 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
   <div class="bigfacts col" aria-label="The three headline facts">
     <div class="bigfact"><b>65–95% / 75.9%</b><span>Unsupervised Seed-and-Extend recovers 65–95% of 1-to-1 functions across C ports and 75.9% across C &rarr; Go (<code>gore</code>, 92.5% Tier-1)</span></div>
     <div class="bigfact"><b>0 to 0.6%</b><span>across all 9 permissive controls &amp; 66 cross-pair permutations; Bevy ECS rewrite <code>iron-doom</code> also drops to 0.0%</span></div>
-    <div class="bigfact"><b>16 tracks · 49 targets</b><span>Pure call-graph communities discovered directly from <code>linuxdoom</code>'s edges, with horizontal transfers highlighted</span></div>
+    <div class="bigfact"><b>16 subsystems · 44 programs</b><span>Subsystems found from <code>linuxdoom</code>'s call graph alone, with every program's functions placed on them and branch transfers highlighted</span></div>
   </div>
 
   <nav class="jump col" aria-label="Jump to an interactive">
     <span>Jump to the toys:</span>
-    <a href="#dna-map-band">16-Track DNA Gene Map</a><a href="#se-band">Seed-and-Extend &amp; DOOM-E5</a><a href="#follow">Follow a function</a><a href="#tree-band">The family tree</a><a href="#wiring-band">Compare the wiring</a><a href="#explore">Explore all 54</a>
+    <a href="#subsystem-map-band">Call-Graph Subsystem Map</a><a href="#se-band">Seed-and-Extend &amp; DOOM-E5</a><a href="#follow">Follow a function</a><a href="#tree-band">The family tree</a><a href="#wiring-band">Compare the wiring</a><a href="#explore">Explore all 54</a>
   </nav>
 
   <section class="col prose">
@@ -484,28 +484,28 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
     <p class="cap" id="wirenote"></p>
   </section>
 
-  <section class="band card" id="dna-map-band" aria-label="16-Track Call-Graph DNA Gene Map">
-    <div class="bandhead"><div class="kicker accent">Recalculated Gene Map · All 49 Targets</div><h2>16-Track Call-Graph DNA Gene Map</h2>
-      <p class="cap">All <b>16 tracks</b> are communities discovered directly from <code>linuxdoom</code>'s call graph (zero filename rules). We strip every function name, pair functions blindfolded by structural shape and call-graph wiring, and color each band by the <b>searched donor/ancestor pool</b> it matches best (<b>Grey</b> = unique to this port). <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> &gt;10k funcs omitted from dense FGW.)</i></p></div>
-    <div class="dna-controls">
-      <div class="dna-pills" id="dnaPills"></div>
+  <section class="band card" id="subsystem-map-band" aria-label="Call-Graph Subsystem Map">
+    <div class="bandhead"><div class="kicker accent">Call-graph subsystem map · 44 programs</div><h2>Call-Graph Subsystem Map</h2>
+      <p class="cap">All <b>16 subsystems</b> are found directly from <code>linuxdoom</code>'s call graph, with no file names: community detection (Louvain), kept only where 100 runs agree. The count is a setting, not a law (about 11 to 24 at other settings; 16 is the default), and the names are ours, read from what each group contains. We then place every port's functions on those subsystems by structural shape and call-graph wiring (Seed-and-Extend, which follows call edges) and color each band by the <b>searched donor/ancestor pool</b> it matches best (<b>Grey</b> = unique to this port). <b>How to read it:</b> the map shows <i>where a port's functions fall among DOOM's subsystems</i>; because the placement follows call edges it is not an independent test of how much architecture a port preserved. <b>Note on lineage &amp; percentages:</b> donor colors reflect <i>searched structural similarity</i> (not necessarily direct parent lineage — a port can be a clone of a clone), and the <b>% <code>linuxdoom</code></b> badge measures <i>share of total port LOC</i> matched to <code>linuxdoom</code> — unlike the Seed-and-Extend precision score below, which checks how many paired functions have the exact same name afterward. <i>(<code>doom3-bfg</code>, <code>doomsday</code>, and <code>gzdoom</code> have more than 10,000 functions and are omitted; <code>heretic</code>, <code>hexen</code> and <code>doom64ex</code> from the earlier version are dropped because their scans no longer exist.)</i></p></div>
+    <div class="submap-controls">
+      <div class="submap-pills" id="submapPills"></div>
       <label style="font-size:12px;">Palette:
-        <select id="dnaPalette" style="padding:4px 8px;border-radius:6px;border:1px solid var(--rule);font-size:12px;">
+        <select id="submapPalette" style="padding:4px 8px;border-radius:6px;border:1px solid var(--rule);font-size:12px;">
           <option value="contrast">High-Contrast (Red / Blue / Green / Purple / Cyan)</option>
           <option value="okabe">Okabe-Ito Colorblind-Safe</option>
           <option value="vivid">Vivid Print (Crimson / Cobalt / Gold / Magenta / Teal)</option>
         </select>
       </label>
-      <label style="font-size:12px;"><input type="checkbox" id="dnaCompare" /> Compare vs. <code>linuxdoom</code></label>
-      <label style="font-size:12px;"><input type="checkbox" id="dnaScale" checked /> Scale track by log(LOC)</label>
+      <label style="font-size:12px;"><input type="checkbox" id="submapCompare" /> Compare vs. <code>linuxdoom</code></label>
+      <label style="font-size:12px;"><input type="checkbox" id="submapScale" checked /> Scale track by log(LOC)</label>
     </div>
-    <div class="dna-legend" id="dnaLegend"></div>
-    <div class="dna-grid" id="dnaGrid"><p class="loading">Loading <code>dna_tracks_data.json</code> (49 targets)...</p></div>
+    <div class="submap-legend" id="submapLegend"></div>
+    <div class="submap-grid" id="submapGrid"><p class="loading">Loading <code>subsystem_map_data.json</code> (44 programs)...</p></div>
   </section>
 
   <section class="band card" id="se-band" aria-label="Seed-and-Extend, DOOM-E5 & Horizontal Transfers">
     <div class="bandhead"><div class="kicker accent">Recalculated Evidence</div><h2>Seed-and-Extend, Held-Out DOOM-E5 &amp; Horizontal Transfers</h2>
-      <p class="cap">How to read these numbers: we hid every function name and file path, paired functions between each port and <code>linuxdoom</code> using only structural shape and call-graph wiring (Seed-and-Extend), and then peeked at the real names afterward to grade the pairing. For example, in <code>gore</code> (Go), the blind matcher paired <b>561</b> functions with <code>linuxdoom</code>, and <b>430 / 561 (76.6%)</b> had the exact same DOOM function name — measuring <i>matching precision</i> among paired functions, whereas the 16-track DNA map above shows the matched share of <code>gore</code>'s total LOC (since <code>gore</code> also has 532 Go-specific functions).</p></div>
+      <p class="cap">How to read these numbers: we hid every function name and file path, paired functions between each port and <code>linuxdoom</code> using only structural shape and call-graph wiring (Seed-and-Extend), and then peeked at the real names afterward to grade the pairing. For example, in <code>gore</code> (Go), the blind matcher paired <b>561</b> functions with <code>linuxdoom</code>, and <b>430 / 561 (76.6%)</b> had the exact same DOOM function name — measuring <i>matching precision</i> among paired functions, whereas the call-graph subsystem map above shows the matched share of <code>gore</code>'s total LOC (since <code>gore</code> also has 532 Go-specific functions).</p></div>
     <div class="chart" id="chart-se"></div>
     <details><summary>Show Seed-and-Extend + DOOM-E5 + Controls table</summary><div class="tablewrap" id="table-se"></div></details>
     <h3 style="margin-top:1.2rem;">Horizontal Transfers &amp; Hidden Lineage</h3>
@@ -514,7 +514,7 @@ ul.sources li a b { font-family: var(--font-display); font-weight: 800; }
 
   <section class="col prose">
     <h2>Explore all 54</h2>
-    <p>Every descendant, held-out <code>DOOM-E5</code> target, and permissive control has its own profile: Seed-and-Extend recovery, 16-track DNA gene map, famous functions, wiring, and history. Pick one from the list, or compare any two.</p>
+    <p>Every descendant, held-out <code>DOOM-E5</code> target, and permissive control has its own profile: Seed-and-Extend recovery, call-graph subsystem map, famous functions, wiring, and history. Pick one from the list, or compare any two.</p>
   </section>
 
   <div class="layout band" id="explore">
@@ -1117,7 +1117,7 @@ function renderDetail(p) {
         ${stat(bl ? pct(bl.accuracy) + " vs " + pct(bl.accuracy_null) : "not tested", bl ? "of its functions put in the right part of the game with every name hidden, vs chance" : "the blind test was run on 14 descendants", !bl)}
       </div>
     </section>
-    <section class="card" id="detail-dna" hidden><h3>16-Track Call-Graph DNA Gene Map</h3><div id="detail-dna-body"></div></section>
+    <section class="card" id="detail-submap" hidden><h3>Call-Graph Subsystem Map</h3><div id="detail-submap-body"></div></section>
     ${compareHTML(p, BY[state.cmp])}
     <div class="two">${sizeHTML(p)}${heroHTML(p)}</div>
     ${famousHTML(p)}
@@ -1164,7 +1164,7 @@ function renderDetail(p) {
   document.getElementById("map-port").appendChild(subwayMap(p, { labels: true }));
   document.getElementById("map-ref").appendChild(subwayMap(REF, { labels: true }));
   drawDrift(p);
-  renderPortDnaInDetail(p.name);
+  renderPortSubsystemsInDetail(p.name);
   document.getElementById("showall")?.addEventListener("click", (e) => {
     document.querySelectorAll("tr.extra").forEach((r) => (r.hidden = false)); e.target.remove();
   });
@@ -1544,54 +1544,54 @@ function renderSeAndHorizontal() {
   }
 }
 
-// ---------------------------------------------------------------- 16-Track Call-Graph DNA Gene Map (embedded)
-const DNA_PALETTES = {
+// ---------------------------------------------------------------- Call-Graph Subsystem Map (embedded)
+const SUBMAP_PALETTES = {
   contrast: { 'linuxdoom': '#dc2626', 'chocolate-doom': '#2563eb', 'prboom-plus': '#16a34a', 'doomgeneric': '#9333ea', 'woof': '#0891b2', unique: '#e5e5e5' },
   okabe:    { 'linuxdoom': '#d55e00', 'chocolate-doom': '#0072b2', 'prboom-plus': '#009e73', 'doomgeneric': '#cc79a7', 'woof': '#56b4e9', unique: '#e5e5e5' },
   vivid:    { 'linuxdoom': '#be123c', 'chocolate-doom': '#1d4ed8', 'prboom-plus': '#eab308', 'doomgeneric': '#a21caf', 'woof': '#0d9488', unique: '#e2e8f0' }
 };
-const DNA_ANC = [
+const SUBMAP_ANC = [
   { id: 'linuxdoom', label: 'linuxdoom (1993 C core)' },
   { id: 'chocolate-doom', label: 'chocolate-doom (textscreen/hexen/man)' },
   { id: 'prboom-plus', label: 'prboom-plus / dsda (deh/MBF21)' },
   { id: 'doomgeneric', label: 'doomgeneric (DG_* shim)' },
   { id: 'woof', label: 'woof (MBF/WinMBF)' }
 ];
-const DNA_ANC_MAP = Object.fromEntries(DNA_ANC.map((a) => [a.id, a]));
-let DNA_DATA = null;
-let DNA_PORT = 'eternity';
-let DNA_PAL = 'contrast';
-const DNA_HIDDEN = new Set();
+const SUBMAP_ANC_MAP = Object.fromEntries(SUBMAP_ANC.map((a) => [a.id, a]));
+let SUBMAP_DATA = null;
+let SUBMAP_PORT = 'eternity';
+let SUBMAP_PAL = 'contrast';
+const SUBMAP_HIDDEN = new Set();
 
-function buildDnaCard(portName, scaleLog) {
-  const port = DNA_DATA.ports[portName];
+function buildSubsystemCard(portName, scaleLog) {
+  const port = SUBMAP_DATA.ports[portName];
   if (!port) return null;
-  const ancColor = (id) => DNA_PALETTES[DNA_PAL][id];
-  const uniqColor = () => DNA_PALETTES[DNA_PAL].unique;
+  const ancColor = (id) => SUBMAP_PALETTES[SUBMAP_PAL][id];
+  const uniqColor = () => SUBMAP_PALETTES[SUBMAP_PAL].unique;
   const trackLocs = port.tracks.map((fns) => fns.reduce((s, f) => s + f[1], 0));
   const maxLog = Math.max(...trackLocs.map((l) => Math.log1p(l)), 1);
   const totalLoc = trackLocs.reduce((a, b) => a + b, 0);
   const ancTotals = {};
   port.tracks.forEach((fns) => fns.forEach(([, loc, donor]) => {
-    if (donor && !DNA_HIDDEN.has(donor)) ancTotals[donor] = (ancTotals[donor] || 0) + loc;
+    if (donor && !SUBMAP_HIDDEN.has(donor)) ancTotals[donor] = (ancTotals[donor] || 0) + loc;
   }));
-  const chips = DNA_ANC.filter((a) => (ancTotals[a.id] || 0) > 0)
+  const chips = SUBMAP_ANC.filter((a) => (ancTotals[a.id] || 0) > 0)
     .map((a) => `<span><b style="color:${ancColor(a.id)}">${(100 * ancTotals[a.id] / Math.max(1, totalLoc)).toFixed(1)}%</b> ${a.id}</span>`)
-    .join(' &middot; ') || '<b>0.0%</b> matched ancestor DNA';
+    .join(' &middot; ') || '<b>0.0%</b> matched ancestor code';
 
   const card = document.createElement('div');
-  card.className = 'dna-card';
+  card.className = 'submap-card';
   card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px;">
     <strong style="font-size:15px;">${esc(portName)}</strong>
     <span style="font-size:12px;color:var(--ink-3);">${esc(port.meta)}</span></div>
     <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--rule);display:flex;gap:12px;flex-wrap:wrap;">
       <span><b>${totalLoc.toLocaleString()}</b> total LOC</span><span>${chips}</span></div>`;
 
-  DNA_DATA.subsystems.forEach((sub, idx) => {
+  SUBMAP_DATA.subsystems.forEach((sub, idx) => {
     const fns = port.tracks[idx];
     const loc = trackLocs[idx];
     const row = document.createElement('div');
-    row.className = 'dna-track-row';
+    row.className = 'submap-track-row';
     const trackPct = scaleLog ? (loc === 0 ? 4 : Math.max(10, (Math.log1p(loc) / maxLog) * 100)) : 100;
     const W = 400, lineW = (trackPct / 100) * W;
     let segs = `<line x1="0" y1="9" x2="${lineW.toFixed(1)}" y2="9" stroke="#1c1917" stroke-width="1.2" stroke-linecap="round"/>`;
@@ -1600,16 +1600,16 @@ function buildDnaCard(portName, scaleLog) {
       const ordered = [...fns].sort((a, b) => a[0].localeCompare(b[0]));
       ordered.forEach(([fnName, fnLoc, donor, refName]) => {
         const w = (fnLoc / loc) * lineW;
-        const isDonor = donor && !DNA_HIDDEN.has(donor) && DNA_ANC_MAP[donor];
+        const isDonor = donor && !SUBMAP_HIDDEN.has(donor) && SUBMAP_ANC_MAP[donor];
         const fill = isDonor ? ancColor(donor) : uniqColor();
-        segs += `<rect class="dna-gene" data-fn="${esc(fnName)}" data-loc="${fnLoc}" data-donor="${isDonor ? esc(donor) : ''}" data-ref="${esc(refName || '')}" x="${x.toFixed(2)}" y="3.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
+        segs += `<rect class="submap-fn" data-fn="${esc(fnName)}" data-loc="${fnLoc}" data-donor="${isDonor ? esc(donor) : ''}" data-ref="${esc(refName || '')}" x="${x.toFixed(2)}" y="3.5" width="${w.toFixed(2)}" height="11" fill="${fill}"/>`;
         x += w;
       });
     }
-    row.innerHTML = `<div class="dna-track-label" title="${esc(sub)}">${esc(sub)}</div><svg class="dna-track-svg" viewBox="0 0 ${W} 18" preserveAspectRatio="none">${segs}</svg><div class="dna-track-loc">${loc}L</div>`;
+    row.innerHTML = `<div class="submap-track-label" title="${esc(sub)}">${esc(sub)}</div><svg class="submap-track-svg" viewBox="0 0 ${W} 18" preserveAspectRatio="none">${segs}</svg><div class="submap-track-loc">${loc}L</div>`;
     row.addEventListener('mousemove', (e) => {
       const t = e.target;
-      if (t && t.classList && t.classList.contains('dna-gene')) {
+      if (t && t.classList && t.classList.contains('submap-fn')) {
         const dn = t.getAttribute('data-donor');
         showTip(e, dn ? `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>Matched: <b style="color:${ancColor(dn)}">${esc(dn)}</b> &rarr; <code>${esc(t.getAttribute('data-ref'))}</code>`
           : `<b>${esc(portName)}: ${esc(t.getAttribute('data-fn'))}</b> (${t.getAttribute('data-loc')} LOC)<br>Unique to ${esc(portName)}`);
@@ -1623,66 +1623,66 @@ function buildDnaCard(portName, scaleLog) {
   return card;
 }
 
-function renderDnaBand() {
-  if (!DNA_DATA) return;
-  const pills = document.getElementById('dnaPills');
-  const leg = document.getElementById('dnaLegend');
-  const grid = document.getElementById('dnaGrid');
-  const cmp = document.getElementById('dnaCompare');
-  const scl = document.getElementById('dnaScale');
+function renderSubsystemMap() {
+  if (!SUBMAP_DATA) return;
+  const pills = document.getElementById('submapPills');
+  const leg = document.getElementById('submapLegend');
+  const grid = document.getElementById('submapGrid');
+  const cmp = document.getElementById('submapCompare');
+  const scl = document.getElementById('submapScale');
   if (!pills || !leg || !grid) return;
 
   pills.innerHTML = '';
-  Object.keys(DNA_DATA.ports).forEach((name) => {
+  Object.keys(SUBMAP_DATA.ports).forEach((name) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'dna-pill' + (name === DNA_PORT ? ' active' : '');
+    b.className = 'submap-pill' + (name === SUBMAP_PORT ? ' active' : '');
     b.textContent = name;
-    b.onclick = () => { DNA_PORT = name; renderDnaBand(); };
+    b.onclick = () => { SUBMAP_PORT = name; renderSubsystemMap(); };
     pills.appendChild(b);
   });
 
-  const pal = DNA_PALETTES[DNA_PAL];
-  leg.innerHTML = `<div class="dna-leg-item" style="font-weight:600;cursor:default;">Searched donor pools (not necessarily direct lineage):</div><div class="dna-leg-item"><span class="dna-swatch" style="background:${pal.unique}"></span><span>Unique to this port</span></div>`;
-  DNA_ANC.forEach((a) => {
+  const pal = SUBMAP_PALETTES[SUBMAP_PAL];
+  leg.innerHTML = `<div class="submap-leg-item" style="font-weight:600;cursor:default;">Searched donor pools (not necessarily direct lineage):</div><div class="submap-leg-item"><span class="submap-swatch" style="background:${pal.unique}"></span><span>Unique to this port</span></div>`;
+  SUBMAP_ANC.forEach((a) => {
     const item = document.createElement('div');
-    item.className = 'dna-leg-item' + (DNA_HIDDEN.has(a.id) ? ' dim' : '');
-    item.innerHTML = `<span class="dna-swatch" style="background:${pal[a.id]}"></span><span>${a.label}</span>`;
-    item.onclick = () => { if (DNA_HIDDEN.has(a.id)) DNA_HIDDEN.delete(a.id); else DNA_HIDDEN.add(a.id); renderDnaBand(); };
+    item.className = 'submap-leg-item' + (SUBMAP_HIDDEN.has(a.id) ? ' dim' : '');
+    item.innerHTML = `<span class="submap-swatch" style="background:${pal[a.id]}"></span><span>${a.label}</span>`;
+    item.onclick = () => { if (SUBMAP_HIDDEN.has(a.id)) SUBMAP_HIDDEN.delete(a.id); else SUBMAP_HIDDEN.add(a.id); renderSubsystemMap(); };
     leg.appendChild(item);
   });
 
   grid.innerHTML = '';
-  const showCmp = cmp && cmp.checked && DNA_PORT !== 'linuxdoom';
-  grid.className = 'dna-grid' + (showCmp ? ' two' : '');
-  const c1 = buildDnaCard(DNA_PORT, !scl || scl.checked);
+  const showCmp = cmp && cmp.checked && SUBMAP_PORT !== 'linuxdoom';
+  grid.className = 'submap-grid' + (showCmp ? ' two' : '');
+  const c1 = buildSubsystemCard(SUBMAP_PORT, !scl || scl.checked);
   if (c1) grid.appendChild(c1);
   if (showCmp) {
-    const c2 = buildDnaCard('linuxdoom', !scl || scl.checked);
+    const c2 = buildSubsystemCard('linuxdoom', !scl || scl.checked);
     if (c2) grid.appendChild(c2);
   }
 }
 
-function renderPortDnaInDetail(portName) {
-  const sec = document.getElementById('detail-dna');
-  const body = document.getElementById('detail-dna-body');
+function renderPortSubsystemsInDetail(portName) {
+  const sec = document.getElementById('detail-submap');
+  const body = document.getElementById('detail-submap-body');
   if (!sec || !body) return;
-  if (!DNA_DATA || !DNA_DATA.ports[portName]) { sec.hidden = true; return; }
+  if (!SUBMAP_DATA || !SUBMAP_DATA.ports[portName]) { sec.hidden = true; return; }
   sec.hidden = false;
   body.innerHTML = '';
-  const card = buildDnaCard(portName, true);
+  const card = buildSubsystemCard(portName, true);
   if (card) body.appendChild(card);
 }
 
-document.getElementById('dnaCompare')?.addEventListener('change', renderDnaBand);
-document.getElementById('dnaScale')?.addEventListener('change', renderDnaBand);
-document.getElementById('dnaPalette')?.addEventListener('change', (e) => { DNA_PAL = e.target.value; renderDnaBand(); if (state.port) renderPortDnaInDetail(state.port); });
+document.getElementById('submapCompare')?.addEventListener('change', renderSubsystemMap);
+document.getElementById('submapScale')?.addEventListener('change', renderSubsystemMap);
+document.getElementById('submapPalette')?.addEventListener('change', (e) => { SUBMAP_PAL = e.target.value; renderSubsystemMap(); if (state.port) renderPortSubsystemsInDetail(state.port); });
 
-fetch('dna_tracks_data.json').then((r) => r.ok ? r.json() : null).then((j) => {
+fetch('subsystem_map_data.json').then((r) => r.ok ? r.json() : null).then((j) => {
   if (!j) return;
-  DNA_DATA = j;
-  renderDnaBand();
-  if (state.port) renderPortDnaInDetail(state.port);
+  SUBMAP_DATA = j;
+  renderSubsystemMap();
+  if (state.port) renderPortSubsystemsInDetail(state.port);
 }).catch(() => {});
 </script>
 

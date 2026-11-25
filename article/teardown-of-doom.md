@@ -6,7 +6,7 @@ description: "DOOM's DNA: 44+ DOOM ports, 9 permissive controls, and 5 held-out 
 *By Joe Esquibel · November 2026 · Built with [GitGalaxy](https://github.com/squid-protocol/gitgalaxy) & [structural-fingerprint-scanner](https://github.com/squid-protocol/gitgalaxy-population-analyses)*
 
 > **Interactive Visualizers:**
-> * **[Open the 16-Track Call-Graph DNA Gene Map →](dna-tracks-mockup.html)** *(recalculated across all ports, pure call-graph communities, no filename rules)*
+> * **[Open the Call-Graph Subsystem Map →](subsystem-map.html)** *(44 programs placed on 16 subsystems found from `linuxdoom`'s call graph, no filename rules)*
 > * **[Open the Legacy Function & Tree Explorer →](index.html)**
 
 ---
@@ -18,7 +18,7 @@ description: "DOOM's DNA: 44+ DOOM ports, 9 permissive controls, and 5 held-out 
 * **Claim 3 — True from-scratch rewrites and unrelated controls sit at ~0% noise.** Across **9** controls (`lua` 0.0%, `quake` 0.6%, `quake2` 0.6%, plus Go `goom3d` / `bubbletea`, Rust `macroquad`, C raycasters, and Apache-2.0 COBOL `carddemo-cobol-ctrl`) and **66** cross-pair permutations of novel/from-scratch/agentic repos (`rust-doom`, `room4doom`, `helion`, `agentic-cobol-doom-cc`, `agentic-cobol-doom-codex`, `fps-cob`, `sqldoom`, `cssdoom`, `doomf77`, `fsharp-doom`), every non-DOOM pair scores **0–1** accidental name hits.
 * **Claim 4 — Paradigm shifts erase call-graph DNA, even when ported from Chocolate Doom.** In our preregistered held-out test (`DOOM-E5`), `cydoomgeneric` hit **100.0%** Tier-1 (`156/156`, `FGW_cost = 0.313`) against `doomgeneric`, whereas `iron-doom` (ported from Chocolate Doom into **Bevy ECS** in Rust) dropped to **0.0%** (`0/147`) — decoupling an imperative call graph into ECS systems erases structural lineage.
 * **Claim 5 — Horizontal borrowing across separate branches is visible without names.** Subtracting `linuxdoom` and sweeping cross-branch twins (`horizontal_transfers.py`) isolates Chocolate Doom's `textscreen` UI library inside `odamex` (178/212 T1 hits), `eternity` (210/276 T1 hits), `woof`, `nugget-doom`, and `prboom-plus`; `src/hexen` copied into `dsda-doom` (28 twins); MBF21 pointers shared between `dsda-doom` and `woof`/`nugget-doom`; `man` docgen copied into `woof`; and hidden ancestry (`doom-ios` embedding `prboom-plus`, `sdl-doom` matching `doomgeneric`/`doom-ascii`).
-* **Claim 6 — The 16 subsystems don't need manual filename buckets.** Community detection on `linuxdoom`'s call graph discovers 16 organic call-graph systems (`C01`–`C16`) directly from call edges, so single-header (`puredoom`) and flat-directory (`gore`) ports light up the exact systems they belong to instead of collapsing into `other %`.
+* **Claim 6 — The subsystems don't need manual filename buckets.** Community detection (Louvain, consensus of 100 runs) on `linuxdoom`'s call graph finds 16 call-graph subsystems (`S01`–`S16`, 188 to 5 functions) directly from call edges, so single-header (`puredoom`) and flat-directory (`gore`) ports can be placed on the same subsystems instead of collapsing into `other %`. The count is a setting (about 11 to 24 at other resolutions) and the placement follows call edges, so the map shows where functions fall, not how much architecture a port preserved (DOOM-E11).
 
 ---
 
@@ -34,18 +34,18 @@ description: "DOOM's DNA: 44+ DOOM ports, 9 permissive controls, and 5 held-out 
 
 ---
 
-## Visual 3: The 16-Track Call-Graph DNA Gene Map
+## Visual 3: The Call-Graph Subsystem Map
 
-Instead of forcing code into manual filename buckets, we run greedy modularity on `linuxdoom`'s call graph to discover **16 call-graph communities** (`C01: P_Random / P_SetMobjState`, `C02: Z_Malloc / W_CacheLumpNum`, ..., `C16: Leaf / Misc Core`). Every port's functions—including horizontally borrowed libraries and port-unique code—are projected onto those 16 tracks:
+Instead of forcing code into manual filename buckets, we run community detection (Louvain, kept only where 100 runs agree) on `linuxdoom`'s call graph and find **16 subsystems** (`S01: Monsters & Mayhem`, `S02: The Engine Room`, `S03: Doors, Lifts & Lights`, ..., `S16: Odds & Ends`). The names are ours, read from what each group contains: dial-up and LAN multiplayer, the Linux sound server, the automap and the status bar each came out as their own subsystem without being given file names. Every port's functions, including horizontally borrowed libraries and port-unique code, are placed on those subsystems by Seed-and-Extend (which follows call edges):
 
-* **Red (`linuxdoom`):** vertical 1993 C core DNA recovered by Seed-and-Extend
+* **Red (`linuxdoom`):** the 1993 C core, recovered by Seed-and-Extend
 * **Blue (`chocolate-doom`):** `textscreen`, `src/hexen`, `man` docgen
 * **Green (`prboom-plus`):** `deh_*` / PrBoom / MBF21
 * **Purple (`doomgeneric`):** `DG_*` platform shim
 * **Cyan (`woof`):** MBF / WinMBF
 * **Light Grey:** functions unique to that port
 
-**[Launch the Interactive 16-Track DNA Gene Map →](dna-tracks-mockup.html)** *(live recalculated data in [`dna_tracks_data.json`](dna_tracks_data.json))*
+**[Launch the Interactive Call-Graph Subsystem Map →](subsystem-map.html)** *(live recalculated data in [`subsystem_map_data.json`](subsystem_map_data.json))*
 
 ---
 

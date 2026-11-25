@@ -1,95 +1,144 @@
-"""Build real 16-track call-graph DNA gene-map data for the interactive visualizer.
+"""Build the call-graph subsystem map data for the interactive figure.
 
-1. Discovers communities directly from ``linuxdoom``'s call graph (zero filename rules)
-   using greedy modularity + merging tiny connected components into their strongest
-   neighbor community, yielding 15 call-graph communities + 1 Novel/Horizontal track.
-2. Runs Seed-and-Extend (zero names/paths) from ``linuxdoom`` onto each selected port
-   to assign Red (``linuxdoom``) gene bands across the 15 call-graph tracks.
+1. Finds subsystems directly from ``linuxdoom``'s call graph (no filename rules) by Louvain
+   community detection with iterative consensus (Lancichinetti and Fortunato 2012: 100 runs,
+   co-association threshold 0.5, resolution 1.0). Groups of fewer than 10 functions are merged
+   into the neighbouring group they call most; functions with no stable group (isolated or
+   unstable) join the group of their nearest labelled function by measurement. The number of
+   subsystems is whatever the graph gives (16 at the default), not a cap.
+2. Runs Seed-and-Extend (zero names/paths; the extension follows call-graph neighbours) from
+   ``linuxdoom`` onto each port to place its functions on those subsystems.
 3. For functions not matched to ``linuxdoom``, checks reciprocal structural twins
    (``BL.descriptors``) against secondary donors (``chocolate-doom``, ``prboom-plus``,
-   ``doomgeneric``, ``woof``) to highlight horizontal/branch transfers (Blue, Amber,
-   Violet, Teal).
-4. Writes ``article/dna_tracks_data.json`` with real per-function gene bands.
+   ``doomgeneric``, ``woof``) to mark likely branch transfers.
+4. Writes ``article/subsystem_map_data.json`` with the per-function placement.
+
+The placement reads call edges, so the figure shows *where each port's functions fall among
+``linuxdoom``'s subsystems*; it is not an independent measurement of how much architecture a
+port preserves (see DOOM-E11).
 """
 
 from __future__ import annotations
 
 import gc
 import json
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+import networkx as nx
+from networkx.algorithms import community as nxc
 from scipy.spatial import cKDTree
 from scipy.spatial.distance import cdist
 
 
-def discover_communities(n: int, edges: np.ndarray, locs: np.ndarray, k_keep: int = 15) -> tuple[np.ndarray, list[list[int]]]:
-    """Greedy modularity clustering on undirected call graph, merging tiny groups."""
-    adj = [defaultdict(int) for _ in range(n)]
-    deg = np.zeros(n, dtype=np.float64)
-    for u, v in edges.tolist():
-        if u != v:
-            adj[u][v] += 1
-            adj[v][u] += 1
-            deg[u] += 1
-            deg[v] += 1
-    m2 = max(1.0, float(np.sum(deg)))
+# Names for linuxdoom's 16 call-graph subsystems at the default setting (Louvain consensus, resolution 1.0), keyed by the two
+# highest-degree functions of each group.
+SUBSYSTEM_NAMES = {
+    "S_StartSound / FixedMul": "Monsters & Mayhem",
+    "I_Error / D_DoomMain": "The Engine Room",
+    "P_AddThinker / P_CrossSpecialLine": "Doors, Lifts & Lights",
+    "FixedDiv / AM_Responder": "Lines & Sightlines",
+    "S_ChangeMusic / S_StartSoundAtVolume": "Soundstage & Scoreboard",
+    "W_CacheLumpName / V_DrawPatch": "The 2D Painter",
+    "Z_Malloc / W_CacheLumpNum": "The Archivist",
+    "M_Responder / M_SetupNextMenu": "Front Desk",
+    "R_RenderPlayerView / R_DrawVisSprite": "The 3D Eye",
+    "main / grabdata": "The Sound Daemon",
+    "main / Error": "Dial-Up Deathmatch",
+    "Error / main": "LAN Party",
+    "HU_Start / HU_Responder": "Heads-Up Text",
+    "AM_Drawer / AM_drawLineCharacter": "The Automap Pen",
+    "ST_createWidgets / I_SetPalette": "Status Bar & Palette",
+    "I_SoundSetTimer / I_SoundDelTimer": "Odds & Ends",
+}
 
-    comm = list(range(n))
-    tot_deg = deg.copy()
-    for _ in range(20):
-        moved = 0
-        for i in range(n):
-            if deg[i] == 0:
-                continue
-            ci = comm[i]
-            cw = defaultdict(float)
-            for j, w in adj[i].items():
-                cw[comm[j]] += w
-            tot_deg[ci] -= deg[i]
-            best_c, best_gain = ci, 0.0
-            for c, k_in in cw.items():
-                gain = k_in - deg[i] * tot_deg[c] / m2
-                if gain > best_gain + 1e-12:
-                    best_gain = gain
-                    best_c = c
-            tot_deg[best_c] += deg[i]
-            if best_c != ci:
-                comm[i] = best_c
-                moved += 1
-        if moved == 0:
+
+def discover_communities(n: int, edges: np.ndarray, locs: np.ndarray, desc: np.ndarray, gamma: float = 1.0,
+                         nrun: int = 100, tau: float = 0.5, min_group: int = 10):
+    """Louvain subsystems with iterative consensus. Returns (node_to_group, groups, info)."""
+    G = nx.Graph()
+    G.add_nodes_from(range(n))
+    G.add_edges_from((int(u), int(v)) for u, v in edges.tolist() if u != v)
+    nodes = [v for v in range(n) if G.degree(v) > 0]
+    idx = {v: i for i, v in enumerate(nodes)}
+    H0 = G.subgraph(nodes)
+
+    def labels(graph, seed, weight=None):
+        lab = np.zeros(len(nodes), dtype=np.int64)
+        for k, c in enumerate(nxc.louvain_communities(graph, resolution=gamma if weight is None else 1.0, seed=seed, weight=weight)):
+            for v in c:
+                lab[idx[v]] = k
+        return lab
+
+    parts = [labels(H0, s) for s in range(nrun)]
+    m = len(nodes)
+    for _ in range(8):
+        D = np.zeros((m, m), dtype=np.float32)
+        for p in parts:
+            D += (p[:, None] == p[None, :])
+        D /= len(parts)
+        D[D < tau] = 0
+        np.fill_diagonal(D, 0)
+        r, c = np.nonzero(np.triu(D))
+        if len(r) == 0:
             break
-
-    groups = defaultdict(list)
-    for i, c in enumerate(comm):
-        groups[c].append(i)
-
-    # Sort communities by total LOC; keep top k_keep - 1 and fold remainder into last community
-    ordered = sorted(groups.values(), key=lambda g: -sum(int(locs[i]) for i in g))
-    kept = ordered[: k_keep - 1]
-    rest = [i for g in ordered[k_keep - 1 :] for i in g]
-    if rest:
-        kept.append(rest)
-
-    node_to_comm = np.zeros(n, dtype=np.int64)
-    for cid, g in enumerate(kept):
-        for i in g:
-            node_to_comm[i] = cid
-    return node_to_comm, kept
+        H = nx.Graph()
+        H.add_nodes_from(nodes)
+        H.add_weighted_edges_from((nodes[a], nodes[b], float(D[a, b])) for a, b in zip(r.tolist(), c.tolist()))
+        new = [labels(H, s, weight="weight") for s in range(nrun)]
+        agree = all(len(set(zip(new[0].tolist(), q.tolist()))) == len(set(new[0].tolist())) == len(set(q.tolist())) for q in new[1:5])
+        parts = new
+        if agree:
+            break
+    lab = parts[0].copy()
+    unstable = np.asarray((D > 0).sum(1) == 0)
+    full = -np.ones(n, dtype=np.int64)
+    for v in nodes:
+        if not unstable[idx[v]]:
+            full[v] = lab[idx[v]]
+    # merge groups smaller than min_group into the group they call most
+    sizes = np.bincount(full[full >= 0]) if (full >= 0).any() else np.array([0])
+    small = {g for g in range(len(sizes)) if 0 < sizes[g] < min_group}
+    for g in sorted(small):
+        members = np.flatnonzero(full == g)
+        votes = defaultdict(int)
+        for v in members.tolist():
+            for u in G.neighbors(v):
+                if full[u] >= 0 and full[u] not in small:
+                    votes[int(full[u])] += 1
+        if votes:
+            full[members] = max(votes.items(), key=lambda x: x[1])[0]
+    # unlabelled (isolated or unstable): nearest labelled function by measurement
+    lab_idx = np.flatnonzero(full >= 0)
+    rest = np.flatnonzero(full < 0)
+    if len(rest) and len(lab_idx):
+        _, nn = cKDTree(desc[lab_idx]).query(desc[rest], k=1)
+        full[rest] = full[lab_idx[nn]]
+    # order by total LOC, largest first; relabel 0..K-1
+    gids = [g for g in np.unique(full) if g >= 0]
+    order = sorted(gids, key=lambda g: -int(locs[full == g].sum()))
+    remap = {g: i for i, g in enumerate(order)}
+    node_to_group = np.array([remap[int(g)] for g in full], dtype=np.int64)
+    groups = [np.flatnonzero(node_to_group == i).tolist() for i in range(len(order))]
+    info = {"method": "Louvain with iterative consensus", "resolution": gamma, "runs": nrun, "threshold": tau,
+            "min_group_functions": min_group, "groups": len(groups), "functions": int(n),
+            "functions_without_calls": int(n - len(nodes)), "unstable_functions": int(unstable.sum()),
+            "group_sizes": [len(g) for g in groups]}
+    return node_to_group, groups, info
 
 
 def main() -> int:
+    sys.path.insert(0, "/srv/storage_16tb/projects/structural-fingerprint-scanner/src")
     from structural_fingerprint import blind as BL
     from structural_fingerprint import features as F
     from structural_fingerprint.fingerprint import build
     from structural_fingerprint.reference import load_reference
     from structural_fingerprint.scan_io import load_scan, resolve_scans
 
-    scans_main = Path("/srv/storage_16tb/projects/gitgalaxy/doom-study/rescan-6c7c6c1bc/scans/6c7c6c1bc")
-    scans_e5 = Path("/tmp/doom-e5/scans")
-    scans_e6 = Path("/tmp/doom-e6/scans")
-    out_json = Path(__file__).resolve().parents[2] / "article" / "dna_tracks_data.json"
+    scans_main = Path("/srv/storage_16tb/projects/doom-e7-work/scans/704cb35f0")  # engine 704cb35f0, the DOOM-E7 scans
+    out_json = Path(__file__).resolve().parents[2] / "article" / "subsystem_map_data.json"
 
     ref = load_reference("portable")
     bp = BL.BlindParams()
@@ -148,7 +197,7 @@ def main() -> int:
         }
 
     ld = load_port("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0])
-    ld_comm, ld_groups = discover_communities(ld["n"], ld["edges"], ld["locs"], k_keep=16)
+    ld_comm, ld_groups, comm_info = discover_communities(ld["n"], ld["edges"], ld["locs"], ld["xd"])
 
     # Label each discovered community by its top-2 hub functions
     deg_ld = np.zeros(ld["n"], dtype=np.int64)
@@ -158,15 +207,15 @@ def main() -> int:
 
     track_labels = []
     for cid, g in enumerate(ld_groups):
-        if cid == len(ld_groups) - 1 and len(g) > 100:
-            track_labels.append("C16: Leaf / Misc Core")
-        else:
-            hubs = [ld["names"][i] for i in sorted(g, key=lambda i: (-deg_ld[i], -ld["locs"][i]))[:2]]
-            track_labels.append(f"C{cid+1:02d}: " + " / ".join(hubs))
+        hubs = [ld["names"][i] for i in sorted(g, key=lambda i: (-deg_ld[i], -ld["locs"][i]))[:2]]
+        hub_label = " / ".join(hubs)
+        # Names read from each subsystem's contents (files and hub functions of linuxdoom). They are keyed by the hub
+        # label so a different partition falls back to the hub label instead of a wrong name.
+        track_labels.append(f"S{cid + 1:02d}: " + SUBSYSTEM_NAMES.get(hub_label, hub_label))
 
-    print("Discovered 16 call-graph tracks:")
+    print(f"Found {len(track_labels)} call-graph subsystems (sizes {comm_info['group_sizes']}):")
     for idx, lbl in enumerate(track_labels):
-        print(f"  {idx+1:02d}. {lbl}")
+        print(f"  {idx + 1:02d}. {lbl}")
 
     # Secondary donors (masked against linuxdoom)
     donors_spec = [
@@ -175,9 +224,6 @@ def main() -> int:
         ("doomgeneric", resolve_scans([scans_main / "doomgeneric"])[0]),
         ("woof", resolve_scans([scans_main / "woof"])[0]),
     ]
-    heretic_db = scans_e6 / "heretic" / "heretic_galaxy_master.db"
-    if heretic_db.is_file():
-        donors_spec.append(("heretic", heretic_db))
     donors = {}
     for dname, ddb in donors_spec:
         D = load_port(dname, ddb)
@@ -191,8 +237,6 @@ def main() -> int:
     DOOM_PORT_DONORS = ("chocolate-doom", "prboom-plus", "doomgeneric", "woof")
     PORT_YEAR = {
         "linuxdoom": 1993,
-        "heretic": 1994,
-        "hexen": 1995,
         "srb2": 1998,
         "zdoom": 1998,
         "prboom": 1999,
@@ -209,42 +253,27 @@ def main() -> int:
     }
 
     def eligible_donors(tname, ctrl_names):
-        if tname in ctrl_names or tname in {"linuxdoom", "heretic", "doom64ex", "srb2"}:
+        if tname in ctrl_names or tname in {"linuxdoom", "srb2"}:
             return set()
         tyear = PORT_YEAR.get(tname, 2022)
-        if tname == "hexen":
-            return {"heretic"} if PORT_YEAR["heretic"] < tyear else set()
         return {d for d in DOOM_PORT_DONORS if d != tname and PORT_YEAR[d] < tyear}
 
-    scans_ctrl = Path("/srv/storage_16tb/projects/gitgalaxy/doom-study/controls/scans")
-    ctrl_names = set()
+    # Targets: the programs of the previously published figure, scanned at engine 704cb35f0 (heretic, hexen
+    # and doom64ex came from an older partial-engine experiment whose scans no longer exist and are dropped).
+    wanted = ["chocolate-doom", "crispy-doom", "doomgeneric", "doomretro", "prboom-plus", "dsda-doom", "woof", "eternity", "odamex", "srb2",
+              "room4doom", "gore", "managed-doom", "mochadoom", "rust-doom", "doom-wasm", "fastdoom", "puredoom", "doom-ios", "doom-ascii",
+              "helion", "edge-classic", "nugget-doom", "inter-doom", "sdl-doom", "doom3do", "sqldoom", "doomf77", "doom-scheme", "doo-cr",
+              "kocoa-doom", "fsharp-doom", "cssdoom", "doom-fx", "fps-cob", "agentic-cobol-doom-cc", "agentic-cobol-doom-codex", "mood",
+              "freedoom", "dartdoom", "lua", "quake", "quake2"]
+    ctrl_names = {"lua", "quake", "quake2"}
     targets = [("linuxdoom", resolve_scans([scans_main / "linuxdoom"])[0])]
-    for p in sorted(scans_main.iterdir()):
-        if not p.is_dir() or p.name == "linuxdoom":
-            continue
-        try:
-            db = resolve_scans([p])[0]
-            targets.append((p.name, db))
-        except Exception:
-            pass
-    for p in sorted(scans_ctrl.iterdir()):
-        if p.is_dir():
+    for name in wanted:
+        d = scans_main / name
+        if d.is_dir():
             try:
-                targets.append((p.name, resolve_scans([p])[0]))
-                ctrl_names.add(p.name)
-            except Exception:
-                pass
-    for name in ["cydoomgeneric", "iron-doom", "doomarkable", "DOOM-style-Game", "doome"]:
-        db = scans_e5 / f"{name}_galaxy_master_master.db"
-        if db.is_file():
-            targets.append((name, db))
-    seen_targets = {t[0] for t in targets}
-    for name in ["heretic", "hexen", "doom64ex", "srb2"]:
-        if name in seen_targets:
-            continue
-        db = scans_e6 / name / f"{name}_galaxy_master.db"
-        if db.is_file():
-            targets.append((name, db))
+                targets.append((name, resolve_scans([d])[0]))
+            except Exception as e:  # noqa: BLE001
+                print(f"Skipping {name}: {e}", flush=True)
 
     out_ports = {}
     for tname, tdb in targets:
@@ -406,7 +435,7 @@ def main() -> int:
         del P
         gc.collect()
 
-    payload = {"subsystems": track_labels, "ports": out_ports}
+    payload = {"subsystems": track_labels, "ports": out_ports, "provenance": {"engine": "704cb35f0", "subsystems": comm_info, "names": "read from each subsystem's files and hub functions", "placement": "Seed-and-Extend (reads call-graph neighbours); donors by structural twins"}}
     out_json.write_text(json.dumps(payload), encoding="utf-8")
     print(f"Wrote {out_json} ({out_json.stat().st_size // 1024} KB)")
     return 0
