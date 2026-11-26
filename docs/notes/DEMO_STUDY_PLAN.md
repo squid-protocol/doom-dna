@@ -17,12 +17,17 @@ If every close port syncs perfectly there is nothing for study 1 to explain, and
 * Third-party source is never committed: only our driver and the patcher (which inserts one line at a short anchor). Builds and digests live outside the repo (`doom-e7-work/demo-study/`).
 * Compare on `leveltime, prndindex, x, y, z, angle, health, armor, weapon, ammo`. **Do not compare `rndindex`**: it is the cosmetic RNG (status-bar face, sound) and differs between engines for harmless reasons.
 
-## Phase 0 results so far (pilot; two engines, shareware `DOOM1.WAD`, md5 `f0cefca49926d00903cf57551d901abe`)
-* `doomgeneric` (chocolate-derived): plays DEMO1, DEMO2, DEMO3 to completion (5,026 / 3,836 / 2,134 tics); two runs of each are byte-identical, so the digest is deterministic.
-* `puredoom` (linuxdoom 1.10 based): plays DEMO1 identically to `doomgeneric` for the first **346 tics**, then diverges (gameplay RNG, then position), and its later level restarts match nothing, which fits a desynced game. It could not open demos 2 and 3 as external files, so only DEMO1 is measured for it.
-* **Not yet a finding.** Two engines, one demo, no cause established (a likely candidate is the known behaviour differences between the 1.9 executable and the released 1.10 source, which would make this a version difference, not a port defect). It shows that sync does vary among near-identical code, which is what the gate asked.
+## Phase 0 results (2026-11-25; pilot, not registered)
+**Engines built headless with the digest (owner approved installing missing dependencies):** `chocolate-doom` (reference), `doomgeneric`, `crispy-doom`, `prboom-plus`, `sdl-doom`, `inter-doom` (all C, SDL2 dummy video/audio or the doomgeneric headless layer) and `puredoom`. Shareware `DOOM1.WAD` (md5 `f0cefca49926d00903cf57551d901abe`).
+* **The harness checks out:** two independent builds of the chocolate family and `doomgeneric` give byte-identical digests; repeat runs are identical.
+* **Shareware demos 1 to 3 (5,026 / 3,836 / 2,134 tics):** six engines are identical to the reference on every compared field at every tic. `puredoom` (linuxdoom 1.10 based) matches for 346 tics on demo 1 and then diverges (weapon field first); it cannot load external demo files, so demos 2 and 3 were not played. Plausible cause (not established): the released 1.10 source differs in behaviour from the shipped 1.9 executable.
+* **Random self-play demos:** `demo/harness/gen_demos.py` writes vanilla-format demos from a seeded random policy (run, strafe, turn, fire, use, weapon switch; our own inputs, no third-party content). 300 demos, 4,000 tics each, all maps E1M1 to E1M9, skills 1 to 4: **1,800 of 1,800 runs identical across the six engines** (`demo/phase0_random_demo_matrix.csv`). The player moved and fired in every demo and died in 187, so the demos exercise combat and death, not just walking.
+* **Boom-family caveat:** `prboom-plus` and `inter-doom` do not keep the gameplay RNG index in every mode (or keep it private), so they are compared on the game state without that column.
 
+## What this means for the studies
+* **Study 1 as first framed has little to explain among established C ports:** sync does not vary among them on shareware or random demos. The outcome variance sits elsewhere (non-vanilla-exact engines like `puredoom`, translations, ports in non-compatible modes), so study 1 should be re-scoped there, with translations as the main case.
+* **Performance (study 2) and the call-count oracle (study 3) do not depend on sync variance.** Speed certainly varies; per-function call counts are language-independent, and demos are now a cheap, reproducible driver for both.
+* **Not yet built:** `dsda-doom` (needs OpenGL), `woof` and `nugget-doom` (need SDL3 3.4+ and OpenAL), translations (`mochadoom` Java via Maven, `gore` Go, `managed-doom` C#, `doom-scheme`).
 ## Blockers and next steps
-* SDL-based ports (`chocolate-doom`, `crispy-doom`, `woof`, ...) need SDL2 development files, which this machine lacks; the SDL2 inside the `doomretro` clone is a prebuilt Windows package, not source. Getting a Linux SDL2 needs a download (official SDL release source, or a Python wheel); **owner decision**.
-* Without SDL: `linuxdoom` (stub video/sound), `doom-ascii`, and the Java translation `mochadoom` (Maven, `~/.m2` is present).
-* After the variance is known: register study 1 (or 3) with two independent design reviews, as before.
+* Done: SDL2 2.30.9, SDL2_net 2.2.0 and SDL2_mixer 2.8.0 built from official release sources into a private prefix (`doom-e7-work/demo-study/prefix`), cmake and ninja in a private venv.
+* Next: the translations (`mochadoom` first: Java, Maven) for a first behavioural check of a translation; then register the re-scoped study 1 or study 3 with two independent design reviews, as before.
