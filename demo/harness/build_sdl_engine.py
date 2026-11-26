@@ -109,6 +109,13 @@ if os.environ.get("E13_BOT_BUILD"):
     g = g[:gt.start()] + "\nvoid E13_BotCmd(ticcmd_t *cmd);\nint E13_BotActive(void);\n" + g[gt.start():]
     g += (Path(__file__).resolve().parent / "bot/e13_bot.c.inc").read_text()
     gg.write_text(g)
+
+# optional: engines with plain Makefiles and no SDL (doom-ascii): compile every .c in the source directory with gcc (E13_GCC_ALL=1; E13_GCC_FLAGS for extra flags)
+if os.environ.get("E13_GCC_ALL"):
+    srcdir = p.parent
+    cfiles = sorted(str(f) for f in srcdir.glob("*.c"))
+    cmd = ["gcc", "-O2", "-w", "-DNORMALUNIX", "-DLINUX", "-D_DEFAULT_SOURCE", "-fcommon", "-o", str(out / "engine")] + cfiles + ["-lm"] + os.environ.get("E13_GCC_FLAGS", "").split()
+    r = subprocess.run(cmd, capture_output=True, text=True); print(r.stdout[-800:]); print(r.stderr[-2500:]); sys.exit(r.returncode)
 env = {"PATH": f"{W}/venv/bin:/usr/bin:/bin", "HOME": str(out)}
 bd = out / "build"
 cfg = [str(W / "venv/bin/cmake"), "-S", str(src / SUB), "-B", str(bd), "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_PREFIX_PATH={W}/prefix", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"] + extra

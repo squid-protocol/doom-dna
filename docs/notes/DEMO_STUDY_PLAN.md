@@ -69,6 +69,25 @@ Kotlin 1.9.25 compiler installed in the private tools directory (language level 
 * **room4doom (Rust): 12 of 47 as recorded, 47 of 47 once one header byte is rewritten.** The demo header's "no monsters" byte is the position of `-nomonsters` on the command line (8 here), as written by original DOOM and chocolate. room4doom reads it as `byte == 1`, so it plays the demos *with* monsters: at the first divergence the player takes damage of 3, 6, 14, 15 or 16 (zombie pistol shots) that the reference does not. With the byte set to 1 everything, doors and keys included, matches.
 * **gore (Go): 17 of 47.** First divergence is the player's position (x in 22, y in 8) at a median of tic 630; 21 of the 30 diverging demos diverge after sectors began moving, and 12 of the 17 identical demos have no sector motion, so door interaction is a likely trigger but 9 divergences occur with no doors involved. Cause not localised.
 
+## Master table (2026-11-26): every engine we could build, on every demo set
+Cell = demos gameplay-identical to the reference engine (chocolate-doom) / demos run. "Gameplay" ignores the view angle while the player is dead. Sets: **shareware** = the three stock demos; **sticky** = 300 random self-play demos; **chaos** = 200 full-range random-input demos; **bot** = 47 replay-validated key/door demos (no monsters). Digest: world fingerprint (objects/monsters, sector heights) plus keys held, except where noted.
+
+| Engine | Language / kind | shareware | sticky 300 | chaos 200 | bot 47 |
+|---|---|---|---|---|---|
+| chocolate-doom | C, reference | - | - | - | - |
+| doomgeneric, crispy-doom, prboom-plus, sdl-doom, inter-doom | C forks/relatives | 3/3 | 300/300 | 200/200 | 47/47 |
+| doom-ascii | C (doomgeneric-based) | 1/1 | 300/300 | 200/200 | 47/47 |
+| **Managed Doom** | **C#** | **3/3** | **300/300** | **200/200** | **47/47** |
+| Mocha Doom | Java | 3/3 except cosmetic death-camera angle | 290/300 | 191/200 | 47/47 |
+| room4doom | Rust rewrite | near-perfect (ammo pickup amount, camera) | 45/300 | 1/200 | 12/47 (47/47 with the header byte rewritten) |
+| puredoom | C (linuxdoom 1.10 based; player-only digest) | desync at tic 346 on demo 1 | 52/300 | 2/200 | 47/47 |
+| Kocoa Doom | Kotlin (Mocha conversion) | 0/3 | 0/300 | 0/200 | 47/47 (no monsters: its monster-chase bug is not exercised) |
+| gore | Go (doomgeneric translation) | 0/3 | 0/300 | 0/200 | 17/47 |
+
+* **Managed Doom (C#) is the first translation that is fully faithful** on every set, including the world fingerprint and RNG index. doom-ascii likewise.
+* **puredoom**: 248 of its 248 sticky-demo divergences and 198 of its 198 chaos divergences start in the weapon field, matching its tic-346 weapon divergence on shareware demo 1; weapon switching differs from the chocolate reference (likely the 1.10 source release vs the shipped 1.9 behaviour; not confirmed). With no monsters and no rapid weapon changes (the bot demos) it matches.
+* **Built but not part of the table:** nothing else. **Not tested, and why:** dsda-doom (needs OpenGL), woof and nugget-doom (need SDL3 3.4+ and OpenAL), doomretro (needs SDL2_image), eternity, odamex, srb2 (different game), doom-wasm (Emscripten), fastdoom (DOS), doom-ios (iOS), helion (from-scratch C#; large, needs a headless driver), doom-scheme (Chez Scheme), doo-cr (Crystal), dartdoom (Flutter); doomf77, rust-doom, cssdoom, fsharp-doom, sqldoom and doom-fx have no demo-playback support.
+
 ## What this means for the studies
 * **Study 1 as first framed has little to explain among established C ports:** sync does not vary among them on shareware or random demos. The outcome variance sits elsewhere (non-vanilla-exact engines like `puredoom`, translations, ports in non-compatible modes), so study 1 should be re-scoped there, with translations as the main case.
 * **Performance (study 2) and the call-count oracle (study 3) do not depend on sync variance.** Speed certainly varies; per-function call counts are language-independent, and demos are now a cheap, reproducible driver for both.
