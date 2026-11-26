@@ -31,7 +31,7 @@ LANGS = {"c": C, "csharp": CS}
 class Engine:
     def __init__(self, src, lang, id_base, fn_base, drop):
         self.src = src; self.cfg = LANGS[lang]; self.parser = tsp.get_parser(lang); self.tree = self.parser.parse(src); self.id = id_base; self.fn = fn_base; self.drop = drop
-        self.rows = []; self.fns = []; self.cur_fn = None; self.line_starts = None
+        self.rows = []; self.fns = []; self.cur_fn = None; self.cur_fid = None; self.line_starts = None
     def text(self, n): return self.src[n.start_byte:n.end_byte].decode("latin-1")
     def line(self, byte): return self.src.count(b"\n", 0, byte) + 1
     def splice(self, n, const, infn):
@@ -46,7 +46,7 @@ class Engine:
         if t in cfg.FUNC and not infn and not n.has_error:
             name = cfg.fname(n); body = n.child_by_field_name("body")
             if body is None or body.type != cfg.BODY: return self.text(n)
-            fid = self.fn; self.fn += 1; self.fns.append(dict(fid=fid, name=name, line=self.line(n.start_byte), end_line=self.line(n.end_byte), size=n.end_byte - n.start_byte)); prev = self.cur_fn; self.cur_fn = name
+            fid = self.fn; self.fn += 1; self.fns.append(dict(fid=fid, name=name, line=self.line(n.start_byte), end_line=self.line(n.end_byte), size=n.end_byte - n.start_byte)); prev = self.cur_fn; prevf = self.cur_fid; self.cur_fn = name; self.cur_fid = fid
             out = []; pos = n.start_byte
             for c in n.children:
                 out.append(self.src[pos:c.start_byte].decode("latin-1"))
@@ -54,7 +54,7 @@ class Engine:
                     inner = self.splice(c, const, True); assert inner.startswith("{"); out.append("{ " + cfg.ENTER % fid + inner[1:])
                 else: out.append(self.emit(c, const, False))
                 pos = c.end_byte
-            out.append(self.src[pos:n.end_byte].decode("latin-1")); self.cur_fn = prev; return "".join(out)
+            out.append(self.src[pos:n.end_byte].decode("latin-1")); self.cur_fn = prev; self.cur_fid = prevf; return "".join(out)
         if t in cfg.NOMUT_NODES: const = True
         if t == "local_declaration_statement" and any(ch.type == "modifier" and ch.text == b"const" for ch in n.children): const = True
         if t == "declaration" and any(ch.type == "storage_class_specifier" and ch.text == b"static" for ch in n.children): const = True
@@ -67,7 +67,7 @@ class Engine:
                 orig = L + mid1 + op + mid2 + R
                 if len(orig) < MAXLEN:
                     mid = self.id; self.id += 1
-                    self.rows.append(dict(id=mid, kind=KIND[op], op=op, new=OPS[op], fn=self.cur_fn, line=self.line(opn.start_byte), col=opn.start_byte - self.src.rfind(b"\n", 0, opn.start_byte), byte=opn.start_byte, node="binary"))
+                    self.rows.append(dict(id=mid, kind=KIND[op], op=op, new=OPS[op], fn=self.cur_fn, fid=self.cur_fid, line=self.line(opn.start_byte), col=opn.start_byte - self.src.rfind(b"\n", 0, opn.start_byte), byte=opn.start_byte, node="binary"))
                     if mid in self.drop: return orig
                     return "(" + cfg.ON % mid + " ? (%s) : (%s))" % (L + mid1 + OPS[op] + mid2 + R, orig)
                 return orig
@@ -75,7 +75,7 @@ class Engine:
             s = self.text(n)
             if re.fullmatch(r"\d+", s) and 2 <= int(s) < 100000:
                 mid = self.id; self.id += 1
-                self.rows.append(dict(id=mid, kind="constant", op=s, new=str(int(s) + 1), fn=self.cur_fn, line=self.line(n.start_byte), col=n.start_byte - self.src.rfind(b"\n", 0, n.start_byte), byte=n.start_byte, node="literal"))
+                self.rows.append(dict(id=mid, kind="constant", op=s, new=str(int(s) + 1), fn=self.cur_fn, fid=self.cur_fid, line=self.line(n.start_byte), col=n.start_byte - self.src.rfind(b"\n", 0, n.start_byte), byte=n.start_byte, node="literal"))
                 if mid in self.drop: return s
                 return "(" + cfg.ON % mid + " ? (%d) : (%s))" % (int(s) + 1, s)
             return s

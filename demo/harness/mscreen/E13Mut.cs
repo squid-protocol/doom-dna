@@ -9,12 +9,13 @@ public static class E13Mut
     public static int Tic;
     static readonly uint[] counts = new uint[16384];
     static readonly int[] first = new int[16384];
+    static readonly uint[] site = new uint[16384];
     static ulong[][] refRows;
     static int rows;
     static string verdict;
     static bool init;
 
-    public static bool On(int id) { return Id == id; }
+    public static bool On(int id) { site[id]++; return Id == id; }
     public static int Enter(int fid) { counts[fid]++; if (first[fid] == 0) first[fid] = Tic + 1; return 0; }
 
     static void Init()
@@ -39,11 +40,13 @@ public static class E13Mut
         if (refRows != null && rows < refRows.Length)
         {
             var rr = refRows[rows];
+            long mask = 0;
             foreach (var c in cols)
             {
                 if (c == 7 && (long)unchecked((int)rr[8]) <= 0) continue;
-                if (val[c] != rr[c]) { if (verdict != null) File.WriteAllText(verdict, $"div {rows} {c}\n"); Environment.Exit(0); }
+                if (val[c] != rr[c]) mask |= 1L << c;
             }
+            if (mask != 0) { if (verdict != null) File.WriteAllText(verdict, $"div {rows} {mask}\n"); Environment.Exit(0); }
         }
         rows++;
     }
@@ -51,7 +54,14 @@ public static class E13Mut
     static void Finish()
     {
         var pf = Environment.GetEnvironmentVariable("E13_PROFILE");
-        if (pf != null) using (var o = new StreamWriter(pf)) for (int i = 0; i < counts.Length; i++) if (counts[i] != 0) o.WriteLine($"{i} {counts[i]} {first[i] - 1}");
+        if (pf != null)
+        {
+            using (var o = new StreamWriter(pf))
+            {
+                for (int i = 0; i < counts.Length; i++) if (counts[i] != 0) o.WriteLine($"F {i} {counts[i]} {first[i] - 1}");
+                for (int i = 0; i < site.Length; i++) if (site[i] != 0) o.WriteLine($"S {i} {site[i]}");
+            }
+        }
         if (verdict != null && !File.Exists(verdict)) File.WriteAllText(verdict, $"end {rows}\n");
     }
 }

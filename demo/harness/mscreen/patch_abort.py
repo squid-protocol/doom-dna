@@ -1,6 +1,6 @@
 """Add an in-engine early-abort comparison to the E13 digest of a chocolate-family p_tick.c (our code; idempotent).
 With E13_REF=<clean digest file> the engine compares each tic's digest row with the reference row (columns: leveltime, gameplay RNG index, x y z angle health armor weapon ammo0-3,
-nmobjs, mobjhash, sectorhash, keys; the angle is skipped while the reference player is dead) and, at the first mismatch, writes "div <row> <column>" to E13_VERDICT and exits.
+nmobjs, mobjhash, sectorhash, keys; the angle is skipped while the reference player is dead) and, at the first mismatch, writes "div <row> <bitmask of every mismatching column>" to E13_VERDICT and exits.
 At normal exit it writes "end <rows>". Usage: python patch_abort.py <p_tick.c>"""
 import sys
 from pathlib import Path
@@ -22,9 +22,11 @@ new = r'''    {
         }
         if (e13_nref > 0 && e13_rows < e13_nref) {
             static const int cols[] = { 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 }; unsigned long long *rr = e13_ref + e13_rows * 19; int j;
+            long long mask = 0;
             for (j = 0; j < 17; j++) { int c = cols[j];
                 if (c == 7 && (long long)(int)rr[8] <= 0) continue;
-                if (v[c] != rr[c]) { if (e13_verd) { FILE *o = fopen(e13_verd, "w"); if (o) { fprintf(o, "div %d %d\n", e13_rows, c); fclose(o); } } fflush(NULL); _exit(0); } }
+                if (v[c] != rr[c]) mask |= 1LL << c; }
+            if (mask) { if (e13_verd) { FILE *o = fopen(e13_verd, "w"); if (o) { fprintf(o, "div %d %lld\n", e13_rows, mask); fclose(o); } } fflush(NULL); _exit(0); }
         }
         e13_rows++;
         if (e13_verd && e13_nref >= 0) { static int reg = 0; if (!reg) { reg = 1; atexit(e13_verdict_end); } e13_rows_out = e13_rows; }
