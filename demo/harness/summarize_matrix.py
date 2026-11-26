@@ -1,10 +1,12 @@
 """Write a per-demo table (first strict divergence and first gameplay divergence vs the reference) for one engine.
-Usage: python summarize_matrix.py <run_dir> <label> <out_csv> [ref_label=choc] [--wide]   (gameplay = angle ignored while the reference player is dead)"""
+Usage: python summarize_matrix.py <run_dir> <label> <out_csv> [ref_label=choc] [--wide] [--no-prnd]   (gameplay = angle ignored while the reference player is dead)"""
 import csv, glob, os, sys
 from pathlib import Path
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 if "--wide" in sys.argv: os.environ["E13_WIDE"] = "1"
+NOPRND = "--no-prnd" in sys.argv  # engines whose gameplay-RNG index is not comparable (not masked to 0..255, or private)
 sys.path.insert(0, str(Path(__file__).resolve().parent)); import compare_digests as C
+if NOPRND: C.KEEP = [k for k in C.KEEP if k != 2]
 run, label, out = Path(args[0]), args[1], args[2]; ref = args[3] if len(args) > 3 else "choc"
 rows = []
 for f in sorted(glob.glob(str(run / f"{label}_g*.txt"))):

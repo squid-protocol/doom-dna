@@ -53,10 +53,17 @@ Rust 1.100.0 and alsa-lib installed in the private prefix; built from a patched 
 * **Translations and the rewrite on chaos input** (`demo/phase1_*.csv`): Mocha 191 of 200 gameplay-identical (36 strictly; angle-only differences while dead in 163), consistent with its sticky-demo rate; room4doom **1 of 200** (the first divergence is the weapon in 131 demos, from about tic 29: rapid random weapon-switch requests are handled differently); gore **0 of 200**.
 * **Not yet done:** coverage-guided demo generation (aim demos at code the random ones miss; needs gcov on the reference) and goal-directed play (use doors, keys, secrets, finish levels); wider digest for room4doom; Doom 2 content and multiplayer modes.
 
+## Fourth: Kocoa Doom (pure Kotlin conversion of Mocha Doom; a translation of a translation)
+Kotlin 1.9.25 compiler installed in the private tools directory (language level 1.6: newer levels reject this older source); built from a patched copy with our Kotlin digest (`demo/harness/build_kocoa.py`, `kocoa/Digest.kt`); runs on the JVM with the same Mocha-style external-demo loader.
+* **Not behaviourally equivalent.** On the shareware demos it plays every tic but its world differs from tic 47 to 76 (an object's state) and the player's health or position differs by tic 82 to 200. On 300 sticky random demos and 200 chaos demos **all 500 diverge** (world fingerprint, with the RNG column excluded), at a median first divergence of tic 18 to 20; in 499 of 500 the first difference is an object's state, not the player's.
+* Its gameplay-RNG index is not comparable (it is not masked to 0..255 and reaches the thousands), so that column was excluded for this engine.
+* **First difference on demo 1:** at tic 48 exactly one of 215 objects differs: a shotgun guard faces 180° and has not moved, where the reference faces 225° and has taken a step. So the chase direction differs. `P_NewChaseDir` and its direction tables match the C code line for line, so the cause is further down (not yet localised). Mocha Doom, its parent, does not show this: Kocoa's conversion to Kotlin introduced it.
+* Results per demo: `demo/phase1_kocoa_sticky300_wide.csv`, `demo/phase1_kocoa_chaos200_wide.csv`.
+
 ## What this means for the studies
 * **Study 1 as first framed has little to explain among established C ports:** sync does not vary among them on shareware or random demos. The outcome variance sits elsewhere (non-vanilla-exact engines like `puredoom`, translations, ports in non-compatible modes), so study 1 should be re-scoped there, with translations as the main case.
 * **Performance (study 2) and the call-count oracle (study 3) do not depend on sync variance.** Speed certainly varies; per-function call counts are language-independent, and demos are now a cheap, reproducible driver for both.
-* **Not yet built:** `dsda-doom` (needs OpenGL), `woof` and `nugget-doom` (need SDL3 3.4+ and OpenAL), and the other translations (`managed-doom` C#, `doom-scheme`, `dartdoom`, `kocoa-doom` Kotlin, `doo-cr` Crystal).
+* **Not yet built:** `dsda-doom` (needs OpenGL), `woof` and `nugget-doom` (need SDL3 3.4+ and OpenAL), and the other translations (`managed-doom` C#, `doom-scheme` Chez Scheme (ships its own oracle comparison against linuxdoom traces), `doo-cr` Crystal, `dartdoom` Dart/Flutter).
 ## Blockers and next steps
 * Done: SDL2 2.30.9, SDL2_net 2.2.0 and SDL2_mixer 2.8.0 built from official release sources into a private prefix (`doom-e7-work/demo-study/prefix`), cmake and ninja in a private venv.
 * Next: find where Mocha Doom's RNG use differs (call-by-call trace), then the other translations; then register the re-scoped study 1 or study 3 with two independent design reviews, as before.
