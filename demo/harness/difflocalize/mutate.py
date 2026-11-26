@@ -18,30 +18,65 @@ def commands():
     return _cmds
 
 SITE_RES = [
-    (re.compile(r"(?<![<>=!+\-*/&|^%])(\s)(<=|>=|<|>)(\s)(?![<>=])"), {"<": "<=", "<=": "<", ">": ">=", ">=": ">"}, "relational"),
-    (re.compile(r"(\s)(==|!=)(\s)"), {"==": "!=", "!=": "=="}, "equality"),
-    (re.compile(r"(\s)(\+|-)(\s)(?=[\w(])"), {"+": "-", "-": "+"}, "arithmetic"),
-    (re.compile(r"(\s)(&&|\|\|)(\s)"), {"&&": "||", "||": "&&"}, "logical"),
+    (re.compile(r"(?<![<>=!+\-*/&|^%\w])()(<=|>=|<|>)(?![<>=])()"), {"<": "<=", "<=": "<", ">": ">=", ">=": ">"}, "relational"),
+    (re.compile(r"()(==|!=)()"), {"==": "!=", "!=": "=="}, "equality"),
+    (re.compile(r"(?<=[\w)\]])\s*()(\+|-)(?![+\-=>])\s*(?=[\w(])()"), {"+": "-", "-": "+"}, "arithmetic"),
+    (re.compile(r"()(&&|\|\|)()"), {"&&": "||", "||": "&&"}, "logical"),
+    (re.compile(r"()(<<|>>)()"), {"<<": ">>", ">>": "<<"}, "shift"),
 ]
 CONST_RE = re.compile(r"(?<![\w.\"'#])(\d+)(?![\w.\"'])")
 
+def mask(text):
+    """same-length copy with comments and string/char literals blanked, so offsets stay valid"""
+    out = []; i = 0; n = len(text); st = "code"
+    while i < n:
+        c = text[i]; d = text[i:i + 2]
+        if st == "code":
+            if d == "/*": st = "block"; out.append("  "); i += 2; continue
+            if d == "//": st = "line"; out.append("  "); i += 2; continue
+            if c == '"': st = "str"; out.append(" "); i += 1; continue
+            if c == "'": st = "chr"; out.append(" "); i += 1; continue
+            out.append(c); i += 1
+        elif st == "block":
+            if d == "*/": st = "code"; out.append("  "); i += 2; continue
+            out.append("\n" if c == "\n" else " "); i += 1
+        elif st == "line":
+            if c == "\n": st = "code"; out.append("\n")
+            else: out.append(" ")
+            i += 1
+        else:
+            q = '"' if st == "str" else "'"
+            if c == "\\": out.append("  "); i += 2; continue
+            if c == q: st = "code"
+            out.append(" "); i += 1
+    return "".join(out)
+
 def sites(text):
-    out = []; depth = 0; in_c = False
-    for i, line in enumerate(text.split("\n"), 1):
-        code = line
-        if in_c:
-            if "*/" in code: code = code.split("*/", 1)[1]; in_c = False
-            else: continue
-        code = re.sub(r"/\*.*?\*/", "", code)
-        if "/*" in code: code = code.split("/*")[0]; in_c = True
-        code = code.split("//")[0]; s = code.strip()
-        before = depth; depth += code.count("{") - code.count("}")
-        if before < 1 or not s or s.startswith("#") or re.match(r"^(case\b|default\b)", s) or "I_Error" in s: continue
+    """mutation sites inside function bodies only (file-scope initializers and typedefs are excluded)"""
+    m = mask(text); out = []; depth = 0; func_depths = []; header = ""
+    for ln, line in enumerate(m.split("\n"), 1):
+        s = line.strip()
+        if s.startswith("#"): continue
+        # track function bodies: a '{' at depth 0 opens a function if the text since the last ';' or '}' looks like a definition
+        for ci, ch in enumerate(line):
+            if ch == "{":
+                if depth == 0:
+                    h = header.strip(); is_func = "(" in h and ")" in h and "=" not in h and not re.match(r"^(typedef|struct|enum|union)\b", h)
+                    func_depths.append(is_func)
+                depth += 1; header = ""
+            elif ch == "}":
+                depth -= 1
+                if depth == 0: header = ""; func_depths = []
+            elif ch == ";" and depth == 0: header = ""
+            elif depth == 0: header += ch
+        if depth == 0 and not (func_depths and func_depths[-1]): header += "\n"
+        inside = depth >= 1 and func_depths and func_depths[0]
+        if not inside or not s or re.match(r"^(case\b|default\b)", s) or "I_Error" in s: continue
         for rx, table, kind in SITE_RES:
-            for m in rx.finditer(code): out.append((i, m.start(2), m.end(2), m.group(2), table[m.group(2)], kind))
-        for m in CONST_RE.finditer(code):
-            v = int(m.group(1))
-            if v >= 2 and v < 100000 and "[" not in code[max(0, m.start() - 1):m.start()]: out.append((i, m.start(1), m.end(1), m.group(1), str(v + 1), "constant"))
+            for mm in rx.finditer(line): out.append((ln, mm.start(2), mm.end(2), mm.group(2), table[mm.group(2)], kind))
+        for mm in CONST_RE.finditer(line):
+            v = int(mm.group(1))
+            if 2 <= v < 100000 and "[" not in line[max(0, mm.start() - 1):mm.start()]: out.append((ln, mm.start(1), mm.end(1), mm.group(1), str(v + 1), "constant"))
     return out
 
 def apply(text, site):

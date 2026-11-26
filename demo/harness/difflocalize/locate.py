@@ -66,6 +66,23 @@ class CallGraph:
             for g, d in self.closure([s0], depth).items():
                 if g not in out or d + u < out[g]: out[g] = d + u
         return out
+    def reach_any(self, starts):
+        """everything statically reachable from the starts (no depth limit): separates 'not in the graph' from 'too deep'"""
+        return self.closure(starts, 10 ** 6)
+    def rewired(self, rng, factor=10):
+        """a degree-preserving rewiring of the call graph (double-edge swaps), used as a null"""
+        edges = [(a, b) for a, bs in self.callees.items() for b in bs if b in self.names and a in self.names]; es = set(edges); n = len(edges)
+        for _ in range(factor * n):
+            i, j = rng.randrange(n), rng.randrange(n); (a, b), (c, d) = edges[i], edges[j]
+            if a == d or c == b or (a, d) in es or (c, b) in es or (a, b) == (c, d): continue
+            es.discard((a, b)); es.discard((c, d)); es.add((a, d)); es.add((c, b)); edges[i], edges[j] = (a, d), (c, b)
+        g = CallGraph.__new__(CallGraph); g.names = self.names; g.where = self.where; g.total = self.total
+        g.callees = collections.defaultdict(set); g.callers = collections.defaultdict(set)
+        for a, b in edges: g.callees[a].add(b); g.callers[b].add(a)
+        return g
+    def spans(self, path_suffix):
+        """[(start_line, name)] of the functions of one file, sorted"""
+        return sorted((l, n) for n, (p, l) in self.where.items() if p.endswith(path_suffix))
     def function_at(self, path_suffix, line):
         best = None
         for n, (p, l) in self.where.items():
@@ -84,7 +101,7 @@ FIELD_FAMILY = {
     "ammo0": ["pfireweapon", "pgiveammo", "ptouchspecialthing", "pcheckammo", "adecreaseammo", "afirepistol"],
     "mobjhash": ["pmobjthinker", "pxymovement", "pdamagemobj", "ptrywalk", "pnewchasedir"],
     "nmobjs": ["pspawnmobj", "pspawnmapthing", "premovemobj", "pkillmobj"],
-    "sectorhash": ["tvertical door", "tmoveplane", "pspawnspecials", "pupdatespecials", "evdodoor", "pusespecialline", "tvdoor", "tmovefloor", "tmoveceiling"],
+    "sectorhash": ["tverticaldoor", "tmoveplane", "pspawnspecials", "pupdatespecials", "evdodoor", "pusespecialline", "tvdoor", "tmovefloor", "tmoveceiling"],
     "cards": ["ptouchspecialthing", "pgivecard"],
     "prndindex": [],
 }

@@ -1,0 +1,8 @@
+E13 pinned artifacts (written 2026-11-26 before the registered runs)
+harness git commit (parent of the commit that adds this file): 92734bf05b1fca8fd4fe1ea8b5769ca8b4b47286
+reference+trace binary md5: 2bc55e03bf6834c706e2234d3c4dbe56
+scanner database (chocolate-doom, engine 704cb35f0): /srv/storage_16tb/projects/doom-e7-work/demo-study/../scans/704cb35f0/chocolate-doom/chocolate-doom_galaxy_master.db md5 f1a3a1b48b2601c32882f01a0c35e308
+IWAD md5: f0cefca49926d00903cf57551d901abe
+gen (sticky 300, seed 20261125) demos md5 of the list: 674835cce7534c043a7877608fe938e4
+gen_c (chaos 200, seed 777): 0ebeb4e5c3a37c622668937095e5c076
+gen_bot (47 validated): 548149b397386490930aff471b7724cb
