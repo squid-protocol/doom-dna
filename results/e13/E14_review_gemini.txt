@@ -1,0 +1,47 @@
+Prioritised review of [E14_SAME_BREAK_SAME_ROLE.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/preregistration/E14_SAME_BREAK_SAME_ROLE.md) (read-only; blind to E13 Part A results).
+
+---
+
+### P0 — Blockers (tautology, measurement invalidity, or uninterpretable results)
+
+1. **Phase 1 is a copy-paste tautology amplified by the exact-operator-sequence filter.**
+   All seven Phase 1 ports inherit `linuxdoom` C code, are 100% demo-identical ([DEMO_STUDY_PLAN.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/docs/notes/DEMO_STUDY_PLAN.md)), and include nested forks (`chocolate→crispy→inter`; `doomgeneric→doom-ascii`). Note also: `doomgeneric` is *not* an independent lineage (contrary to the Limits section). Requiring identical operator sequences across the entire function discards refactored matches (e.g., Boom `comp_*` checks) and restricts testing to verbatim-copied functions, where identical edits trivially produce identical breaks.
+   *Fix:* Replace full-function exact-sequence filtering with AST-based or local-window (LCS/diff) site alignment, report unmatched/dropped-site rates per port, and bring a true cross-language port into Phase 1 (see #9).
+
+2. **Asymmetric digest columns, missing self-reference, and unspecified crash/build handling.**
+   Per [E13_DEMO_CONFORMANCE.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/preregistration/E13_DEMO_CONFORMANCE.md), `prboom-plus` and `inter-doom` omit `prndindex`, while [compare_digests.py](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/demo/harness/compare_digests.py) checks `prndindex` *before* `x..cards` (and leaves `E13_WIDE` off unless set). Comparing Boom ports against Chocolate ports will artificially disagree on detection (RNG-only kills) and systematically shift "first differing field."
+   *Fix:* (a) Score every mutant **self-differentially** (`mutated P` vs `clean P`)—mandatory once non-vanilla ports enter; (b) enforce `E13_WIDE=1`, `--ignore-dead-angle`, and a **common column intersection** (excluding `prndindex`) for cross-port scores (reporting `prndindex` separately where shared); (c) preregister build-failure, crash, and timeout (40 s) handling as non-kills (per E13) and track cross-port crash-vs-divergence mismatches.
+
+3. **Base-rate inflation from survivors and universal killers breaks S1 and S2.**
+   At E13's 20–55% kill band, two unrelated random mutants agree on detection 50–68% of the time—exceeding S1's `<= 65%` mismatched ceiling by pure survivor math. Unexecuted code (multiplayer, Doom 2, rare specials) and equivalent mutants survive identically in every port. Conversely, hot functions (e.g., `P_MobjThinker`) fail all 45/45 demos, giving **unrelated** hot-function pairs Jaccard = 1.0. Jaccard is also undefined ($0/0$) for double-survivors, and first-field agreement is undefined when failing sets do not intersect.
+   *Fix:* Replace raw detection % with chance-corrected **Cohen's $\kappa$ / MCC** and conditional kill recall `P(Q killed | ref killed)`. Define primary Jaccard and first-field/tic agreement on **reference-killed sites** (scoring 0 if Q survives), plus a secondary conditional-on-both-killed table. Separate uncovered functions (via reference coverage or demo-executed filter) from equivalent mutants.
+
+---
+
+### P1 — Major Methodological & Technical Defects
+
+4. **Selection contradiction, circularity, and `F0`/`F1c` conflicts.**
+   Item 1 requires functions matched in *every* port and takes the *top 60*, leaving zero variation in port count and no low-conservation pool for Control (iii) / S3. Ranking by exact match score selects short, untouched/dead functions while penalizing central simulation functions refactored in Boom/Crispy—confounding S3 with size, churn, and Step 3 attrition. Furthermore, inspecting [prboom-plus__chocolate-doom.json](file:///srv/storage_16tb/projects/doom-e7-work/gene-view/prboom-plus__chocolate-doom.json) shows `F0` and `F1c` sometimes map the same port index to *different* reference functions (e.g., `[50, 1410]` in `F0` vs `[50, 1411]` in `F1c`).
+   *Fix:* Lock exact tier precedence (`F0`, then `F1c` for remaining unmatched, 1-to-1). Define the `p_*` universe on the reference port only (to avoid target-name leakage). For S3, stratify *at sampling* (e.g., 30 high- vs 30 low-conservation functions matched on size/execution), without dropping diverged functions via exact-sequence filtering.
+
+5. **Concrete site-matching bugs in [mutate.py](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/demo/harness/difflocalize/mutate.py).**
+   Lines 75–79 iterate `SITE_RES` by operator *kind* per line rather than column order: reformatting `if (a < b && c == d)` across two lines changes the emitted operator sequence (`<, ==, &&` vs `<, &&, ==`). Brace-depth tracking (lines 61–72) breaks on `#ifdef` branches common in PrBoom+/Crispy; `CONST_RE` skips `0`/`1` and breaks when one port uses a `#define` macro (`FRACBITS`) and another a literal (`16`); `mutate.py` is hardcoded to `chocolate-doom` Ninja builds; and integer/shift edits can trigger compiler-dependent UB across ports.
+   *Fix:* Sort sites by `(line, col)` (or parse with tree-sitter/libclang), normalize/exclude macro-vs-literal mismatches, standardize compiler flags (`-O2 -fno-strict-aliasing`), and cap/seed site sampling (e.g., $\le 5$ sites/function, stratified by operator).
+
+6. **Unfair and sparse controls.**
+   Within-port same-file + same-size-decile + same-operator controls will frequently be empty in small `p_*` files (`p_telept`, `p_lights`, `p_plats`), share subsystem call paths (inflating control agreement), and exclude cross-port build/config noise present in matched pairs. Mismatched cross-port pairs are unspecified and confounded by killability/hotness.
+   *Fix:* Use two cross-port controls: (a) **within-panel permutation** (function $f$ in P vs $g \ne f$ in Q, matched on operator and reference killability stratum); (b) **cross-port same-file different-function** control. Drop the within-port control or pair it against within-port same-function/different-site as a ceiling check.
+
+7. **No statistical plan for dependence, clustering, or multiplicity.**
+   Port pairs share `chocolate-doom` and fork ancestry; ~5 sites cluster within each function; 45 demos are correlated. Treating ~2,100 builds or all $\binom{7}{2}$ pairs as independent inflates effective $N$ by >10×.
+   *Fix:* Make the **function** ($n=60$) the independent cluster unit. Report per-port-vs-reference estimates alongside a lineage-weighted aggregate, with **cluster-bootstrap 95% CIs over functions** and function-level paired permutation tests. Designate primary vs descriptive predictions (as in E13).
+
+---
+
+### P2 — Predictions & Phase 1 Restructuring
+
+8. **Tighten signature and S1–S4.**
+   First-divergence **tic** is collected in Item 4 but dropped from the agreement score; add exact/$\pm 1$-tic agreement (far more role-specific than coarse field class). Add explicit predictions for first-field and first-tic agreement, anchor S1–S3 to chance-corrected effect sizes with 95% CI bounds, and downgrade S3 to exploratory unless conservation is stratified cleanly.
+
+9. **Most informative Phase 1 — and what makes E14 uninterpretable.**
+   Do **not** spend 5 hours on 2,100 builds across 6 near-clone C forks. Run a lean two-arm Phase 1: (1) `chocolate-doom` vs `prboom-plus` (most diverged C port, calibrating the harness on refactored C); and (2) `chocolate-doom` vs **`managed-doom` (C#)**—already built, 100% demo-identical on 550/550 demos with full wide digest + `prndindex`, and genuinely independent source (include E12 `ext` tier 1, since [managed-doom__chocolate-doom.json](file:///srv/storage_16tb/projects/doom-e7-work/gene-view/managed-doom__chocolate-doom.json) has only 11 `F0` and 21 `F1c` pairs). Preceding this with a 10-function pilot verifies site-alignment retention and kill rate. E14 becomes **uninterpretable** if (i) run only on verbatim-filtered C clones, (ii) survivor rates >60% without chance correction, (iii) `prndindex` differs across compared ports, (iv) site-skipping exceeds ~50% differentially across conservation tiers, or (v) controls are unmatched on killability.
