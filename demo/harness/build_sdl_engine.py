@@ -49,6 +49,44 @@ void E13_Digest(void)
 }
 '''
 p.write_text(t)
+
+# optional: trace every gameplay-RNG call with the calling function's name (E13_TRACE=1); the trace file is chosen by $E13_TRACE at run time
+if os.environ.get("E13_TRACE_BUILD"):
+    mh = next(src.rglob("m_random.h")); mc = next(src.rglob("m_random.c"))
+    h = mh.read_text(); h = re.sub(r"int\s+P_Random\s*\(\s*void\s*\)\s*;", "int P_Random (void);\nint E13_PRandom(const char *fn);\n#ifndef E13_NO_MACRO\n#define P_Random() E13_PRandom(__func__)\n#endif", h, count=1); mh.write_text(h)
+    c = mc.read_text(); c = "#define E13_NO_MACRO\n" + c + r'''
+#include <stdio.h>
+#include <stdlib.h>
+extern int gametic;
+static FILE *e13_tr = NULL;
+int E13_PRandom(const char *fn)
+{
+    int v = P_Random();
+    if (!e13_tr) { const char *f = getenv("E13_TRACE"); if (!f) return v; e13_tr = fopen(f, "w"); if (!e13_tr) return v; setvbuf(e13_tr, NULL, _IOLBF, 1 << 12); }
+    fprintf(e13_tr, "%d %s %d\n", gametic, fn, prndindex);
+    return v;
+}
+'''
+    mc.write_text(c)
+
+if os.environ.get("E13_TRACE_BUILD") and os.environ.get("E13_TRACE_SIGHT"):
+    ps = next(src.rglob("p_sight.c")); t = ps.read_text()
+    t2 = re.sub(r"boolean\s+P_CheckSight\s*\(\s*mobj_t\s*\*\s*t1\s*,\s*mobj_t\s*\*\s*t2\s*\)", "static boolean P_CheckSight_orig(mobj_t *t1, mobj_t *t2)", t, count=1)
+    assert t2 != t, "P_CheckSight definition not found"
+    t2 += r'''
+#include <stdio.h>
+#include <stdlib.h>
+extern int gametic;
+static FILE *e13_sight = NULL;
+boolean P_CheckSight(mobj_t *t1, mobj_t *t2)
+{
+    boolean r = P_CheckSight_orig(t1, t2);
+    if (!e13_sight) { const char *f = getenv("E13_SIGHT"); if (!f) return r; e13_sight = fopen(f, "w"); if (!e13_sight) return r; setvbuf(e13_sight, NULL, _IOLBF, 1 << 12); }
+    fprintf(e13_sight, "%d %d %d %d %d %d %d %d\n", gametic, (int)t1->type, (int)t1->x, (int)t1->y, (int)t2->x, (int)t2->y, (int)t2->type, (int)r);
+    return r;
+}
+'''
+    ps.write_text(t2)
 env = {"PATH": f"{W}/venv/bin:/usr/bin:/bin", "HOME": str(out)}
 bd = out / "build"
 cfg = [str(W / "venv/bin/cmake"), "-S", str(src / SUB), "-B", str(bd), "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_PREFIX_PATH={W}/prefix", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"] + extra
