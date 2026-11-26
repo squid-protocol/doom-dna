@@ -5,11 +5,13 @@ Usage: python compare_digests.py [--no-prnd] <runs_dir> <label_a> <label_b> demo
 Prints per demo: identical|diverges at tic N (field), tics in each digest."""
 import sys
 from pathlib import Path
-NAMES = ["gametic", "leveltime", "prndindex", "rndindex", "x", "y", "z", "angle", "health", "armor", "weapon", "ammo0", "ammo1", "ammo2", "ammo3"]
+NAMES = ["gametic", "leveltime", "prndindex", "rndindex", "x", "y", "z", "angle", "health", "armor", "weapon", "ammo0", "ammo1", "ammo2", "ammo3", "nmobjs", "mobjhash", "sectorhash"]
 KEEP = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+import os
+if os.environ.get("E13_WIDE"): KEEP = KEEP + [15, 16, 17]  # world fingerprint columns (monsters/objects and sectors), when both digests have them
 def load(f):
     if not Path(f).exists(): return None
-    rows = [l.split() for l in open(f) if len(l.split()) == 15]  # a crashed engine can leave a partial last line
+    rows = [l.split() for l in open(f) if len(l.split()) in (15, 18)]  # a crashed engine can leave a partial last line
     # some engines emit one stray row before the level starts (leveltime does not increase between rows 0 and 1): drop it
     if len(rows) > 1 and int(rows[1][1]) <= int(rows[0][1]): rows = rows[1:]
     return rows
@@ -17,6 +19,7 @@ def first_divergence(a, b, keep=KEEP):
     n = min(len(a), len(b))
     for i in range(n):
         for k in keep:
+            if k >= len(a[i]) or k >= len(b[i]): continue
             if a[i][k] != b[i][k]: return i, NAMES[k]
     return (n, "length") if len(a) != len(b) else None
 if __name__ == "__main__":

@@ -12,6 +12,15 @@ import (
 
 var e13file *os.File
 
+func e13fnv(h uint64, v int32) uint64 {
+	u := uint32(v)
+	for i := 0; i < 4; i++ {
+		h ^= uint64((u >> (8 * uint(i))) & 0xff)
+		h *= 0x100000001b3
+	}
+	return h
+}
+
 func e13Digest() {
 	if e13file == nil {
 		name := os.Getenv("E13_DIGEST")
@@ -29,9 +38,30 @@ func e13Digest() {
 		return
 	}
 	m := p.Fmo
-	fmt.Fprintf(e13file, "%d %d %d 0 %d %d %d %d %d %d %d %d %d %d %d\n", gametic, leveltime, prndindex,
+	var msum uint64
+	var nm int
+	for th := thinkercap.Fnext; th != &thinkercap; th = th.Fnext {
+		mo, ok := th.Ffunction.(*mobj_t)
+		if !ok || mo == m {
+			continue
+		}
+		h := uint64(0xcbf29ce484222325)
+		for _, v := range []int32{int32(mo.Ftype1), int32(mo.Fx), int32(mo.Fy), int32(mo.Fz), int32(mo.Fangle), int32(mo.Fmomx), int32(mo.Fmomy), int32(mo.Fmomz), mo.Fhealth} {
+			h = e13fnv(h, v)
+		}
+		msum += h
+		nm++
+	}
+	sh := uint64(0xcbf29ce484222325)
+	for i := range sectors {
+		sc := &sectors[i]
+		for _, v := range []int32{int32(sc.Ffloorheight), int32(sc.Fceilingheight), int32(sc.Fspecial)} {
+			sh = e13fnv(sh, v)
+		}
+	}
+	fmt.Fprintf(e13file, "%d %d %d 0 %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n", gametic, leveltime, prndindex,
 		int32(m.Fx), int32(m.Fy), int32(m.Fz), uint32(m.Fangle), p.Fhealth, p.Farmorpoints, int32(p.Freadyweapon),
-		p.Fammo[0], p.Fammo[1], p.Fammo[2], p.Fammo[3])
+		p.Fammo[0], p.Fammo[1], p.Fammo[2], p.Fammo[3], nm, msum, sh)
 }
 
 // E13Close flushes and closes the digest file.
