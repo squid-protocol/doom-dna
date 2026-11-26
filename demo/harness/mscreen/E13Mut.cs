@@ -7,9 +7,9 @@ public static class E13Mut
 {
     public static readonly int Id = int.TryParse(Environment.GetEnvironmentVariable("E13_MUT"), out var v) ? v : -1;
     public static int Tic;
-    static readonly uint[] counts = new uint[16384];
-    static readonly int[] first = new int[16384];
-    static readonly uint[] site = new uint[16384];
+    static readonly uint[] counts = new uint[65536];
+    static readonly int[] first = new int[65536];
+    static readonly uint[] site = new uint[65536];
     static ulong[][] refRows;
     static int rows;
     static string verdict;

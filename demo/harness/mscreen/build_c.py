@@ -24,16 +24,30 @@ def spans(text):
                 if depth == 0: break
             j += 1
         out.append((i, j, int(m.group(1))))
+    for m in re.finditer(r"\{ if \(!E13_ON\((\d+)\)\) \{", text):
+        i = m.start(); depth = 0; q = None; j = i
+        while j < len(text):
+            ch = text[j]
+            if q:
+                if ch == "\\": j += 1
+                elif ch == q: q = None
+            elif ch in "\"'": q = ch
+            elif ch == "{": depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0: break
+            j += 1
+        out.append((i, j, int(m.group(1))))
     return out
 def attribute(text, line, col):
     lines = text.split("\n"); off = sum(len(x) + 1 for x in lines[:line - 1]) + col - 1
     inside = [(e - s0, i) for s0, e, i in spans(text) if s0 <= off <= e]
     return {min(inside)[1]} if inside else set()
-rows_all, fns_all, dropped, objs = [], [], [], []; idb = fnb = 0
+rows_all, fns_all, dropped, objs = [], [], [], []; idb = fnb = 0; id2b = 10000
 for stem in mutate.FILES:
     src = (SRC / f"{stem}.c").read_bytes(); drop = set(); tmp = SRC / f"_scr_{stem}.c"; obj = out / f"{stem}.o"
     for attempt in range(12):
-        text, rows, fns, nid, nfn = schemata.instrument(src, "c", idb, fnb, frozenset(drop)); tmp.write_text(text, encoding="latin-1")
+        text, rows, fns, nid, nfn, nid2 = schemata.instrument(src, "c", idb, fnb, frozenset(drop), id2b); tmp.write_text(text, encoding="latin-1")
         r = subprocess.run(compile_cmd(stem, tmp, obj), shell=True, cwd=mutate.BUILD, capture_output=True, text=True)
         if r.returncode == 0: break
         newly = set()
@@ -46,7 +60,7 @@ for stem in mutate.FILES:
         row["file"] = stem
         if row["id"] in drop: dropped.append(dict(id=row["id"], file=stem, fn=row["fn"], line=row["line"], op=row["op"], kind=row["kind"]))
     for f in fns: f["file"] = stem
-    rows_all += [x for x in rows if x["id"] not in drop]; fns_all += fns; idb, fnb = nid, nfn; objs.append(obj); print(stem, len(rows) - len(drop), "sites kept,", len(drop), "dropped,", len(fns), "functions", flush=True)
+    rows_all += [x for x in rows if x["id"] not in drop]; fns_all += fns; idb, fnb, id2b = nid, nfn, nid2; objs.append(obj); print(stem, len(rows) - len(drop), "sites kept,", len(drop), "dropped,", len(fns), "functions", flush=True)
 scr = out / "e13_screen.o"; c = re.sub(r"-MD -MT \S+ -MF \S+", "", comp[mutate.FILES[0]]); c = re.sub(r" -o \S+\.o ", f" -o {scr} ", c); c = re.sub(r" -c \S+$", f" -c {H / 'e13_screen.c'}", c)
 r = subprocess.run(c, shell=True, cwd=mutate.BUILD, capture_output=True, text=True); assert r.returncode == 0, r.stderr[-500:]
 marker = " src/CMakeFiles/chocolate-doom.dir/i_main.c.o "; binp = out / "chocolate-doom"
