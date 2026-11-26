@@ -23,12 +23,12 @@ def main():
     todo = [(st, d) for st in ("agree", "disagree") for d in sample[st]]
     if os.environ.get("E14_TODO"): todo = todo[:int(os.environ["E14_TODO"])]
     for stratum, d in todo:
-        cn = d["ref"]; ref_t = (mutate.SRCDIR / f"{d['ref_file']}.c").read_text(); ref_f = S.functions(ref_t)
+        cn = d["ref"]; ref_t = (mutate.SRCDIR / f"{d['ref_file']}.c").read_text(encoding="latin-1"); ref_f = S.functions(ref_t)
         tg = {}  # role -> (port, file, text, funcs, funcname)
-        pb_t = (P.PB_SRC / f"{d['pb_file']}.c").read_text(); pb_f = S.functions(pb_t); tg["pb:match"] = ("pb", d["pb_file"], pb_t, pb_f, d["pb"])
-        md_t = (P.MD_SRC / f"{d['md_file']}.cs").read_text(); md_f = S.functions(md_t); tg["md:match"] = ("md", d["md_file"], md_t, md_f, d["md"])
+        pb_t = (P.PB_SRC / f"{d['pb_file']}.c").read_text(encoding="latin-1"); pb_f = S.functions(pb_t); tg["pb:match"] = ("pb", d["pb_file"], pb_t, pb_f, d["pb"])
+        md_t = (P.MD_SRC / f"{d['md_file']}.cs").read_text(encoding="latin-1"); md_f = S.functions(md_t); tg["md:match"] = ("md", d["md_file"], md_t, md_f, d["md"])
         if d["md_oracle"] and d["md_oracle"] != d["md"]:
-            ot = (P.MD_SRC / f"{d['md_oracle_file']}.cs").read_text(); tg["md:name"] = ("md", d["md_oracle_file"], ot, S.functions(ot), d["md_oracle"])
+            ot = (P.MD_SRC / f"{d['md_oracle_file']}.cs").read_text(encoding="latin-1"); tg["md:name"] = ("md", d["md_oracle_file"], ot, S.functions(ot), d["md_oracle"])
         rs = S.sites(ref_t, ref_f[cn]); al = {}
         for k, (port, f, t, fs, nm) in tg.items(): al[k] = S.align(rs, S.sites(t, fs[nm], port == "md"), 0.5) if nm in fs else {}
         cand = [i for i in range(len(rs)) if any(i in a for a in al.values())]; by_kind = {}

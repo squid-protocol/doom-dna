@@ -54,18 +54,18 @@ def build(port, file, text, tag):
     if port == "ch": return mutate.build_mutant(file, text, tag)
     out = OUT / "bin" / tag; out.mkdir(parents=True, exist_ok=True)
     if port == "pb":
-        f = PB_SRC / f"{file}.c"; orig = f.read_text(); f.write_text(text)
+        f = PB_SRC / f"{file}.c"; orig = f.read_text(encoding="latin-1"); f.write_text(text, encoding="latin-1")
         try:
             r = subprocess.run([str(NINJA), "-C", str(B / "prboom-plus/build"), "prboom-plus"], capture_output=True, text=True)
             ok = r.returncode == 0
-        finally: f.write_text(orig)
+        finally: f.write_text(orig, encoding="latin-1")
         if not ok: return None
         shutil.copy(B / "prboom-plus/build/prboom-plus", out / "prboom-plus"); return out / "prboom-plus"
-    f = MD_SRC / f"{file}.cs"; orig = f.read_text(); f.write_text(text)
+    f = MD_SRC / f"{file}.cs"; orig = f.read_text(encoding="latin-1"); f.write_text(text, encoding="latin-1")
     try:
         env = dict(os.environ, DOTNET_CLI_HOME=str(W / "tools/dotnet_home"), DOTNET_NOLOGO="1", DOTNET_CLI_TELEMETRY_OPTOUT="1", DOTNET_ROOT=str(W / "tools/dotnet"))
         r = subprocess.run([str(DOTNET), "build", "-c", "Release", "-o", str(out)], cwd=B / "managed-doom", capture_output=True, text=True, env=env); ok = r.returncode == 0
-    finally: f.write_text(orig)
+    finally: f.write_text(orig, encoding="latin-1")
     return out if ok else None
 
 def evaluate(port, binary, clean, names, tag):
