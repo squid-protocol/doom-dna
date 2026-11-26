@@ -46,8 +46,10 @@ object Digest {
             val sc = d.levelLoader.sectors[i]
             sh = fnv(sh, sc.floorheight); sh = fnv(sh, sc.ceilingheight); sh = fnv(sh, sc.special.toInt())
         }
+        var cm = 0
+        for (i in 0 until 6) if (pl.cards[i]) cm = cm or (1 shl i)
         w.write("${d.gametic} ${d.leveltime} ${d.random.index} 0 ${mo._x} ${mo._y} ${mo._z} ${mo.angle and 0xffffffffL} ${pl.health[0]} ${pl.armorpoints[0]} ${pl.readyweapon.ordinal} " +
-            "${pl.ammo[0]} ${pl.ammo[1]} ${pl.ammo[2]} ${pl.ammo[3]} $nm ${java.lang.Long.toUnsignedString(msum)} ${java.lang.Long.toUnsignedString(sh)}\n")
+            "${pl.ammo[0]} ${pl.ammo[1]} ${pl.ammo[2]} ${pl.ammo[3]} $nm ${java.lang.Long.toUnsignedString(msum)} ${java.lang.Long.toUnsignedString(sh)} $cm\n")
         if (++pending >= 64) { w.flush(); pending = 0 }
     }
 }

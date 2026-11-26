@@ -44,7 +44,8 @@ void E13_Digest(void)
     player_t *p = &players[consoleplayer];
     if (!e13_dig) { const char *f = getenv("E13_DIGEST"); e13_dig = fopen(f ? f : "e13_digest.txt", "w"); if (!e13_dig) return; setvbuf(e13_dig, NULL, _IOLBF, 1 << 12); atexit(e13_close); }
     if (!p->mo) return;
-    unsigned long long msum = 0, sh = 0xcbf29ce484222325ULL; int nm = 0, i;
+    unsigned long long msum = 0, sh = 0xcbf29ce484222325ULL; int nm = 0, i, cmask = 0;
+    for (i = 0; i < 6; i++) if (p->cards[i]) cmask |= 1 << i;
     for (thinker_t *th = thinkercap.next; th != &thinkercap; th = th->next)
         if (th->function.acp1 == (actionf_p1)P_MobjThinker && (mobj_t *)th != p->mo) {
             mobj_t *m = (mobj_t *)th; unsigned long long h = 0xcbf29ce484222325ULL;
@@ -53,9 +54,9 @@ void E13_Digest(void)
             msum += h; nm++;
         }
     for (i = 0; i < numsectors; i++) { sh = e13_fnv(sh, (int)sectors[i].floorheight); sh = e13_fnv(sh, (int)sectors[i].ceilingheight); sh = e13_fnv(sh, (int)sectors[i].special); }
-    fprintf(e13_dig, "%d %d %d %d %d %d %d %u %d %d %d %d %d %d %d %d %llu %llu\n", gametic, leveltime, E13_PRND, E13_RND,
+    fprintf(e13_dig, "%d %d %d %d %d %d %d %u %d %d %d %d %d %d %d %d %llu %llu %d\n", gametic, leveltime, E13_PRND, E13_RND,
             (int)p->mo->x, (int)p->mo->y, (int)p->mo->z, (unsigned)p->mo->angle, p->health, E13_ARMOR,
-            (int)p->readyweapon, p->ammo[0], p->ammo[1], p->ammo[2], p->ammo[3], nm, msum, sh);
+            (int)p->readyweapon, p->ammo[0], p->ammo[1], p->ammo[2], p->ammo[3], nm, msum, sh, cmask);
 }
 '''
 p.write_text(t)
@@ -97,6 +98,17 @@ boolean P_CheckSight(mobj_t *t1, mobj_t *t2)
 }
 '''
     ps.write_text(t2)
+
+# optional: the goal-directed bot (E13_BOT_BUILD=1): appended to g_game.c, hooked after the ticcmd copy so it also feeds -record
+if os.environ.get("E13_BOT_BUILD"):
+    gg = next(src.rglob("g_game.c")); g = gg.read_text()
+    hook = "memcpy(cmd, &netcmds[i], sizeof(ticcmd_t));\n"
+    assert g.count(hook) == 1, "ticcmd copy anchor not found"
+    g = g.replace(hook, hook + "\t    if (i == consoleplayer && E13_BotActive()) E13_BotCmd(cmd);\n")
+    gt = re.search(r"\nvoid\s+G_Ticker\s*\(\s*void\s*\)", g); assert gt, "G_Ticker not found"
+    g = g[:gt.start()] + "\nvoid E13_BotCmd(ticcmd_t *cmd);\nint E13_BotActive(void);\n" + g[gt.start():]
+    g += (Path(__file__).resolve().parent / "bot/e13_bot.c.inc").read_text()
+    gg.write_text(g)
 env = {"PATH": f"{W}/venv/bin:/usr/bin:/bin", "HOME": str(out)}
 bd = out / "build"
 cfg = [str(W / "venv/bin/cmake"), "-S", str(src / SUB), "-B", str(bd), "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_PREFIX_PATH={W}/prefix", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"] + extra

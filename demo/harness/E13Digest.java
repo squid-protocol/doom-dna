@@ -32,9 +32,10 @@ public final class Digest {
             }
             long sh = 0xcbf29ce484222325L;
             for (int i = 0; i < d.levelLoader.numsectors; i++) { rr.sector_t sc = d.levelLoader.sectors[i]; sh = fnv(sh, sc.floorheight); sh = fnv(sh, sc.ceilingheight); sh = fnv(sh, sc.special); }
+            int cm = 0; for (int i = 0; i < 6; i++) if (pl.cards[i]) cm |= 1 << i;
             out.write(d.gametic + " " + d.leveltime + " " + d.random.getIndex() + " 0 " + pl.mo.x + " " + pl.mo.y + " " + pl.mo.z + " "
                     + (pl.mo.angle & 0xffffffffL) + " " + pl.health[0] + " " + pl.armorpoints[0] + " " + pl.readyweapon.ordinal() + " "
-                    + pl.ammo[0] + " " + pl.ammo[1] + " " + pl.ammo[2] + " " + pl.ammo[3] + " " + nm + " " + Long.toUnsignedString(msum) + " " + Long.toUnsignedString(sh) + "\n");
+                    + pl.ammo[0] + " " + pl.ammo[1] + " " + pl.ammo[2] + " " + pl.ammo[3] + " " + nm + " " + Long.toUnsignedString(msum) + " " + Long.toUnsignedString(sh) + " " + cm + "\n");
             if (++pending >= 64) { out.flush(); pending = 0; }
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent)); import compare_digests
 W = Path("/srv/storage_16tb/projects/doom-e7-work/demo-study"); H = Path(__file__).resolve().parent
 B = W / "build"
 ENGINES = {  # label: (binary, compare without the gameplay RNG column?, extra env)
-    "choc": (B / "chocolate-wide/build/src/chocolate-doom", False, {}),
+    "choc": (B / "chocolate-bot/build/src/chocolate-doom", False, {}),
     "dg": (B / "doomgeneric/engine", False, {}),
     "crispy": (B / "crispy-doom/build/src/crispy-doom", False, {}),
     "pboom": (B / "prboom-plus/build/prboom-plus", True, {"DOOMWADDIR": str(W / "wads")}),

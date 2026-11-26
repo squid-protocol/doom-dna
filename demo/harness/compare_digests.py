@@ -5,13 +5,13 @@ Usage: python compare_digests.py [--no-prnd] <runs_dir> <label_a> <label_b> demo
 Prints per demo: identical|diverges at tic N (field), tics in each digest."""
 import sys
 from pathlib import Path
-NAMES = ["gametic", "leveltime", "prndindex", "rndindex", "x", "y", "z", "angle", "health", "armor", "weapon", "ammo0", "ammo1", "ammo2", "ammo3", "nmobjs", "mobjhash", "sectorhash"]
+NAMES = ["gametic", "leveltime", "prndindex", "rndindex", "x", "y", "z", "angle", "health", "armor", "weapon", "ammo0", "ammo1", "ammo2", "ammo3", "nmobjs", "mobjhash", "sectorhash", "cards"]
 KEEP = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 import os
-if os.environ.get("E13_WIDE"): KEEP = KEEP + [15, 16, 17]  # world fingerprint columns (monsters/objects and sectors), when both digests have them
+if os.environ.get("E13_WIDE"): KEEP = KEEP + [15, 16, 17, 18]  # world fingerprint columns (monsters/objects and sectors), when both digests have them
 def load(f):
     if not Path(f).exists(): return None
-    rows = [l.split() for l in open(f) if len(l.split()) in (15, 18)]  # a crashed engine can leave a partial last line
+    rows = [l.split() for l in open(f) if len(l.split()) in (15, 18, 19)]  # a crashed engine can leave a partial last line
     # some engines emit one stray row before the level starts (leveltime does not increase between rows 0 and 1): drop it
     if len(rows) > 1 and int(rows[1][1]) <= int(rows[0][1]): rows = rows[1:]
     return rows

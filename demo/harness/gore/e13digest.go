@@ -59,9 +59,15 @@ func e13Digest() {
 			sh = e13fnv(sh, v)
 		}
 	}
-	fmt.Fprintf(e13file, "%d %d %d 0 %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n", gametic, leveltime, prndindex,
+	cm := 0
+	for i := 0; i < 6; i++ {
+		if p.Fcards[i] != 0 {
+			cm |= 1 << uint(i)
+		}
+	}
+	fmt.Fprintf(e13file, "%d %d %d 0 %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n", gametic, leveltime, prndindex,
 		int32(m.Fx), int32(m.Fy), int32(m.Fz), uint32(m.Fangle), p.Fhealth, p.Farmorpoints, int32(p.Freadyweapon),
-		p.Fammo[0], p.Fammo[1], p.Fammo[2], p.Fammo[3], nm, msum, sh)
+		p.Fammo[0], p.Fammo[1], p.Fammo[2], p.Fammo[3], nm, msum, sh, cm)
 }
 
 // E13Close flushes and closes the digest file.
