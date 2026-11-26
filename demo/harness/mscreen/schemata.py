@@ -7,7 +7,8 @@ OPS = {"<": "<=", "<=": "<", ">": ">=", ">=": ">", "==": "!=", "!=": "==", "+": 
 KIND = {"<": "relational", "<=": "relational", ">": "relational", ">=": "relational", "==": "equality", "!=": "equality", "+": "arithmetic", "-": "arithmetic", "&&": "logical", "||": "logical", "<<": "shift", ">>": "shift"}
 MAXLEN = 3000
 class C:
-    FUNC = "function_definition"; BIN = "binary_expression"; NUM = "number_literal"; BODY = "compound_statement"
+    ON = "E13_ON(%d)"; ENTER = "E13_ENTER(%d);"
+    FUNC = ("function_definition",); BIN = "binary_expression"; NUM = "number_literal"; BODY = "compound_statement"
     NOMUT_NODES = {"sizeof_expression", "enumerator", "bitfield_clause", "attribute_specifier", "static_assert_declaration"}
     NOMUT_FIELDS = {("case_statement", "value"), ("array_declarator", "size"), ("subscript_expression", "index")}  # an array index lesion is an out-of-bounds access: undefined behaviour, layout dependent
     @staticmethod
@@ -18,7 +19,15 @@ class C:
             nd = d.child_by_field_name("declarator"); d = nd if nd is not None else (d.children[0] if d.children else None)
             if d is not None and d.type == "identifier": break
         return d.text.decode("latin-1") if d is not None and d.type == "identifier" else "?"
-LANGS = {"c": C}
+class CS:
+    ON = "E13Mut.On(%d)"; ENTER = "E13Mut.Enter(%d);"
+    FUNC = ("method_declaration", "constructor_declaration"); BIN = "binary_expression"; NUM = "integer_literal"; BODY = "block"
+    NOMUT_NODES = {"case_switch_label", "constant_pattern", "array_rank_specifier", "bracketed_argument_list", "attribute", "enum_member_declaration", "parameter"}
+    NOMUT_FIELDS = set()
+    @staticmethod
+    def fname(n):
+        d = n.child_by_field_name("name"); return d.text.decode("latin-1") if d is not None else "?"
+LANGS = {"c": C, "csharp": CS}
 class Engine:
     def __init__(self, src, lang, id_base, fn_base, drop):
         self.src = src; self.cfg = LANGS[lang]; self.parser = tsp.get_parser(lang); self.tree = self.parser.parse(src); self.id = id_base; self.fn = fn_base; self.drop = drop
@@ -34,7 +43,7 @@ class Engine:
     def emit(self, n, const=False, infn=False):
         t = n.type; cfg = self.cfg
         if t.startswith("preproc") or t == "comment" or t == "ERROR": return self.text(n)
-        if t == cfg.FUNC and not infn and not n.has_error:
+        if t in cfg.FUNC and not infn and not n.has_error:
             name = cfg.fname(n); body = n.child_by_field_name("body")
             if body is None or body.type != cfg.BODY: return self.text(n)
             fid = self.fn; self.fn += 1; self.fns.append(dict(fid=fid, name=name, line=self.line(n.start_byte), end_line=self.line(n.end_byte), size=n.end_byte - n.start_byte)); prev = self.cur_fn; self.cur_fn = name
@@ -42,11 +51,12 @@ class Engine:
             for c in n.children:
                 out.append(self.src[pos:c.start_byte].decode("latin-1"))
                 if c.id == body.id:
-                    inner = self.splice(c, const, True); assert inner.startswith("{"); out.append("{ E13_ENTER(%d);" % fid + inner[1:])
+                    inner = self.splice(c, const, True); assert inner.startswith("{"); out.append("{ " + cfg.ENTER % fid + inner[1:])
                 else: out.append(self.emit(c, const, False))
                 pos = c.end_byte
             out.append(self.src[pos:n.end_byte].decode("latin-1")); self.cur_fn = prev; return "".join(out)
         if t in cfg.NOMUT_NODES: const = True
+        if t == "local_declaration_statement" and any(ch.type == "modifier" and ch.text == b"const" for ch in n.children): const = True
         if t == "declaration" and any(ch.type == "storage_class_specifier" and ch.text == b"static" for ch in n.children): const = True
         if infn and not const and t == cfg.BIN:
             opn = n.child_by_field_name("operator"); op = opn.text.decode()
@@ -59,7 +69,7 @@ class Engine:
                     mid = self.id; self.id += 1
                     self.rows.append(dict(id=mid, kind=KIND[op], op=op, new=OPS[op], fn=self.cur_fn, line=self.line(opn.start_byte), col=opn.start_byte - self.src.rfind(b"\n", 0, opn.start_byte), byte=opn.start_byte, node="binary"))
                     if mid in self.drop: return orig
-                    return "(E13_ON(%d) ? (%s) : (%s))" % (mid, L + mid1 + OPS[op] + mid2 + R, orig)
+                    return "(" + cfg.ON % mid + " ? (%s) : (%s))" % (L + mid1 + OPS[op] + mid2 + R, orig)
                 return orig
         if infn and not const and t == cfg.NUM:
             s = self.text(n)
@@ -67,7 +77,7 @@ class Engine:
                 mid = self.id; self.id += 1
                 self.rows.append(dict(id=mid, kind="constant", op=s, new=str(int(s) + 1), fn=self.cur_fn, line=self.line(n.start_byte), col=n.start_byte - self.src.rfind(b"\n", 0, n.start_byte), byte=n.start_byte, node="literal"))
                 if mid in self.drop: return s
-                return "(E13_ON(%d) ? (%d) : (%s))" % (mid, int(s) + 1, s)
+                return "(" + cfg.ON % mid + " ? (%d) : (%s))" % (int(s) + 1, s)
             return s
         if not n.children: return self.text(n)
         return self.splice(n, const, infn)

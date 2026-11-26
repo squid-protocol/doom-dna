@@ -24,7 +24,7 @@ namespace ManagedDoom
             var p = world.ConsolePlayer;
             var mo = p.Mobj;
             if (mo == null) return;
-            if (w == null) { var f = Environment.GetEnvironmentVariable("E13_DIGEST") ?? "e13_digest.txt"; w = new StreamWriter(f, false, new UTF8Encoding(false), 1 << 16); }
+            if (w == null && Environment.GetEnvironmentVariable("E13_NODIGEST") == null) { var f = Environment.GetEnvironmentVariable("E13_DIGEST") ?? "e13_digest.txt"; w = new StreamWriter(f, false, new UTF8Encoding(false), 1 << 16); }
             ulong msum = 0; int nm = 0;
             foreach (var t in world.Thinkers)
             {
@@ -39,7 +39,11 @@ namespace ManagedDoom
             ulong sh = 0xcbf29ce484222325UL;
             foreach (var s in world.Map.Sectors) { sh = Fnv(sh, s.FloorHeight.Data); sh = Fnv(sh, s.CeilingHeight.Data); sh = Fnv(sh, (int)s.Special); }
             int cm = 0; for (int i = 0; i < 6; i++) if (p.Cards[i]) cm |= 1 << i;
-            w.WriteLine($"{world.GameTic} {world.LevelTime} {world.Random.Index} 0 {mo.X.Data} {mo.Y.Data} {mo.Z.Data} {mo.Angle.Data} {p.Health} {p.ArmorPoints} {(int)p.ReadyWeapon} {p.Ammo[0]} {p.Ammo[1]} {p.Ammo[2]} {p.Ammo[3]} {nm} {msum} {sh} {cm}");
+            E13Mut.Tic = world.GameTic;
+            ulong U(int x) { return unchecked((ulong)(long)x); }
+            var val = new ulong[] { U(world.GameTic), U(world.LevelTime), U(world.Random.Index), 0, U(mo.X.Data), U(mo.Y.Data), U(mo.Z.Data), (ulong)(uint)mo.Angle.Data, U(p.Health), U(p.ArmorPoints), U((int)p.ReadyWeapon), U(p.Ammo[0]), U(p.Ammo[1]), U(p.Ammo[2]), U(p.Ammo[3]), U(nm), msum, sh, U(cm) };
+            E13Mut.Check(val);
+            if (w != null) w.WriteLine($"{world.GameTic} {world.LevelTime} {world.Random.Index} 0 {mo.X.Data} {mo.Y.Data} {mo.Z.Data} {mo.Angle.Data} {p.Health} {p.ArmorPoints} {(int)p.ReadyWeapon} {p.Ammo[0]} {p.Ammo[1]} {p.Ammo[2]} {p.Ammo[3]} {nm} {msum} {sh} {cm}");
         }
     }
 

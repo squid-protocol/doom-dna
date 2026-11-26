@@ -6,8 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 W = Path("/srv/storage_16tb/projects/doom-e7-work/demo-study"); E14 = W / "e14"
 ap = argparse.ArgumentParser(); ap.add_argument("screen"); ap.add_argument("store"); ap.add_argument("--workers", type=int, default=8); ap.add_argument("--functions"); ap.add_argument("--limit", type=int)
-ap.add_argument("--wads", default=str(E14 / "wads")); ap.add_argument("--clean", default=str(E14 / "clean/ch")); ap.add_argument("--maxload", type=float, default=10.0); ap.add_argument("--timeout", type=int, default=90)
-a = ap.parse_args(); screen = Path(a.screen); binary = screen / "chocolate-doom"; man = json.load(open(screen / "manifest.json")); wads = Path(a.wads); clean = Path(a.clean)
+ap.add_argument("--wads", default=str(E14 / "wads")); ap.add_argument("--clean", default=str(E14 / "clean/ch")); ap.add_argument("--engine", default="c"); ap.add_argument("--maxload", type=float, default=10.0); ap.add_argument("--timeout", type=int, default=90)
+a = ap.parse_args(); screen = Path(a.screen); binary = screen / ("bin/e13-managed-doom.dll" if a.engine == "md" else "chocolate-doom"); man = json.load(open(screen / "manifest.json")); wads = Path(a.wads); clean = Path(a.clean)
 names = sorted(p.stem for p in wads.glob("*.WAD")); db = sqlite3.connect(a.store, check_same_thread=False); lock = threading.Lock()
 db.executescript("""create table if not exists results(lesion integer, demo text, outcome text, tic integer, col integer, rc integer, primary key(lesion, demo));
 create table if not exists reach(demo text, fid integer, entries integer, first_tic integer, primary key(demo, fid));
@@ -19,7 +19,9 @@ def env_for(home, extra):
     return dict(os.environ, HOME=home, XDG_DATA_HOME=home, XDG_CONFIG_HOME=home, LD_LIBRARY_PATH=str(W / "prefix/lib"), SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy", **extra)
 def run(demo, extra):
     home = tempfile.mkdtemp(prefix="mscr_", dir=str(E14)); t0 = time.time()
-    try: rc = subprocess.run([str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nodraw", "-nosound", "-nomusic", "-nogui"], cwd=home, env=env_for(home, extra), timeout=a.timeout, capture_output=True, preexec_fn=lambda: os.nice(10)).returncode
+    cmd = ([str(W / "tools/dotnet/dotnet"), str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nosound", "-nomusic"] if a.engine == "md" else [str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nodraw", "-nosound", "-nomusic", "-nogui"])
+    extra = dict(extra, DOTNET_ROOT=str(W / "tools/dotnet"), DOTNET_NOLOGO="1", DOTNET_CLI_TELEMETRY_OPTOUT="1") if a.engine == "md" else extra
+    try: rc = subprocess.run(cmd, cwd=home, env=env_for(home, extra), timeout=a.timeout, capture_output=True, preexec_fn=lambda: os.nice(10)).returncode
     except subprocess.TimeoutExpired: rc = -9
     return home, rc
 def refrows(demo): return sum(1 for l in open(clean / f"{demo}.txt") if len(l.split()) == 19)
