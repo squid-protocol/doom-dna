@@ -81,9 +81,21 @@ def main():
         if f"{pre}A_truth_depth" in killed: h = (pd.to_numeric(killed[f"{pre}A_truth_depth"], errors="coerce") <= 3).astype(int); rows.append((nm, f"{h.mean():.1%}", f"{killed[f'{pre}A_size_3'].median():.0f}"))
     P(pd.DataFrame(rows, columns=["demo choice", "hit@3", "median size@3"]).to_markdown(index=False) + "\n")
     allb = len(buildable); P(f"## Survivor sensitivity\nIf every surviving or crashing mutant were counted as a localiser miss, the depth<=3 hit rate over all {allb} buildable mutants would be {killed.hitA3.sum()}/{allb} = {killed.hitA3.sum() / max(allb, 1):.1%} (a different quantity: it mixes detection with localisation).\n")
-    P("## Registered predictions\n"); nt3 = nt["hitA3"].mean() if len(nt) else float("nan"); med = killed.A3.median() / NU
-    lo, hi = wilson(int(killed.hitA3.sum()), len(killed))
-    P(f"* M1 descriptive, detection among buildable: {k1 / max(n1, 1):.1%} (registered band 30% to 60%).\n* P1 hit rate A<=3: {killed.hitA3.mean():.1%} (95% {lo:.1%}-{hi:.1%}); registered >= 50% and lift over random >= 20 points: lift {lift.mean() * 100:+.1f}.\n* P2 non-trivial subset A<=3: {nt3:.1%} (registered >= 40% and lift >= 15 points).\n* P3 median depth-3 suspect set: {med:.1%} of |U| (registered <= 15%).\n* P5a RNG basis available: {killed.rngbasis.mean():.1%} (registered >= 70%).")
+    P("## Registered predictions (thresholds exactly as in preregistration/E13_DEMO_CONFORMANCE.md, section A)\n")
+    nt3 = nt["hitA3"].mean() if len(nt) else float("nan"); med = killed.A3.median() / NU; lo, hi = wilson(int(killed.hitA3.sum()), len(killed)); l3, h3 = cluster_boot(killed.assign(lift=lift), "lift")
+    ntk = killed[killed.triv == 0]; ntlift = (ntk["hitA3"] - ntk["exp_random"]).mean() if len(ntk) else float("nan")
+    rr = killed[killed.rngbasis == 1]; pr = (rr.hitA3.mean() - rr.ff_hit_3.mean()) * 100 if len(rr) else float("nan"); rw = (killed.hitA3.mean() - killed.rewired_hit_3.mean()) * 100
+    rnd = pd.to_numeric(killed["random_A_truth_depth"], errors="coerce").le(3).mean() if "random_A_truth_depth" in killed else float("nan"); p7 = abs(rnd - killed.hitA3.mean()) * 100
+    rows = [("M1 (descriptive)", "killed share of buildable mutants within 20% to 55%", f"{k1 / max(n1, 1):.1%}", "within band" if 0.20 <= k1 / max(n1, 1) <= 0.55 else "outside band"),
+            ("P1 (primary)", "A hit@3 >= 50% AND lift over random >= +20 points (cluster 95% lower bound > 0)", f"hit {killed.hitA3.mean():.1%} (Wilson {lo:.1%}-{hi:.1%}); lift {lift.mean() * 100:+.1f} points (cluster {l3 * 100:+.1f} to {h3 * 100:+.1f})", "PASSED" if killed.hitA3.mean() >= 0.5 and lift.mean() >= 0.20 and l3 > 0 else "FAILED"),
+            ("P2 (primary)", "non-trivial subset: hit@3 >= 35% AND lift >= +15 points", f"hit {nt3:.1%}; lift {ntlift * 100:+.1f} points", "PASSED" if nt3 >= 0.35 and ntlift >= 0.15 else "FAILED"),
+            ("P3", "median depth-3 suspect set <= 30% of |U|", f"{med:.1%} of |U|", "PASSED" if med <= 0.30 else "FAILED"),
+            ("P4 (exploratory)", "variant B vs A at matched size: report only", f"B matched {killed.hitB_matched.mean():.1%} vs A {killed.hitA3.mean():.1%}", "reported"),
+            ("P5a", "RNG-caller difference exists for >= 70% of killed mutants", f"{killed.rngbasis.mean():.1%}", "PASSED" if killed.rngbasis.mean() >= 0.70 else "FAILED"),
+            ("P5b (primary)", "on RNG-basis mutants, A hit@3 exceeds the field prior by >= 15 points (paired)", f"{pr:+.1f} points", "PASSED" if pr >= 15 else "FAILED"),
+            ("P6", "A hit@3 exceeds the rewired-graph null's mean by >= 20 points", f"{rw:+.1f} points", "PASSED" if rw >= 20 else "FAILED"),
+            ("P7", "random failing demo hit@3 within 10 points of the earliest demo's", f"{p7:.1f} points apart", "PASSED" if p7 <= 10 else "FAILED")]
+    P(pd.DataFrame(rows, columns=["prediction", "registered", "observed", "result"]).to_markdown(index=False) + "\n")
     Path(sys.argv[2] if len(sys.argv) > 2 else "/dev/stdout").write_text("\n".join(out)); print("\n".join(out)[:300]) if len(sys.argv) > 2 else None
 
 if __name__ == "__main__": main()
