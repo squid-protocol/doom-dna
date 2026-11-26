@@ -24,10 +24,17 @@ If every close port syncs perfectly there is nothing for study 1 to explain, and
 * **Random self-play demos:** `demo/harness/gen_demos.py` writes vanilla-format demos from a seeded random policy (run, strafe, turn, fire, use, weapon switch; our own inputs, no third-party content). 300 demos, 4,000 tics each, all maps E1M1 to E1M9, skills 1 to 4: **1,800 of 1,800 runs identical across the six engines** (`demo/phase0_random_demo_matrix.csv`). The player moved and fired in every demo and died in 187, so the demos exercise combat and death, not just walking.
 * **Boom-family caveat:** `prboom-plus` and `inter-doom` do not keep the gameplay RNG index in every mode (or keep it private), so they are compared on the game state without that column.
 
+## First translation: Mocha Doom (Java), same demos, same reference
+Built with `javac` from a patched copy (`demo/harness/build_mochadoom.py`, our `E13Digest.java`); runs under a virtual display.
+* **Shareware demos 1 to 3:** identical to the reference on every field at every tic except the **view angle for 3, 9 and 25 tics while the player is dead** (the death-camera turns toward the attacker by a different step; it lands on the same angle). Position, health, armor, weapon, ammo and the gameplay RNG index match throughout.
+* **300 random self-play demos** (`demo/phase0_mochadoom_vs_chocolate.csv`): strictly identical on every field in 130; identical on gameplay (angle ignored while dead) in **291**; **9 real gameplay desyncs** (3%). In each, the gameplay RNG index drifts by one call (once two, once 23) at some tic and the player's position diverges 2 to 122 tics later (one demo shows only the RNG drift). They are not spread evenly: 5 of 29 demos on E1M5 (17%) against 4 of 271 on the other maps (1.5%); small numbers.
+* So a Java translation of a C program is behaviourally identical on the player's trajectory in 97% of random play, and identical on the shareware demos apart from a cosmetic camera. Not yet known: which Java function consumes a different number of random numbers (a call-by-call RNG trace on one of the nine demos would show it).
+* Deliberately a post hoc rule: "ignore the angle while the reference player is dead" was set after seeing the first demo; the strict numbers are reported alongside.
+
 ## What this means for the studies
 * **Study 1 as first framed has little to explain among established C ports:** sync does not vary among them on shareware or random demos. The outcome variance sits elsewhere (non-vanilla-exact engines like `puredoom`, translations, ports in non-compatible modes), so study 1 should be re-scoped there, with translations as the main case.
 * **Performance (study 2) and the call-count oracle (study 3) do not depend on sync variance.** Speed certainly varies; per-function call counts are language-independent, and demos are now a cheap, reproducible driver for both.
-* **Not yet built:** `dsda-doom` (needs OpenGL), `woof` and `nugget-doom` (need SDL3 3.4+ and OpenAL), translations (`mochadoom` Java via Maven, `gore` Go, `managed-doom` C#, `doom-scheme`).
+* **Not yet built:** `dsda-doom` (needs OpenGL), `woof` and `nugget-doom` (need SDL3 3.4+ and OpenAL), and the other translations (`gore` Go, `managed-doom` C#, `doom-scheme`, `dartdoom`, `kocoa-doom`).
 ## Blockers and next steps
 * Done: SDL2 2.30.9, SDL2_net 2.2.0 and SDL2_mixer 2.8.0 built from official release sources into a private prefix (`doom-e7-work/demo-study/prefix`), cmake and ninja in a private venv.
-* Next: the translations (`mochadoom` first: Java, Maven) for a first behavioural check of a translation; then register the re-scoped study 1 or study 3 with two independent design reviews, as before.
+* Next: find where Mocha Doom's RNG use differs (call-by-call trace), then the other translations; then register the re-scoped study 1 or study 3 with two independent design reviews, as before.
