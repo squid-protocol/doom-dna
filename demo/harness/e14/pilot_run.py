@@ -83,6 +83,7 @@ def main():
     names = demos(); (OUT / "bin").mkdir(exist_ok=True); (OUT / "res").mkdir(exist_ok=True); rng = random.Random(seed)
     # clean runs of each port (self-reference); also gives the baseline replay check against chocolate
     bins = {"ch": mutate.BUILD / "src/chocolate-doom", "pb": None, "md": W / "build/managed-doom/bin"}
+    subprocess.run([str(NINJA), "-C", str(B / "prboom-plus/build"), "prboom-plus"], check=True, capture_output=True)  # the build dir may hold a leftover mutant binary: rebuild from the restored source first
     shutil.copy(B / "prboom-plus/build/prboom-plus", OUT / "bin/prboom-plus.clean"); bins["pb"] = OUT / "bin/prboom-plus.clean"
     clean = {}
     for port in bins:
@@ -95,6 +96,7 @@ def main():
         for n in names:
             a, b = C.load(clean["ch"][n][0]), C.load(clean[port][n][0])
             ok += bool(a and b and C.first_divergence(a, b, KEEPC, True) is None)
+        assert ok == len(names), f"{port} clean baseline is not identical to chocolate ({ok}/{len(names)}): refusing to continue"
         base[port] = ok; print(f"baseline replay vs chocolate, common columns, gameplay-identical: {port} {ok}/{len(names)}", flush=True)
     cl = {p: clean[p] for p in clean}
     fh = open(out_path, "a")
