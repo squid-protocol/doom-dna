@@ -106,7 +106,10 @@ def main():
         md_t = (MD_SRC / f"{mf}.cs").read_text(); md_f = S.functions(md_t)
         # name-oracle function in prboom-plus is the same C name (in any file of the same name); managed oracle given in the table (file: same as matcher's unless found elsewhere)
         targets = {"pb:match": ("pb", pf, pb_t, pb_f.get(pn), pn)}
-        if pn != cn and cn in pb_f: targets["pb:name"] = ("pb", pf, pb_t, pb_f[cn], cn)
+        if pn != cn:
+            for f2 in sorted(PB_SRC.glob("*.c")):
+                t2 = f2.read_text(errors="replace"); fn2 = S.functions(t2)
+                if cn in fn2: targets["pb:name"] = ("pb", f2.stem, t2, fn2[cn], cn); break
         targets["md:match"] = ("md", mf, md_t, md_f.get(mn), mn)
         if mo != mn:
             for f2 in sorted((MD_SRC).glob("*.cs")):
