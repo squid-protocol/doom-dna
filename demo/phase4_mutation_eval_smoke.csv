@@ -1,0 +1,13 @@
+change,file,kind,line,mutant,status,truth,basis,closure_0,closure_1,closure_2,closure_3,closure_4,closure_5,closure_6,demo,field,first_tic,suspects_total,symptoms,truth_depth
+2 -> 3,p_user,constant,102,m000,survived,pcalcheight,,,,,,,,,,,,,,
+&& -> ||,p_mobj,logical,799,m001,killed,pspawnmapthing,rng-caller diff,2,8,20,35,48,61,68,s0000,prndindex,0,68,pspawnmobj pspawnmapthing,0
+<= -> <,p_enemy,relational,521,m002,killed,plookforplayers,rng-caller diff,1,6,19,34,39,40,40,s0003,prndindex,726,40,alook,1
+== -> !=,p_inter,equality,925,m003,killed,pdamagemobj,rng-caller diff,1,3,6,26,57,76,84,demo1,prndindex,85,84,ptrywalk,
++ -> -,p_floor,arithmetic,504,m004,survived,evbuildstairs,,,,,,,,,,,,,,
+8 -> 9,p_enemy,constant,1089,m005,survived,atracer,,,,,,,,,,,,,,
+== -> !=,p_maputl,equality,301,m006,killed,plineopening,rng-caller diff,1,2,2,2,2,2,2,c0002,length,2,2,tlightflash,
+4 -> 5,p_maputl,constant,811,m007,survived,ptraverseintercepts,,,,,,,,,,,,,,
+!= -> ==,p_doors,equality,590,m008,survived,pspawndoorraisein5mins,,,,,,,,,,,,,,
+== -> !=,p_map,equality,873,m009,survived,ptraimtraverse,,,,,,,,,,,,,,
+!= -> ==,p_doors,equality,315,m010,survived,evdodoor,,,,,,,,,,,,,,
+== -> !=,p_doors,equality,164,m011,killed,tverticaldoor,rng-caller diff,3,12,27,58,89,101,106,c0006,prndindex,49,106,alook ptrywalk achase,
