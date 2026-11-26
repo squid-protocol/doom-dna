@@ -19,9 +19,9 @@ def env_for(home, extra):
     return dict(os.environ, HOME=home, XDG_DATA_HOME=home, XDG_CONFIG_HOME=home, LD_LIBRARY_PATH=str(W / "prefix/lib"), SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy", **extra)
 def run(demo, extra):
     home = tempfile.mkdtemp(prefix="mscr_", dir=str(E14)); t0 = time.time()
-    cmd = ([str(W / "tools/dotnet/dotnet"), str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nosound", "-nomusic"] if a.engine == "md" else [str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nodraw", "-nosound", "-nomusic", "-nogui"])
+    cmd = ["nice", "-n", "10"] + ([str(W / "tools/dotnet/dotnet"), str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nosound", "-nomusic"] if a.engine == "md" else [str(binary), "-iwad", str(wads / f"{demo}.WAD"), "-timedemo", "demo1", "-nodraw", "-nosound", "-nomusic", "-nogui"])
     extra = dict(extra, DOTNET_ROOT=str(W / "tools/dotnet"), DOTNET_NOLOGO="1", DOTNET_CLI_TELEMETRY_OPTOUT="1") if a.engine == "md" else extra
-    try: rc = subprocess.run(cmd, cwd=home, env=env_for(home, extra), timeout=a.timeout, capture_output=True, preexec_fn=lambda: os.nice(10)).returncode
+    try: rc = subprocess.run(cmd, cwd=home, env=env_for(home, extra), timeout=a.timeout, capture_output=True).returncode
     except subprocess.TimeoutExpired: rc = -9
     return home, rc
 def refrows(demo): return sum(1 for l in open(clean / f"{demo}.txt") if len(l.split()) == 19)
