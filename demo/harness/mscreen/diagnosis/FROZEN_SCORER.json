@@ -1,0 +1,14 @@
+{
+ "agg": "max",
+ "min_eval": 10,
+ "weights": {
+  "a_failing_set": 0.5,
+  "b_class": 0.0,
+  "c_tic": 0.5
+ },
+ "tmax": 3.711300849914551,
+ "source": "development task, condition C (query family removed), development-half functions only",
+ "dev_top5": 0.8747483955118691,
+ "b2_dev_top5": 0.5232899319840099,
+ "best_baseline_dev_top5": 0.734207304004699
+}
