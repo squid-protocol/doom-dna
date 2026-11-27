@@ -48,7 +48,13 @@ for d, les in db.execute("select demo, lesion from sitereach"): executed.setdefa
 lesions = [s for s in man["sites"] if (not a.functions or s["fn"] in a.functions.split(","))]
 if a.limit: lesions = lesions[:a.limit]
 done = {(l, d) for l, d in db.execute("select lesion, demo from results")}
-hangs = {(l, d) for l, d in db.execute("select lesion, demo from results where outcome='hang' and tries=1")} if a.rerun_hangs else set()
+hangs = set()
+if a.rerun_hangs:   # only ISOLATED hangs are re-run: a lesion that hangs on >= half of the demos that execute it is a deterministic infinite loop (re-running it only costs the full timeout again)
+    import collections
+    allh = collections.Counter(l for l, in db.execute("select lesion from results where outcome='hang'")); ex_n = collections.Counter()
+    for d_, les_set in {d_: set() for d_ in []}.items(): pass
+    for l, d in db.execute("select lesion, demo from sitereach"): ex_n[l] += 1
+    hangs = {(l, d) for l, d in db.execute("select lesion, demo from results where outcome='hang' and tries=1") if allh[l] <= 1 or allh[l] / max(1, ex_n[l]) < 0.5}
 jobs = [(s["id"], d) for s in lesions for d in names if s["id"] in executed.get(d, ()) and ((s["id"], d) in hangs if a.rerun_hangs else (s["id"], d) not in done)]  # a lesion can only matter on demos that execute its site
 print(f"{len(lesions)} lesions, {len(names)} demos, {len(jobs)} jobs to run ({len(done)} already stored)", flush=True)
 def job(j):
