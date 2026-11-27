@@ -102,3 +102,10 @@ CREATE TABLE sfs_confidence(a_inst INTEGER, b_inst INTEGER, tier TEXT, score REA
 CREATE TABLE holdout_fold(fold_id INTEGER, task TEXT, seed INTEGER, edge_a INTEGER, edge_b INTEGER, stratum TEXT, hidden INTEGER, build_id TEXT);
 CREATE TABLE layer_availability(port TEXT NOT NULL, layer TEXT NOT NULL, n_instances INTEGER NOT NULL, PRIMARY KEY(port, layer));
 """
+
+# ---- v1 (E18 amendment A1): multi-anchor consensus
+STATIC_V1_DB = OUTDIR / "doomgraph_static_v1.sqlite"
+GROUP_VERSION_V1 = "g2"
+V1_ANCHORS = REF_ENGINES                                    # joint anchors of the primary v1 run
+V1_SWAPS = {"v1_swap:ldgw": ("linuxdoom", "doomgeneric", "woof"),          # pre-fixed anchor-swap runs (A1 gate a): the references
+            "v1_swap:cpw": ("chocolate-doom", "prboom-plus", "woof")}      # without / with the two test-port-like engines

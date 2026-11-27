@@ -35,3 +35,12 @@ Python 3.12 with numpy, scipy and pandas (scikit-learn is not required; `build_b
 * **Roles**: `anchor`, `member`, `merge`, `split`, `conflict` (one per membership row; alternatives are extra rows with `rank >= 2`). Conflict, split and merge are to be excluded from P1 scoring.
 * **Subsystems** are the placements in `subsystem_map_data.json` (16 subsystems), matched to instances by (port, name, size); unmatched or ambiguous entries are left out.
 * **Behaviour**: screen functions are joined to instances by (file stem, name), then line; 2 managed-doom overloads are left out (counted in the manifest). Lesion-level rows are not ingested for any port.
+
+## v1 (E18 amendment A1): multi-anchor consensus (descriptive only if a gate fails; see results/doomgraph/BUILD_REPORT_V1.md)
+
+```
+nice -n 10 python3 doomgraph/build_static_v1.py     # copies doomgraph_static.sqlite -> doomgraph_static_v1.sqlite (v0 rows intact) and adds build scopes v1, v1_swap:ldgw, v1_swap:cpw
+python3 doomgraph/audit_v1.py                       # gates (a) anchor-swap ARI, (b) ungrouped rate on the E15 usable lists (ids only), (c) integrity audits; writes BUILD_REPORT_V1.md (exit 1 if any gate fails)
+python3 -m pytest doomgraph/tests -q
+```
+`groups_v1.py` is the pure construction (joint anchors = the five reference engines; anchors cluster by mutual best matches; non-anchors join the group with the best-weighted consistent evidence); `eval_scope.py` is used only by the audit.
