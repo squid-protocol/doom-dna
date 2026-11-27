@@ -1,0 +1,23 @@
+usable functions 140 (C) / 136 (C#); name-agree pairs 105; break-pattern distance of name-agree pairs: median 0.044, 75th pct 0.069
+
+== functional twins (identical call profile in all 77 demos, break pattern as close as a true partner, names differ): 10 candidate pairs
+   of which E12 also matched them: 3; not matched by E12: 7
+   P_GiveBody                   (p_inter  ) ~ GiveHealth               (ItemPickup      ) dist 0.000 cands 1  E12: no E12 match
+   PIT_ChangeSector             (p_map    ) ~ CrushThing               (SectorAction    ) dist 0.006 cands 2  E12: yes: KillMobj (ext3)
+   T_FireFlicker                (p_lights ) ~ Run                      (FireFlicker     ) dist 0.008 cands 1  E12: yes: Run (ext2)  [matched]
+   PIT_RadiusAttack             (p_map    ) ~ DoRadiusAttack           (ThingInteraction) dist 0.010 cands 1  E12: no E12 match
+   P_SetPsprite                 (p_pspr   ) ~ SetPlayerSprite          (PlayerBehavior  ) dist 0.025 cands 1  E12: yes: ReadCmd (seed)
+   T_PlatRaise                  (p_plats  ) ~ Run                      (Platform        ) dist 0.026 cands 1  E12: yes: Run (ext3)  [matched]
+   P_InterceptVector2           (p_sight  ) ~ InterceptVector          (VisibilityCheck ) dist 0.030 cands 1  E12: yes: BringUpWeapon (ext1)
+   P_MobjThinker                (p_mobj   ) ~ Run                      (Mobj            ) dist 0.032 cands 1  E12: yes: Run (ext2)  [matched]
+   P_SetupPsprites              (p_pspr   ) ~ SetupPlayerSprites       (PlayerBehavior  ) dist 0.042 cands 3  E12: no E12 match
+   T_MoveFloor                  (p_floor  ) ~ Run                      (FloorMove       ) dist 0.056 cands 1  E12: no E12 match
+
+== matched by name and by E12 structure, but roles differ (profile rank > 5 or break-pattern distance above the 75th percentile of true partners)
+   6 pairs
+   EV_DoCeiling                 ~ DoCeiling              tier ext1   call-profile dist 0.000 (rank 1), break-pattern dist 1.000 (rank 136)
+   EV_DoDonut                   ~ DoDonut                tier ext1   call-profile dist 0.000 (rank 1), break-pattern dist 1.000 (rank 136)
+   P_SpawnPlayer                ~ SpawnPlayer            tier ext2   call-profile dist 0.000 (rank 1), break-pattern dist 0.122 (rank 1)
+   T_MovePlane                  ~ MovePlane              tier seed   call-profile dist 0.000 (rank 1), break-pattern dist 0.105 (rank 1)
+   PIT_AddLineIntercepts        ~ AddLineIntercepts      tier ext1   call-profile dist 0.000 (rank 1), break-pattern dist 0.088 (rank 2)
+   P_Move                       ~ Move                   tier seed   call-profile dist 0.000 (rank 1), break-pattern dist 0.081 (rank 1)
