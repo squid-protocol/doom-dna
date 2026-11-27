@@ -32,6 +32,7 @@ def analyze(A, B, GA, GB, funcsA, funcsB, B_perm=10000):
         return d
     ka, kb = keyed(phA, h[0], fmap[0], True), keyed(phB, h[1], fmap[1], False); common = sorted(set(ka) & set(kb)); pairs = [(ka[k], kb[k]) for k in common]; out["pairs"] = len(pairs)
     la = h[0]["labels"][[p[0] for p in pairs]]; lb = h[1]["labels"][[p[1] for p in pairs]]
+    out["_ctx"] = dict(phA=phA, phB=phB, h=h, fmap=fmap, pairs=pairs, ka=ka, kb=kb, A=A, B=B, demos=demos)
     if len(pairs) >= 4:
         sb = strata(reach_count(B, phB.fids[h[1]["idx"]][[p[1] for p in pairs]])); r3 = h3(la, lb, sb, B=B_perm)
         ga0 = n0_groups(A, phA, h[0]["idx"], demos, h[0]["k"]); gb0 = n0_groups(B, phB, h[1]["idx"], demos, h[1]["k"])

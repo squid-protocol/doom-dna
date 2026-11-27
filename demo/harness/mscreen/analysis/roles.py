@@ -13,6 +13,14 @@ class Port:
     """a screen store: lesions, results (observed lesion x demo pairs), clean per-function entry counts"""
     def __init__(self, name, lesions, results, reach, demos):
         self.name, self.lesions, self.res, self.reach, self.demos = name, lesions, results, reach, list(demos)
+def _subset(self, demos=None, kinds=None, lesion_ids=None, suffix=""):
+    """a filtered view of a port (demo subset, lesion kinds, lesion ids), used for the registered sensitivity analyses"""
+    res, reach, dm = self.res, self.reach, self.demos
+    if demos is not None: ds = set(demos); res = res[res.demo.isin(ds)]; reach = reach[reach.demo.isin(ds)]; dm = [d for d in self.demos if d in ds]
+    if kinds is not None: res = res[res.kind.isin(kinds)]
+    if lesion_ids is not None: res = res[res.lesion.isin(lesion_ids)]
+    return Port(self.name + suffix, self.lesions, res, reach, dm)
+Port.subset = _subset
 def load_port(name, db_path, exclude_shift=True):
     db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     les = pd.read_sql("select * from lesions", db); res = pd.read_sql("select * from results", db); reach = pd.read_sql("select * from reach", db); demos = sorted(pd.read_sql("select distinct demo from sitereach", db).demo)

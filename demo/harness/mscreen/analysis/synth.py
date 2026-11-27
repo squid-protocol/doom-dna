@@ -22,7 +22,7 @@ def make_port(name, rng, groups, cent, hot_ids, inert_ids, fids, file_of, idio, 
                 sr.append((d, lid - 1, 1))
     L = pd.DataFrame(les, columns=["id", "file", "fn", "fid", "line", "kind", "op", "new"]); R = pd.DataFrame(res, columns=["lesion", "demo", "outcome", "tic", "mask", "rc", "tries", "fid", "file", "fn", "kind"])
     RC = pd.DataFrame(reach, columns=["demo", "fid", "entries", "first_tic"]); return Port(name, L, R, RC, demos)
-def run(planted=True, swap=0.2, n=150, k=12, seed=11):
+def build(planted=True, swap=0.2, n=150, k=12, seed=11):
     rng = np.random.default_rng(seed); fids = list(range(n)); hot = set(fids[:8]); inert = set(fids[8:28]); real = fids[28:]
     cent = rng.beta(0.4, 0.5, size=(k, 42)) if planted else np.tile(rng.beta(0.4, 0.5, size=(1, 42)), (k, 1)); idio = {f: rng.normal(0, 0.2, 42) for f in fids}
     gA = {f: int(rng.integers(0, k)) for f in fids}; gB = {f: (int(rng.integers(0, k)) if rng.random() < swap else gA[f]) for f in fids}
@@ -37,7 +37,10 @@ def run(planted=True, swap=0.2, n=150, k=12, seed=11):
                 if a < b and rng.random() < (0.45 if groups[a] == groups[b] else 0.008): e.add((norm(f"P_func{a}x"), norm(f"P_func{b}x"))); e.add((norm(f"func{a}x"), norm(f"func{b}x")))
         return e
     E = edges(gA if planted else {f: 0 for f in fids}); GA = Graph(fids, fa.name, E); GB = Graph(fids, fb.name, E)
-    return analyze(A, B, GA, GB, fa, fb, B_perm=2000)
+    return A, B, GA, GB, fa, fb
+def run(planted=True, swap=0.2, n=150, k=12, seed=11, B_perm=2000):
+    A, B, GA, GB, fa, fb = build(planted, swap, n, k, seed)
+    return analyze(A, B, GA, GB, fa, fb, B_perm=B_perm)
 if __name__ == "__main__":
     planted = sys.argv[1] == "planted"; swap = float(sys.argv[2]) if len(sys.argv) > 2 else 0.2
     out = run(planted, swap)
