@@ -1,0 +1,45 @@
+Prioritised methodological and statistical review of [E17_DIVERGENT_PORT_SCREENS.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/preregistration/E17_DIVERGENT_PORT_SCREENS.md) (read-only; unseen screen outcomes untouched).
+
+---
+
+### P0 — Blocking Design Defects
+
+1. **H-B1 compares `D` against a strawman `N0` and lacks an absolute floor.**
+   In [tests.py](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/demo/harness/mscreen/analysis/tests.py#L46-L57), `N0` is unnormalised L1 on `log1p(entries)` across *all* 77 demos (coding unreached/crashed demos as 0), whereas `D` ([roles.py](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/demo/harness/mscreen/analysis/roles.py#L64-L74)) compares kill fractions only on co-observed demos (`>= 5`) and imputes `1.0` otherwise. On divergent ports, demo-length shifts break raw L1 `N0` trivially while `D = 1.0` imputation encodes reach overlap inside `D`. Moreover, H-B1 has no absolute floor: `D = 0.16` vs collapsed `N0 = 0.05` passes `>= 0.10` despite useless recovery.
+   * **Change:** Add scale-invariant `N0` comparators (cosine and Spearman on `log1p` counts over valid/co-observed demos, plus binary reach Jaccard) alongside raw L1; test *added value* via a combined `D + N0` ranker and on `N0`-missed/tied pairs; fix query direction (new port -> chocolate-doom for constant pool size; reverse as sensitivity); require an absolute/ceiling floor (e.g., `D top-5 >= max(3 * chance, 0.5 * PC1f)`).
+
+2. **Self-differential outcomes on gore (69/77 divergent demos) break E15's shared coordinate system.**
+   Self-differential comparison stops gore's baseline bug from flagging every lesion as killed at tic 2, but after gore diverges (median tic 2; 1 clean crash, 2 hangs per [E16_SYMPTOM_DIAGNOSIS.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/preregistration/E16_SYMPTOM_DIAGNOSIS.md#L60)), those 69 demos follow different trajectories: different sites execute and kills break different game states than in chocolate-doom.
+   * **Change:** Exclude gore's clean-crash/hang demos; **do not pool gore with Mocha in the primary H-B1 test** (make Mocha primary or test ports separately with Holm); pre-register stratification by demo faithfulness (faithful vs early/late divergent) and demo family (bot vs monster, shareware vs Freedoom); report the 4x4 `usable/hot/inert/<4` cross-port transition matrix.
+
+3. **H-B1 clustering, truth bias, pass rule, and power are defective.**
+   - *Cluster unit:* Pooling Mocha and gore repeats chocolate-doom functions across both ports; bootstrap clusters must be **chocolate-doom function IDs** (not `(port, function)` pairs).
+   - *Truth bias:* Unique `name-agree` pairs drop split/merged functions (biasing toward conservative code where `N0` still works) while retaining true role divergences (H-B3).
+   - *Threshold & power:* Clarify whether `>= 0.10` applies to the point lift (with 95% CI lower bound `> 0`) or the lower bound itself; justify `0.10` with a power/simulation check; add a minimum power gate (e.g., `>= 40` usable pairs per port); state how pairs hot/inert/`<4` in only one port enter the denominator.
+   * **Change:** Cluster by chocolate-doom function; add a secondary non-name evaluation using E7 text-arbiter / audited orthologs (currently E7 is mentioned in Design but never used) and group-level 1-to-many recovery.
+
+---
+
+### P1 — Major Statistical & Reporting Defects
+
+4. **H-B2–H-B5 lack multiplicity control, operational definitions, and nulls.**
+   - *Multiplicity:* H-B1, H-B2, H-B4 are all primary with no Holm family or formal tests for H-B2/H-B4. Make H-B1 sole confirmatory (or Holm-correct H-B1/H-B2/H-B4).
+   - *H-B2:* Define "profile in each new port" (cluster centroid vs function, 1-to-1 Hungarian vs many-to-one), freeze the 11 E15 families by commit hash, and require beating a shuffled-demo/`N0` null (not an uncalibrated `0.4` cutoff).
+   - *H-B3:* Flagging `D > 5th percentile` of random pairs flags nearly every unconfirmed pair (likely inverted or over-broad). Fix the exact percentile/cutoff from a named E15 pair (and check port-specific random distributions), set an audit cap/sampling rule, blinded two-reviewer rubric, and inter-rater kappa.
+   - *H-B4:* Freeze the SFS score formula/commit hash and define "call-profile class"; add function-clustered CIs, a power gate, and **within-tier** AUC (twin vs extension separately) to rule out trivial size/tier separation.
+   - *H-B5:* Pin E16's `FROZEN_SCORER.json`, `>= 3`-demo filter, baselines, and counterpart rule (name-agree without the 77-demo identical-profile filter); separate E16 dev-half vs test-half chocolate-doom targets.
+
+5. **Undisclosed leakage from E15/E16 and schema mismatch.**
+   E15 outcomes (11 families, 5th-percentile cutoff, SFS calibration) and E16 gore clean divergences are already known. Explicitly disclose this and state whether `N0` matching has been computed on Mocha/gore clean profiles (if not, freeze it unread until registration). Clarify "index lesions" (absent in [roles.py](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/demo/harness/mscreen/analysis/roles.py#L28) and [MUTANT_SCREEN_JAVA.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/docs/notes/MUTANT_SCREEN_JAVA.md#L12)).
+
+6. **Misstated controls, overly broad null, and missing uninterpretable-outcome gates.**
+   E17 misdefines E15 `PC1g` (it is within-port split-half group `AMI >= 0.40`, not cross-port hot/inert reproducibility), fails to make `PC1f`/`PC1g` hard gates, and cites an "identical-text pairs" ceiling that does not exist across C vs Java/Go. Narrow the pre-declared null to distinguish faithful-demo ceiling effects from divergent-demo failure; pre-declare uninterpretable outcomes (`PC1f`/`PC1g` failure, `<40` usable pairs, excessive `<5` co-observed `D=1.0` imputation, high crash/hang rates, hub/tie dominance); add drop-missing-`D` and per-component (kill-fraction/tic/class) ablations plus MRR/top-1/ties.
+
+---
+
+### P2 — Execution Ordering & Stopping Rules
+
+7. **Add pre-screen validation, blinding, and overnight abort rules.**
+   - Before screening: exercise Mocha's untested crash path ([MUTANT_SCREEN_JAVA.md](file:///srv/storage_16tb/projects/doom-dna-worktrees/e13-demo-pilot/docs/notes/MUTANT_SCREEN_JAVA.md#L24)) on 1–2 known crash lesions, and complete gore's validation (zero-lesion replay, 20/20 rebuild equivalence, `PC5` determinism).
+   - Prevent optional stopping: either run **both** overnight screens blind before reading any lesion outcomes, or pre-register Mocha as sole confirmatory and gate running gore strictly on pre-outcome clean-coverage viability (`>= 40` reachable name-agree functions).
+   - Add blind in-flight abort rules (e.g., pause if crash+hang `> 15%` in the first 500 jobs or Xvfb fails) and fix the hang-rerun timeout (e.g., 60 s).
