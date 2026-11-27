@@ -12,7 +12,7 @@ def reach_count(P, fids):
 def n0_groups(P, ph, idx, demos, k):
     M = reach_pheno(P, ph.fids[idx], demos); D = np.abs(M[:, None, :] - M[None, :, :]).mean(2)
     return fcluster(linkage(squareform((D + D.T) / 2, checks=False), "average"), k, "maxclust")
-def analyze(A, B, GA, GB, funcsA, funcsB, B_perm=10000):
+def analyze(A, B, GA, GB, funcsA, funcsB, B_perm=10000, b_is_c=False):
     """funcsX: DataFrame(fid, name, file)"""
     out = {}; demos = A.demos; assert A.demos == B.demos
     phA, phB = phenotype(A), phenotype(B); out["n_eligible"] = (int(usable(phA).sum()), int(usable(phB).sum()))
@@ -30,7 +30,7 @@ def analyze(A, B, GA, GB, funcsA, funcsB, B_perm=10000):
             k = agree_key(f.loc[ph.fids[i], "name"], is_c)
             if cnt[k] == 1 and len(k) >= 4 and k.lower() not in GENERIC: d[k] = j
         return d
-    ka, kb = keyed(phA, h[0], fmap[0], True), keyed(phB, h[1], fmap[1], False); common = sorted(set(ka) & set(kb)); pairs = [(ka[k], kb[k]) for k in common]; out["pairs"] = len(pairs)
+    ka, kb = keyed(phA, h[0], fmap[0], True), keyed(phB, h[1], fmap[1], b_is_c); common = sorted(set(ka) & set(kb)); pairs = [(ka[k], kb[k]) for k in common]; out["pairs"] = len(pairs)
     la = h[0]["labels"][[p[0] for p in pairs]]; lb = h[1]["labels"][[p[1] for p in pairs]]
     out["_ctx"] = dict(phA=phA, phB=phB, h=h, fmap=fmap, pairs=pairs, ka=ka, kb=kb, A=A, B=B, demos=demos)
     if len(pairs) >= 4:
