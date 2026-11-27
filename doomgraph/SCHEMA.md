@@ -1,4 +1,6 @@
-# DoomGraph schema (v0 draft, 2026-11-27)
+# DoomGraph schema (v1, 2026-11-27: see E18 v2 section 'Schema v1' for the required additions, which govern)
+
+**Two database files:** `doomgraph_static.sqlite` (instances, match edges, call edges, lineage edges, ortholog groups) and `doomgraph_behaviour.sqlite` (reach, lesions, phenotypes, conformance, folds). The group-building code never opens the behaviour file.
 
 One SQLite file (`doomgraph.sqlite`) plus a build script; every row records its source file and commit so layers can be rebuilt. Layers are separate tables joined on **instance ids**; nothing is overwritten.
 
