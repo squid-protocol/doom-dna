@@ -1,0 +1,26 @@
+{
+ "managed-doom": {
+  "top5": 0.9693468676026814,
+  "ochiai_top5": 0.3577260981912145,
+  "lift": 0.6116207694114671,
+  "ci": [
+   0.4777421503722376,
+   0.7393647821009739
+  ],
+  "n_functions": 43,
+  "power_ok": true,
+  "pass": true
+ },
+ "prboom-plus": {
+  "top5": 0.8,
+  "ochiai_top5": 0.0,
+  "lift": 0.8,
+  "ci": [
+   0.8,
+   0.8
+  ],
+  "n_functions": 1,
+  "power_ok": false,
+  "pass": false
+ }
+}

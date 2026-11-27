@@ -1,0 +1,6 @@
+lesion,host,truth_fid,rank_dictionary,rank_dictionary_C,rank_ochiai,rank_metallaxis
+2803,getNextSector,192,4,4,40,1
+16496,getNextSector,192,4,4,40,1
+16497,getNextSector,192,4,3,40,1
+16498,getNextSector,192,4,4,40,1
+16499,getNextSector,192,66,54,77,55
