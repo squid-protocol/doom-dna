@@ -1,0 +1,98 @@
+c_fn,c_file,m_fn,m_file,d,call_same,name_agree,e12,c_lines,m_lines,size_ratio,nbr_agree,n_anchored_nbrs,e12_alt,cat
+P_RecursiveSound,p_enemy,RecursiveSound,WeaponBehavior,0.016352272037856868,True,True,True,45,54,1.2,,1,RecursiveSound(ext1),name + E12
+P_CheckMeleeRange,p_enemy,CheckMeleeRange,MonsterBehavior,0.03665636727262164,True,True,False,26,23,1.1,1.0,3,SpawnSpecials(ext3),name only
+P_CheckMissileRange,p_enemy,CheckMissileRange,MonsterBehavior,0.019392468614813498,True,True,True,60,80,1.3,1.0,2,CheckMissileRange(ext2),name + E12
+P_LookForPlayers,p_enemy,LookForPlayers,MonsterBehavior,0.03569899429257156,True,True,True,58,60,1.0,1.0,3,LookForPlayers(ext1),name + E12
+A_Look,p_enemy,Look,MonsterBehavior,0.12230897994568049,True,True,False,61,66,1.1,1.0,2,AutoMap(ext3),name only
+A_Chase,p_enemy,Chase,MonsterBehavior,0.032722806548114755,True,True,True,105,124,1.2,1.0,7,Chase(seed),name + E12
+A_FaceTarget,p_enemy,FaceTarget,MonsterBehavior,0.009341880285588234,True,True,False,15,20,1.3,1.0,5,BulletSlope(ext2),name only
+A_CPosRefire,p_enemy,CPosRefire,MonsterBehavior,0.0,True,True,False,15,17,1.1,1.0,2,DoEvent(ext2),name only
+A_SpidRefire,p_enemy,SpidRefire,MonsterBehavior,0.0,True,True,False,15,17,1.1,1.0,2,,name only
+A_BruisAttack,p_enemy,BruisAttack,MonsterBehavior,0.0058459244731545335,True,True,False,18,20,1.1,1.0,3,HeadAttack(ext3),name only
+A_Tracer,p_enemy,Tracer,MonsterBehavior,0.007355390769536018,True,True,False,70,83,1.2,1.0,2,CPosAttack(ext2),name only
+PIT_VileCheck,p_enemy,VileCheck,MonsterBehavior,0.00042735042735042675,True,True,True,31,49,1.6,,1,VileCheck(ext2),name + E12
+A_VileChase,p_enemy,VileChase,MonsterBehavior,0.013182314761262127,True,True,False,61,48,1.3,1.0,2,,name only
+A_Fire,p_enemy,Fire,MonsterBehavior,0.011069266363793507,True,True,False,24,26,1.1,1.0,4,PosAttack(ext1),name only
+A_VileTarget,p_enemy,VileTarget,MonsterBehavior,0.0,True,True,True,18,20,1.1,1.0,3,VileTarget(ext3),name + E12
+A_SkullAttack,p_enemy,SkullAttack,MonsterBehavior,0.01974850944258821,True,True,False,24,30,1.2,1.0,2,FirePistol(ext1),name only
+PIT_StompThing,p_map,StompThing,ThingMovement,0.011844350145677205,True,True,True,28,32,1.1,,1,StompThing(ext3),name + E12
+P_TeleportMove,p_map,TeleportMove,ThingMovement,0.044908436812440555,True,True,False,64,57,1.1,1.0,3,,name only
+PIT_CheckLine,p_map,CheckLine,ThingMovement,0.030116817692553602,True,True,True,65,77,1.2,,1,CheckLine(ext1),name + E12
+PIT_CheckThing,p_map,CheckThing,ThingMovement,0.03354550601181497,True,True,True,96,101,1.1,1.0,2,CheckThing(ext2),name + E12
+P_CheckPosition,p_map,CheckPosition,ThingMovement,0.08546404899428026,True,True,False,69,77,1.1,1.0,4,Abs(ext1),name only
+P_TryMove,p_map,TryMove,ThingMovement,0.02207565531031206,True,True,True,68,76,1.1,1.0,9,TryMove(ext1),name + E12
+P_ThingHeightClip,p_map,ThingHeightClip,SectorAction,0.029658516237068916,True,True,False,29,33,1.1,0.5,2,,name only
+PTR_SlideTraverse,p_map,SlideTraverse,ThingMovement,0.06718073354401079,True,True,False,47,59,1.3,,1,PointOnLineSide2(ext3),name only
+P_SlideMove,p_map,SlideMove,ThingMovement,0.04396821256556973,True,True,False,94,110,1.2,1.0,2,Teleport(ext1),name only
+PTR_AimTraverse,p_map,AimTraverse,Hitscan,0.014172427149203312,True,True,False,81,111,1.4,,1,SlideTraverse(ext1),name only
+PTR_ShootTraverse,p_map,ShootTraverse,Hitscan,0.026966634932059818,True,True,True,134,160,1.2,1.0,5,ShootTraverse(ext1),name + E12
+P_AimLineAttack,p_map,AimLineAttack,Hitscan,0.022142214912726693,True,True,False,35,30,1.2,1.0,3,CheckSight(seed),name only
+PTR_UseTraverse,p_map,UseTraverse,MapInteraction,0.011081869802989372,True,True,True,29,30,1.0,1.0,2,UseTraverse(ext1),name + E12
+P_UseLines,p_map,UseLines,MapInteraction,0.05449468550640851,True,True,False,19,15,1.3,,1,CheckPosition(ext3),name only
+PIT_RadiusAttack,p_map,DoRadiusAttack,ThingInteraction,0.010060573871014614,True,False,False,35,38,1.1,1.0,2,,neither (functional twin)
+PIT_ChangeSector,p_map,CrushThing,SectorAction,0.006281563350210421,True,False,False,58,56,1.0,1.0,4,KillMobj(ext3),neither (functional twin)
+P_ChangeSector,p_map,ChangeSector,SectorAction,0.0188944697496036,True,True,False,19,19,1.0,,1,IntermissionRenderer(xtwin),name only
+P_LineOpening,p_maputl,LineOpening,MapCollision,0.02190304673555577,True,True,True,33,34,1.0,1.0,6,LineOpening(seed),name + E12
+P_SetThingPosition,p_maputl,SetThingPosition,ThingMovement,0.056591948161403303,True,True,False,56,51,1.1,1.0,4,PainShootSkull(ext2),name only
+PIT_AddThingIntercepts,p_maputl,AddThingIntercepts,PathTraversal,0.015449974942631917,True,True,False,60,55,1.1,,0,PointOnDivLineSide3(ext2),name only
+P_TraverseIntercepts,p_maputl,TraverseIntercepts,PathTraversal,0.050468891763576336,True,True,False,49,36,1.4,,0,,name only
+P_InterceptVector2,p_sight,InterceptVector,VisibilityCheck,0.030158402946014816,True,False,False,21,15,1.4,,1,BringUpWeapon(ext1),neither (functional twin)
+P_CrossSubsector,p_sight,CrossSubsector,VisibilityCheck,0.049309495344539045,True,True,False,122,125,1.0,,0,SetupPlayerSprites(ext2),name only
+P_SetMobjState,p_mobj,SetState,Mobj,0.090305354422457,False,False,False,38,30,1.3,0.9523809523809523,21,,neither (functional twin)
+P_ExplodeMissile,p_mobj,ExplodeMissile,ThingInteraction,0.02150361846361317,True,True,False,16,20,1.2,1.0,3,DeathMatchSpawnPlayer(ext2),name only
+P_XYMovement,p_mobj,XYMovement,ThingMovement,0.020156035611257513,True,True,False,128,143,1.1,1.0,4,,name only
+P_ZMovement,p_mobj,ZMovement,ThingMovement,0.016757442001832597,True,True,True,136,119,1.1,,1,ZMovement(ext3),name + E12
+P_NightmareRespawn,p_mobj,NightmareRespawn,Mobj,0.06740666849490377,True,True,False,54,65,1.2,1.0,3,HitSlideLine(ext1),name only
+P_MobjThinker,p_mobj,Run,Mobj,0.031906269061467825,True,False,True,59,76,1.3,1.0,3,Run(ext2),E12 only
+P_SpawnMobj,p_mobj,SpawnMobj,ThingAllocation,0.03203668226865971,True,True,True,56,54,1.0,0.9333333333333333,15,SpawnMobj(ext1),name + E12
+P_RemoveMobj,p_mobj,RemoveMobj,ThingAllocation,0.12182010342551736,True,True,False,25,29,1.2,0.8,5,,name only
+P_RespawnSpecials,p_mobj,RespawnSpecials,ThingAllocation,0.05453521376856133,True,True,False,61,58,1.1,,1,,name only
+P_SpawnPlayer,p_mobj,SpawnPlayer,ThingAllocation,0.12221732852696042,True,True,True,64,62,1.0,1.0,2,SpawnPlayer(ext2),name + E12
+P_SpawnMapThing,p_mobj,SpawnMapThing,ThingAllocation,0.029023265128242052,True,True,True,103,135,1.3,1.0,2,SpawnMapThing(ext2),name + E12
+P_SpawnPuff,p_mobj,SpawnPuff,Hitscan,0.005610192915190529,True,True,True,21,21,1.0,1.0,3,SpawnPuff(seed),name + E12
+P_SpawnBlood,p_mobj,SpawnBlood,Hitscan,0.0,True,True,True,22,24,1.1,1.0,2,SpawnBlood(seed),name + E12
+P_CheckMissileSpawn,p_mobj,CheckMissileSpawn,ThingAllocation,0.021433254243779048,True,True,True,15,18,1.2,1.0,4,CheckMissileSpawn(ext2),name + E12
+P_SpawnMissile,p_mobj,SpawnMissile,ThingAllocation,0.015520645829199438,True,True,False,40,49,1.2,1.0,3,SpawnPlayerMissile(ext2),name only
+P_SpawnPlayerMissile,p_mobj,SpawnPlayerMissile,ThingAllocation,0.05288897976389789,True,True,False,54,45,1.2,1.0,4,VileAttack(ext1),name only
+P_CalcHeight,p_user,CalcHeight,PlayerBehavior,0.015497167149259415,True,True,False,65,68,1.0,1.0,2,BrainAwake(ext1),name only
+P_MovePlayer,p_user,MovePlayer,PlayerBehavior,0.049905367047079,True,True,False,24,25,1.0,,1,Bitshift(ext2),name only
+P_DeathThink,p_user,DeathThink,PlayerBehavior,0.036439119192084576,True,True,False,48,56,1.2,1.0,2,BrainSpit(ext3),name only
+P_PlayerThink,p_user,AddLineIntercepts,PathTraversal,0.07037247874809777,False,False,False,149,50,3.0,0.0,5,,neither (functional twin)
+P_BringUpWeapon,p_pspr,BringUpWeapon,PlayerBehavior,0.0,True,True,False,17,19,1.1,,0,MonsterBehavior(ext2),name only
+P_CheckAmmo,p_pspr,CheckAmmo,WeaponBehavior,0.07602334035432762,True,True,False,80,89,1.1,1.0,2,,name only
+P_FireWeapon,p_pspr,FireWeapon,WeaponBehavior,0.03554095622003771,True,True,False,12,14,1.2,1.0,3,,name only
+A_WeaponReady,p_pspr,WeaponReady,WeaponBehavior,0.031888841414896146,True,True,False,54,52,1.0,,1,TntDemo1(ext1),name only
+A_ReFire,p_pspr,ReFire,WeaponBehavior,0.03332423306661287,True,True,False,20,17,1.2,1.0,2,,name only
+A_Raise,p_pspr,Raise,WeaponBehavior,0.01738434182625579,True,True,False,20,16,1.2,,0,,name only
+A_Punch,p_pspr,Punch,WeaponBehavior,0.06136036070165565,True,True,False,29,29,1.0,,1,Look(ext3),name only
+P_BulletSlope,p_pspr,BulletSlope,WeaponBehavior,0.028916623634378257,True,True,False,19,20,1.1,1.0,5,,name only
+P_GunShot,p_pspr,GunShot,WeaponBehavior,0.017395253021750656,True,True,False,16,15,1.1,1.0,3,FirePlasma(ext2),name only
+A_FirePistol,p_pspr,FirePistol,WeaponBehavior,0.03832797304434777,True,True,False,17,17,1.0,1.0,2,,name only
+A_FireShotgun,p_pspr,FireShotgun,WeaponBehavior,0.0917183448497016,True,True,False,21,20,1.1,1.0,2,,name only
+P_SetupPsprites,p_pspr,SetupPlayerSprites,PlayerBehavior,0.04220779220779221,True,False,False,12,12,1.0,1.0,2,,neither (functional twin)
+P_MovePsprites,p_pspr,MovePlayerSprites,PlayerBehavior,0.005285097441299583,True,False,False,26,28,1.1,1.0,2,,neither (functional twin)
+P_GiveAmmo,p_inter,GiveAmmo,ItemPickup,0.05253517770841622,True,True,False,88,103,1.2,1.0,2,,name only
+P_GiveWeapon,p_inter,GiveWeapon,ItemPickup,0.05779264063562536,True,True,False,54,64,1.2,1.0,2,,name only
+P_GiveBody,p_inter,GiveHealth,ItemPickup,0.0,True,False,False,15,17,1.1,1.0,2,,neither (functional twin)
+P_GiveArmor,p_inter,GiveArmor,ItemPickup,0.016104371025934813,True,True,False,16,15,1.1,,1,,name only
+P_GivePower,p_inter,GivePower,ItemPickup,0.020628357561375616,True,True,False,43,44,1.0,,1,,name only
+P_TouchSpecialThing,p_inter,TouchSpecialThing,ItemPickup,0.04816265243394146,True,True,False,339,421,1.2,1.0,6,,name only
+P_KillMobj,p_inter,KillMobj,ThingInteraction,0.02847972448849062,True,True,False,98,94,1.0,1.0,2,BFGSpray(ext2),name only
+P_DamageMobj,p_inter,DamageMobj,ThingInteraction,0.06825612658898395,True,True,True,144,150,1.0,0.7777777777777778,9,DamageMobj(ext2),name + E12
+T_VerticalDoor,p_doors,DoLocalDoor,SectorAction,0.06694405178848639,False,False,False,130,160,1.2,,1,,neither (functional twin)
+EV_DoDoor,p_doors,DoDoor,SectorAction,0.060445557675453405,True,True,False,80,79,1.0,1.0,5,DoFloor(ext1),name only
+T_MoveFloor,p_floor,Run,FloorMove,0.0560719773383407,True,False,False,49,50,1.0,,1,,neither (functional twin)
+EV_DoFloor,p_floor,DoFloor,SectorAction,0.04721070910990024,True,True,False,189,175,1.1,1.0,7,DoDoor(ext1),name only
+P_FindLowestFloorSurrounding,p_spec,DoPlatform,SectorAction,0.03538650979247216,False,False,False,20,107,5.3,,1,AddActivePlatform(ext3),neither (functional twin)
+P_FindHighestFloorSurrounding,p_spec,FindHighestFloorSurrounding,SectorAction,0.04189955225393471,True,True,False,20,22,1.1,,1,,name only
+P_FindMinSurroundingLight,p_spec,FindMinSurroundingLight,LightingChange,0.1026984126984127,True,True,False,24,20,1.2,1.0,3,,name only
+P_ShootSpecialLine,p_spec,ShootSpecialLine,MapInteraction,0.002115987460815047,True,True,True,43,45,1.0,1.0,4,ShootSpecialLine(seed),name + E12
+P_PlayerInSpecialSector,p_spec,PlayerInSpecialSector,PlayerBehavior,0.06862357957284186,True,True,True,63,73,1.2,1.0,2,PlayerInSpecialSector(ext2),name + E12
+P_ChangeSwitchTexture,p_switch,ChangeSwitchTexture,Specials,0.06432811124505146,True,True,True,64,68,1.1,1.0,2,ChangeSwitchTexture(ext1),name + E12
+P_UseSpecialLine,p_switch,UseSpecialLine,MapInteraction,0.059443163823774306,True,True,True,379,458,1.2,1.0,8,UseSpecialLine(seed),name + E12
+T_PlatRaise,p_plats,Run,Platform,0.02565647079875563,True,False,True,85,88,1.0,,1,Run(ext3),E12 only
+T_FireFlicker,p_lights,Run,FireFlicker,0.008349281968324474,True,False,True,16,20,1.2,,0,Run(ext2),E12 only
+P_SpawnFireFlicker,p_lights,SpawnFireFlicker,LightingChange,0.06362631744427863,True,True,False,18,15,1.2,1.0,2,,name only
+P_SpawnStrobeFlash,p_lights,SpawnStrobeFlash,LightingChange,0.04846306473174153,True,True,True,30,29,1.0,1.0,2,SpawnStrobeFlash(ext2),name + E12
+P_SpawnGlowingLight,p_lights,SpawnGlowingLight,LightingChange,0.06734693877551018,True,True,False,16,13,1.2,1.0,2,,name only
+EV_Teleport,p_telept,Teleport,SectorAction,0.04369760301962496,True,True,False,91,106,1.2,1.0,3,SectorAction(ext3),name only
