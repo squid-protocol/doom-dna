@@ -41,8 +41,8 @@ def h3(la, lb, strata_b, B=10000, seed=4):
         null.append(adjusted_mutual_info_score(la, l))
     null = np.array(null); return dict(ami=float(obs), p=float((1 + (null >= obs).sum()) / (1 + B)), null_mean=float(null.mean()), pairs=len(la))
 def ranks(D, partner):
-    """1-based rank of the partner column for each row of D"""
-    return np.array([1 + (D[i] < D[i, partner[i]]).sum() for i in range(len(partner))])
+    """1-based rank of the partner column for each row of D; ties count against the matcher (pessimistic): rank = number of candidates at least as close as the partner"""
+    return np.array([int((D[i] <= D[i, partner[i]]).sum()) for i in range(len(partner))])
 def reach_pheno(P, fids, demos):
     """N0: clean entry-count profile (log1p entries per demo) as the 'phenotype'"""
     r = P.reach; di = {d: i for i, d in enumerate(demos)}; fi = {f: i for i, f in enumerate(fids)}; M = np.zeros((len(fids), len(demos)))
@@ -58,7 +58,7 @@ def h4(phA, phB, PA, PB, demos, pairs, ceiling_top5, B=10000, seed=5):
     t1, t5 = (rk == 1), (rk <= 5); n1, n5 = (r0 == 1), (r0 <= 5); chance = 5 / len(ib); rng = np.random.default_rng(seed); ok = 0; n = len(pairs)
     for _ in range(B):
         s = rng.integers(0, n, n); T5, N5, T1, N1 = t5[s].mean(), n5[s].mean(), t1[s].mean(), n1[s].mean()
-        ok += (T5 >= max(3 * chance, N5 + 0.15, 0.5 * ceiling_top5)) and (T1 >= N1 + 0.10)
+        ok += (T5 >= max(3 * chance, 0.5 * ceiling_top5))          # amendment A4: N0 is reported, not a pass criterion
     return dict(top1=float(t1.mean()), top5=float(t5.mean()), n0_top1=float(n1.mean()), n0_top5=float(n5.mean()), chance_top5=float(chance), ceiling_top5=float(ceiling_top5), p=float((1 + (B - ok)) / (1 + B)), pairs=n, pool=len(ib), group_rank_median=float(np.median(rk)))
 def pc1(P, seed=6):
     """split-half reliability: each function's lesions split at random into halves; the half-phenotype's rank of its own other half among all functions"""

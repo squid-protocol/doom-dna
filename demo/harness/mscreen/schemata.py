@@ -8,6 +8,7 @@ KIND2 = {"*": "arith2", "/": "arith2", "&": "bitwise", "|": "bitwise"}
 OPS = {"<": "<=", "<=": "<", ">": ">=", ">=": ">", "==": "!=", "!=": "==", "+": "-", "-": "+", "&&": "||", "||": "&&", "<<": ">>", ">>": "<<"}
 KIND = {"<": "relational", "<=": "relational", ">": "relational", ">=": "relational", "==": "equality", "!=": "equality", "+": "arithmetic", "-": "arithmetic", "&&": "logical", "||": "logical", "<<": "shift", ">>": "shift"}
 MAXLEN = 3000
+GUARD_MISPARSE = False   # opt-in (prboom build): skip `!`/`++` lesions on trees where the C parser reads `!x--` as `(!x)--`; off for the earlier builds so their lesion numbering never changes
 class C:
     NOV2 = False; COND_PARENTS = {"if_statement", "while_statement", "do_statement", "for_statement", "conditional_expression"}; UNARY = {"unary_expression"}; UPDATE = {"update_expression"}
     ON = "E13_ON(%d)"; ENTER = "E13_ENTER(%d);"
@@ -77,7 +78,7 @@ class Engine:
                 if mid not in drop: base = "(" + cfg.ON % mid + " ? (%d) : (%s))" % (val, base)
             return base
         # delete a logical not
-        if t in cfg.UNARY and len(base) < MAXLEN:
+        if t in cfg.UNARY and len(base) < MAXLEN and not (GUARD_MISPARSE and n.parent is not None and n.parent.type in cfg.UPDATE):
             ops = [c for c in n.children if c.type == "!"]
             if ops:
                 arg = self.text(n)[1:].strip(); arg_e = base[base.index("!") + 1:]
@@ -85,7 +86,7 @@ class Engine:
                 if mid not in drop: base = "(" + cfg.ON % mid + " ? (" + arg_e + ") : (" + base + "))"
             return base
         # ++ <-> --
-        if t in cfg.UPDATE and len(base) < MAXLEN:
+        if t in cfg.UPDATE and len(base) < MAXLEN and not (GUARD_MISPARSE and any(c.type in cfg.UNARY for c in n.children)):
             ops = [c for c in n.children if c.type in ("++", "--")]
             if ops and "++" not in base.replace(ops[0].type, "", 1) and "--" not in base.replace(ops[0].type, "", 1):
                 o = ops[0].type; o2 = "--" if o == "++" else "++"; mid = self.new_id("incdec", o, o2, n, ops[0], edit=(ops[0].start_byte, ops[0].end_byte, o2))

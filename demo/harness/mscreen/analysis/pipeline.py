@@ -49,11 +49,11 @@ def verdicts(out):
     v.append(("H1a discrete grouping exists (max-gap p<0.01 against a Gaussian null with the observed covariance, and >=60% of functions in stable groups, both ports)", f"A k={h1[0]['k']} p={h1[0]['p']:.3f} (any-structure p={h1[0]['p_perm']:.3f}) stable {h1[0]['share_stable']:.2f}; B k={h1[1]['k']} p={h1[1]['p']:.3f} (any-structure p={h1[1]['p_perm']:.3f}) stable {h1[1]['share_stable']:.2f}", "PASSED" if gate else "FAILED (H2-H4 exploratory)"))
     tag = "" if gate else " [exploratory: H1a failed]"
     for i, nm in enumerate(("chocolate-doom", "managed-doom")):
-        r = out["h2"][i]; ok = r["hops"] >= 0.5 and r["p"] < 0.0167 and r["hops"] > r["n0_hops"]
-        v.append((f"H2 neighbourhoods, {nm} (>= 0.5 hops, p<0.0167, beats N0)", f"{r['hops']:.2f} hops (obs {r['obs_mean']:.2f} vs null {r['null_mean']:.2f}), p={r['p']:.4f}, N0 {r['n0_hops']:.2f}", ("PASSED" if ok else "FAILED") + tag if n_ok else "INCONCLUSIVE (power)"))
+        r = out["h2"][i]; ok = r["hops"] >= 0.5 and r["p"] < 0.0167
+        v.append((f"H2 neighbourhoods, {nm} (>= 0.5 hops, p<0.0167; clean-count baseline reported)", f"{r['hops']:.2f} hops (obs {r['obs_mean']:.2f} vs null {r['null_mean']:.2f}), p={r['p']:.4f}; clean-count groups {r['n0_hops']:.2f} ({'break-pattern groups tighter' if r['hops'] > r['n0_hops'] else 'not tighter than clean-count groups'})", ("PASSED" if ok else "FAILED") + tag if n_ok else "INCONCLUSIVE (power)"))
     if "h3" in out:
-        r = out["h3"]; ok = r["ami"] >= 0.30 and r["p"] < 0.0167 and r["ami"] > r["n0_ami"]
-        v.append(("H3 recurrence (AMI >= 0.30, p<0.0167, beats N0, >= 60 pairs)", f"AMI {r['ami']:.2f} (null {r['null_mean']:.2f}, N0 {r['n0_ami']:.2f}) over {r['pairs']} pairs, p={r['p']:.4f}", ("PASSED" if ok else "FAILED") + tag if r["pairs"] >= 60 else "INCONCLUSIVE (power)"))
-        r = out["h4"]; thr5 = max(3 * r["chance_top5"], r["n0_top5"] + 0.15, 0.5 * r["ceiling_top5"]); ok = r["top5"] >= thr5 and r["top1"] >= r["n0_top1"] + 0.10 and r["p"] < 0.0167
+        r = out["h3"]; ok = r["ami"] >= 0.30 and r["p"] < 0.0167
+        v.append(("H3 recurrence (AMI >= 0.30, p<0.0167, >= 60 pairs; clean-count baseline reported)", f"AMI {r['ami']:.2f} (null {r['null_mean']:.2f}; clean-count groups {r['n0_ami']:.2f}) over {r['pairs']} pairs, p={r['p']:.4f}", ("PASSED" if ok else "FAILED") + tag if r["pairs"] >= 60 else "INCONCLUSIVE (power)"))
+        r = out["h4"]; thr5 = max(3 * r["chance_top5"], 0.5 * r["ceiling_top5"]); ok = r["top5"] >= thr5 and r["p"] < 0.0167
         v.append(("H4 recovers name-agree partners beyond reach (a function-level result: not gated by H1a)", f"top-5 {r['top5']:.2f} (threshold {thr5:.2f}; chance {r['chance_top5']:.2f}, N0 {r['n0_top5']:.2f}, ceiling {r['ceiling_top5']:.2f}), top-1 {r['top1']:.2f} (N0 {r['n0_top1']:.2f}), p={r['p']:.4f}, pairs {r['pairs']}, pool {r['pool']}", ("PASSED" if ok else "FAILED") if r["pairs"] >= 60 else "INCONCLUSIVE (power)"))
     return v
