@@ -50,7 +50,7 @@ def calibrate(PX, PY, fx, fy, e12, namecol, tiercol, label, demos, adjX, adjY, e
         return sum(1 for y in anc if y in nB) / len(anc) if len(anc) >= 2 else np.nan
     lx = dict(zip(fx.name, fx.lines)); ly = dict(zip(fy.name, fy.lines))
     def sr(a, b): u, v = lx.get(a, 1), ly.get(b, 1); return max(u, v) / max(1, min(u, v))
-    diag = pd.DataFrame([dict(tier=t, confirmed=bool(D[i, j] <= t_self), size_ratio=sr(a, b), nbr=nbr(a, b)) for i, j, t, a, b in pairs])
+    diag = pd.DataFrame([dict(tier=t, confirmed=bool(D[i, j] <= t_self), both=bool(D[i, j] <= t_self and N0[i, j] < 1e-9), size_ratio=sr(a, b), nbr=nbr(a, b), name_agree=bool(kx[i] == ny[j]), ref=a, tgt=b, i=i, j=j) for i, j, t, a, b in pairs])
     e12by = {}
     for r in e12: e12by.setdefault(r["ref_name"], set()).add(r[namecol])
     bd = {"SFS right": 0, "SFS proposed a different function": 0, "SFS proposed nothing": 0}
