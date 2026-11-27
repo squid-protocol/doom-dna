@@ -1,0 +1,8 @@
+{
+ "intercept": 0.46868033028637796,
+ "b_tier": 0.18045836826462014,
+ "b_logsize": -1.9441482195535427,
+ "n_pairs": 136,
+ "n_confirmed": 76,
+ "source": "E15 managed-doom + prboom-plus pairs (E15_SFS_UPDATE_STEP1 step 2 model, pooled)"
+}
